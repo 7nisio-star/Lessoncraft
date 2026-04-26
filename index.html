@@ -792,6 +792,16 @@ textarea{resize:vertical;line-height:1.6}
 
 <script>
 // ===================================================
+// API KEY CONFIGURATION
+// ===================================================
+// OPTION A: Leave this empty ('') - teachers paste their own key in AI Setup tab
+// OPTION B: Paste a shared Claude API key here to pre-load it for all staff
+//           Format: 'sk-ant-api03-...'
+//           When deploying to Netlify/school server, set this once and all teachers
+//           can use the app immediately with no setup required.
+var LESSONCRAFT_API_KEY = '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';
+
+// ===================================================
 // STATE
 // ===================================================
 // -- Load saved state from localStorage --
@@ -847,7 +857,7 @@ var S = {
   showAnswers:true,  // mark scheme toggle in preview
   sidebarOpen:true,  // mobile sidebar
   aiProvider:(_saved&&_saved.aiProvider)||'claude',  // 'claude' | 'copilot'
-  claudeKey:(_saved&&_saved.claudeKey)||'',
+  claudeKey:(_saved&&_saved.claudeKey)||LESSONCRAFT_API_KEY||'',
   copilotKey:(_saved&&_saved.copilotKey)||'',
   copilotEndpoint:(_saved&&_saved.copilotEndpoint)||''
 };
@@ -921,7 +931,7 @@ async function callAI(sys,usr){
 }
 
 async function callClaude(sys,usr){
-  const key=S.claudeKey;
+  const key=S.claudeKey||LESSONCRAFT_API_KEY||'';
   const headers={'Content-Type':'application/json'};
   if(key)headers['x-api-key']=key;
   // anthropic-dangerous-direct-browser-access header needed for direct browser calls with key
@@ -1363,7 +1373,7 @@ function buildSidebar(){
 
   // -- AI Status indicator --
   const aiStatusBar=el('div',{'class':'ai-status-bar'});
-  const isConfigured=(S.aiProvider==='claude'&&S.claudeKey)||(S.aiProvider==='copilot'&&S.copilotKey&&S.copilotEndpoint);
+  const isConfigured=(S.aiProvider==='claude'&&(S.claudeKey||LESSONCRAFT_API_KEY))||(S.aiProvider==='copilot'&&S.copilotKey&&S.copilotEndpoint);
   const isClaude=S.aiProvider==='claude';
   aiStatusBar.innerHTML='<span class="ai-status-dot '+(isConfigured?'connected':'warn')+'"></span>'
     +'<span class="ai-status-label">'+(isClaude?'Claude':'Copilot')+' '+(isConfigured?'connected':'-- setup needed')+'</span>'
