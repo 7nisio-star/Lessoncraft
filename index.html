@@ -1,0 +1,2265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LessonCraft AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style id="app-styles">
+/* ─── RESET & BASE ─────────────────────────────── */
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --p:#92278F;--pd:#632E62;--pl:#f0e8f0;--a:#e94560;--a2:#FFC000;
+  --gray-50:#f8f7fc;--gray-100:#f0edf7;--gray-200:#e2dced;--gray-300:#c8bfd8;--gray-400:#9f94b0;--gray-500:#6b6080;--gray-700:#3d3454;--gray-900:#1e1a2e;
+  --white:#fff;--radius:12px;--radius-sm:8px;--radius-xs:6px;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);
+  --shadow-md:0 4px 12px rgba(0,0,0,.08),0 2px 4px rgba(0,0,0,.04);
+  --shadow-lg:0 12px 32px rgba(0,0,0,.12),0 4px 8px rgba(0,0,0,.06);
+  --fh:'Sora',sans-serif;--fb:'Inter',sans-serif;
+  --hdr:56px;--sb:280px;
+}
+html,body{height:100%;font-family:var(--fb);background:var(--gray-50);color:var(--gray-900);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+
+/* ─── SCROLLBAR ─────────────────────────────────── */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--gray-300);border-radius:99px}
+
+/* ─── HEADER ────────────────────────────────────── */
+.hdr{
+  position:fixed;top:0;left:0;right:0;z-index:300;
+  height:var(--hdr);background:var(--pd);
+  display:flex;align-items:center;gap:0;
+  box-shadow:0 1px 0 rgba(255,255,255,.08),0 2px 8px rgba(0,0,0,.2);
+}
+.hdr-logo{
+  display:flex;align-items:center;gap:10px;
+  padding:0 20px 0 22px;
+  font-family:var(--fh);font-size:17px;font-weight:800;
+  color:#fff;white-space:nowrap;letter-spacing:-.3px;
+  border-right:1px solid rgba(255,255,255,.1);height:100%;
+}
+.hdr-logo svg{flex-shrink:0}
+.logo-pill{
+  background:var(--a2);color:var(--pd);
+  font-size:9px;font-weight:800;letter-spacing:.8px;
+  padding:2px 7px;border-radius:99px;margin-left:2px;
+}
+.hdr-nav{display:flex;align-items:stretch;flex:1;padding:0 8px}
+.nav-item{
+  display:flex;align-items:center;gap:8px;
+  padding:0 16px;height:100%;cursor:pointer;
+  font-size:13px;font-weight:500;color:rgba(255,255,255,.45);
+  border-bottom:2.5px solid transparent;transition:all .15s;
+  position:relative;white-space:nowrap;
+}
+.nav-item:hover{color:rgba(255,255,255,.8)}
+.nav-item.active{color:#fff;border-bottom-color:var(--a2)}
+.nav-num{
+  width:18px;height:18px;border-radius:50%;
+  font-size:9px;font-weight:800;
+  background:rgba(255,255,255,.12);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  transition:all .15s;
+}
+.nav-item.active .nav-num{background:var(--a2);color:var(--pd)}
+.nav-item.done .nav-num{background:#22c55e;color:#fff}
+.nav-item.done{color:rgba(255,255,255,.65)}
+.hdr-right{margin-left:auto;display:flex;align-items:center;gap:10px;padding:0 18px}
+.hdr-theme-pill{
+  display:flex;align-items:center;gap:6px;
+  background:rgba(255,255,255,.1);border-radius:99px;
+  padding:4px 10px 4px 6px;font-size:11px;color:rgba(255,255,255,.75);
+}
+.theme-dot{width:10px;height:10px;border-radius:50%;border:1.5px solid rgba(255,255,255,.3)}
+
+/* ─── LAYOUT ─────────────────────────────────────── */
+.shell{display:flex;height:100vh;padding-top:var(--hdr)}
+.sidebar{
+  width:var(--sb);min-width:var(--sb);
+  background:var(--white);
+  border-right:1px solid var(--gray-200);
+  display:flex;flex-direction:column;
+  overflow:hidden;
+  box-shadow:2px 0 8px rgba(0,0,0,.04);
+}
+.sb-scroll{flex:1;overflow-y:auto;padding:16px 14px 20px}
+.content{flex:1;overflow-y:auto;padding:28px 32px 100px}
+
+/* ─── SIDEBAR COMPONENTS ────────────────────────── */
+.sb-section{margin-bottom:18px}
+.sb-label{
+  font-size:10px;font-weight:700;letter-spacing:.8px;
+  text-transform:uppercase;color:var(--p);
+  margin-bottom:8px;display:flex;align-items:center;gap:6px;
+}
+.sb-field{margin-bottom:8px}
+.sb-field label{display:block;font-size:11px;font-weight:600;color:var(--gray-500);margin-bottom:4px}
+input,textarea,select{
+  width:100%;padding:8px 11px;
+  border:1.5px solid var(--gray-200);border-radius:var(--radius-xs);
+  font-family:var(--fb);font-size:13px;color:var(--gray-900);
+  background:var(--gray-50);outline:none;
+  transition:border-color .15s,background .15s,box-shadow .15s;
+}
+input:hover,textarea:hover{border-color:var(--gray-300)}
+input:focus,textarea:focus{border-color:var(--p);background:var(--white);box-shadow:0 0 0 3px rgba(146,39,143,.1)}
+textarea{resize:vertical;line-height:1.6}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sb-divider{height:1px;background:var(--gray-100);margin:14px 0}
+
+/* ─── BUTTONS ─────────────────────────────────────── */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  padding:9px 16px;border-radius:var(--radius-xs);
+  font-family:var(--fb);font-size:13px;font-weight:600;
+  cursor:pointer;border:none;transition:all .15s;white-space:nowrap;
+}
+.btn:disabled{opacity:.4;cursor:not-allowed;pointer-events:none}
+.btn-primary{background:var(--p);color:#fff}
+.btn-primary:hover{background:var(--pd);transform:translateY(-1px);box-shadow:0 4px 12px rgba(146,39,143,.3)}
+.btn-primary:active{transform:translateY(0)}
+.btn-amber{background:var(--a2);color:var(--pd)}
+.btn-amber:hover{filter:brightness(.94);transform:translateY(-1px)}
+.btn-dark{background:var(--pd);color:#fff}
+.btn-dark:hover{filter:brightness(1.15)}
+.btn-ghost{background:transparent;color:var(--p);border:1.5px solid var(--gray-200)}
+.btn-ghost:hover{border-color:var(--p);background:var(--pl)}
+.btn-danger{background:transparent;color:#ef4444;border:1.5px solid #fecaca}
+.btn-danger:hover{background:#fef2f2}
+.btn-sm{padding:6px 12px;font-size:12px}
+.btn-xs{padding:4px 9px;font-size:11px;border-radius:5px}
+.btn-full{width:100%}
+.btn-icon{
+  width:32px;height:32px;border-radius:var(--radius-xs);border:1.5px solid var(--gray-200);
+  background:var(--white);display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:13px;transition:all .15s;flex-shrink:0;
+}
+.btn-icon:hover{border-color:#fca5a5;background:#fef2f2;color:#ef4444}
+
+/* ─── GENERATE HERO BUTTON ───────────────────────── */
+.gen-hero{
+  background:linear-gradient(135deg,var(--p) 0%,var(--pd) 100%);
+  color:#fff;border-radius:var(--radius-sm);padding:13px 16px;
+  cursor:pointer;border:none;width:100%;
+  display:flex;align-items:center;gap:10px;
+  font-family:var(--fh);font-size:14px;font-weight:700;
+  box-shadow:0 4px 16px rgba(146,39,143,.3);
+  transition:all .2s;position:relative;overflow:hidden;
+}
+.gen-hero::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.15) 0%,transparent 60%);
+}
+.gen-hero:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(146,39,143,.4)}
+.gen-hero:active{transform:translateY(0)}
+.gen-hero-icon{font-size:20px;flex-shrink:0}
+.gen-hero-text{text-align:left}
+.gen-hero-title{font-size:13px;font-weight:700;line-height:1.2}
+.gen-hero-sub{font-size:10px;opacity:.75;font-weight:400;margin-top:1px}
+
+/* ─── WORKSHEET UPLOAD ───────────────────────────── */
+.ws-zone{
+  border:1.5px dashed var(--gray-300);border-radius:var(--radius-sm);
+  padding:12px;text-align:center;cursor:pointer;
+  transition:all .2s;position:relative;background:var(--gray-50);
+}
+.ws-zone:hover,.ws-over{border-color:var(--p);background:var(--pl)}
+.ws-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.ws-loaded{
+  background:linear-gradient(135deg,#fff8e6,#fffaed);
+  border:1.5px solid #fcd34d;border-radius:var(--radius-sm);
+  padding:10px 12px;display:flex;align-items:center;gap:10px;
+}
+.ws-loaded-icon{font-size:22px;flex-shrink:0}
+.ws-loaded-name{font-size:12px;font-weight:600;color:#92400e;line-height:1.3}
+.ws-loaded-sub{font-size:11px;color:#b45309;margin-top:1px}
+
+/* ─── THEME SWATCHES ─────────────────────────────── */
+.swatch-row{display:flex;gap:5px;margin-top:6px}
+.swatch{width:22px;height:22px;border-radius:5px;border:2px solid rgba(255,255,255,.6);box-shadow:var(--shadow-sm)}
+
+/* ─── PAGE HEADER ────────────────────────────────── */
+.page-hero{margin-bottom:28px}
+.page-hero h1{font-family:var(--fh);font-size:22px;font-weight:800;color:var(--gray-900);letter-spacing:-.3px;line-height:1.2}
+.page-hero p{font-size:13px;color:var(--gray-400);margin-top:5px;max-width:600px}
+
+/* ─── PHASE GRID ─────────────────────────────────── */
+.phases{display:flex;flex-direction:column;gap:10px}
+
+/* ─── PHASE CARD ─────────────────────────────────── */
+.pcard{
+  background:var(--white);border-radius:var(--radius);
+  border:1.5px solid var(--gray-200);
+  overflow:hidden;transition:border-color .15s,box-shadow .15s;
+}
+.pcard:hover{border-color:var(--gray-300);box-shadow:var(--shadow-sm)}
+.pcard.open{border-color:var(--p);box-shadow:0 0 0 3px rgba(146,39,143,.06),var(--shadow-md)}
+.pcard.generated{border-color:#bbf7d0}
+
+.phead{
+  display:flex;align-items:center;gap:12px;
+  padding:14px 16px;cursor:pointer;user-select:none;
+}
+.phase-color-bar{width:4px;height:44px;border-radius:2px;flex-shrink:0}
+.phase-icon-wrap{
+  width:38px;height:38px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:17px;flex-shrink:0;
+}
+.phase-text{flex:1;min-width:0}
+.phase-label{font-family:var(--fh);font-size:13px;font-weight:700;color:var(--gray-900)}
+.phase-sub{font-size:11px;color:var(--gray-400);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.phase-meta{display:flex;align-items:center;gap:7px;margin-left:auto;flex-shrink:0}
+
+/* STATUS PILL */
+.status-pill{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:10px;font-weight:700;padding:3px 8px;border-radius:99px;
+  white-space:nowrap;
+}
+.status-pill.ready{background:#dcfce7;color:#15803d}
+.status-pill.pending{background:var(--gray-100);color:var(--gray-400)}
+.status-pill.generating{background:#fdf4ff;color:var(--p)}
+
+.chev{color:var(--gray-300);font-size:16px;transition:transform .2s;flex-shrink:0}
+.chev.open{transform:rotate(180deg)}
+
+/* PHASE BODY */
+.pbody{border-top:1px solid var(--gray-100)}
+.pbody-inner{padding:16px}
+.phase-hint{
+  font-size:11.5px;color:var(--gray-500);line-height:1.6;
+  padding:9px 12px;background:var(--gray-50);
+  border-radius:var(--radius-xs);border-left:3px solid var(--p);
+  margin-bottom:12px;
+}
+
+/* AI CONTENT DISPLAY */
+.ai-result{
+  background:var(--white);border:1.5px solid #e9d5ff;
+  border-radius:var(--radius-xs);margin-bottom:10px;overflow:hidden;
+}
+.ai-result-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:8px 12px;background:linear-gradient(to right,#faf5ff,var(--white));
+  border-bottom:1px solid #f3e8ff;
+}
+.ai-result-label{font-size:10px;font-weight:700;color:var(--p);letter-spacing:.5px;text-transform:uppercase;display:flex;align-items:center;gap:5px}
+.ai-result-body{padding:10px 12px;font-size:12.5px;line-height:1.8;color:var(--gray-700);white-space:pre-wrap}
+
+/* AI GENERATING STATE */
+.ai-generating{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 14px;background:linear-gradient(to right,#faf5ff,#fdf8ff);
+  border-radius:var(--radius-xs);border:1px solid #e9d5ff;
+}
+.spinner{
+  width:18px;height:18px;border:2px solid #e9d5ff;
+  border-top-color:var(--p);border-radius:50%;
+  animation:spin .7s linear infinite;flex-shrink:0;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* AI BUTTONS ROW */
+.ai-actions{display:flex;gap:8px;align-items:center;margin-top:6px}
+.ta-label{font-size:11px;font-weight:600;color:var(--gray-400);margin-bottom:5px;margin-top:10px}
+
+/* ─── GENERATION PROGRESS ────────────────────────── */
+.gen-progress-card{
+  background:var(--white);border-radius:var(--radius);
+  border:1.5px solid var(--gray-200);padding:20px 22px;
+  margin-bottom:20px;box-shadow:var(--shadow-sm);
+}
+.gen-progress-title{
+  font-family:var(--fh);font-size:15px;font-weight:700;
+  color:var(--gray-900);margin-bottom:14px;
+  display:flex;align-items:center;gap:8px;
+}
+.gen-steps{display:flex;flex-direction:column;gap:2px}
+.gen-step{
+  display:flex;align-items:center;gap:12px;
+  padding:8px 10px;border-radius:var(--radius-xs);
+  transition:background .15s;
+}
+.gen-step.active{background:var(--pl)}
+.gen-step-dot{
+  width:22px;height:22px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:800;flex-shrink:0;transition:all .2s;
+}
+.gen-step-dot.pending{background:var(--gray-100);color:var(--gray-400)}
+.gen-step-dot.active{background:var(--p);color:#fff;animation:pulse 1.2s ease infinite}
+.gen-step-dot.done{background:#22c55e;color:#fff}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(146,39,143,.4)}50%{box-shadow:0 0 0 6px rgba(146,39,143,0)}}
+.gen-step-label{font-size:13px;font-weight:500;color:var(--gray-700);transition:color .15s}
+.gen-step.active .gen-step-label{color:var(--p);font-weight:600}
+.gen-step.done .gen-step-label{color:#15803d}
+.gen-step-desc{font-size:11px;color:var(--gray-400);margin-left:auto}
+
+/* ─── THEME PAGE ─────────────────────────────────── */
+.theme-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:560px}
+.theme-upload-card{
+  border:2px dashed var(--gray-200);border-radius:var(--radius);
+  padding:32px 24px;text-align:center;cursor:pointer;
+  transition:all .2s;background:var(--white);position:relative;
+  grid-column:span 2;
+}
+.theme-upload-card:hover,.theme-upload-card.dz-over{border-color:var(--p);background:var(--pl)}
+.theme-upload-card input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.tuc-icon{font-size:36px;margin-bottom:10px;display:block}
+.tuc-title{font-family:var(--fh);font-size:16px;font-weight:700;color:var(--gray-900);margin-bottom:5px}
+.tuc-sub{font-size:13px;color:var(--gray-400)}
+
+.theme-loaded-card{
+  background:linear-gradient(135deg,#f0fdf4,#ecfdf5);
+  border:1.5px solid #86efac;border-radius:var(--radius);
+  padding:16px 20px;display:flex;align-items:flex-start;gap:14px;
+  margin-bottom:20px;
+}
+.palette-display{display:flex;gap:8px;margin-top:10px}
+.pal-chip{border-radius:8px;overflow:hidden;text-align:center;flex:1}
+.pal-chip-color{height:42px;border-radius:6px;margin-bottom:5px;box-shadow:var(--shadow-sm)}
+.pal-chip-name{font-size:10px;font-weight:600;color:var(--gray-500)}
+.pal-chip-hex{font-size:9px;color:var(--gray-400);margin-top:1px}
+
+.manual-col-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:460px;margin:14px 0}
+.col-field label{font-size:11px;font-weight:600;color:var(--gray-500);margin-bottom:4px;display:block}
+.col-input-row{display:flex;gap:6px;align-items:center}
+.col-swatch{width:34px;height:34px;border:none;border-radius:6px;cursor:pointer;padding:2px;flex-shrink:0}
+
+/* ─── KEYWORDS ───────────────────────────────────── */
+.eal-banner{
+  background:linear-gradient(135deg,#fdf4ff,#faf5ff);
+  border:1.5px solid #e9d5ff;border-radius:var(--radius);
+  padding:14px 16px;margin-bottom:20px;
+  display:flex;gap:12px;align-items:flex-start;
+}
+.eal-icon{font-size:22px;flex-shrink:0;margin-top:1px}
+.eal-text strong{color:var(--pd);font-weight:700}
+.eal-text{font-size:13px;color:var(--gray-700);line-height:1.6}
+
+.kw-table{background:var(--white);border-radius:var(--radius);border:1.5px solid var(--gray-200);overflow:hidden;box-shadow:var(--shadow-sm)}
+.kw-thead{display:grid;grid-template-columns:1fr 1fr 40px;gap:0;background:var(--pd);padding:9px 14px}
+.kw-thead-cell{font-size:10px;font-weight:700;color:#fff;letter-spacing:.5px;text-transform:uppercase}
+.kw-tbody{padding:8px}
+.kw-row{display:grid;grid-template-columns:1fr 1fr 40px;gap:8px;align-items:center;padding:5px 6px;border-radius:6px;transition:background .1s}
+.kw-row:hover{background:var(--gray-50)}
+.kw-row input{background:transparent;border:1.5px solid transparent;transition:all .15s}
+.kw-row input:first-child{border-left:2.5px solid var(--p)}
+.kw-row input:hover{border-color:var(--gray-200)}
+.kw-row input:focus{border-color:var(--p);background:var(--white)}
+
+/* ─── PREVIEW ─────────────────────────────────────── */
+.preview-shell{max-width:800px}
+.prev-topbar{
+  background:var(--pd);border-radius:var(--radius) var(--radius) 0 0;
+  padding:28px 32px;color:#fff;position:relative;overflow:hidden;
+}
+.prev-topbar::after{
+  content:'';position:absolute;right:-40px;top:-40px;
+  width:220px;height:220px;border-radius:50%;
+  background:rgba(255,255,255,.04);
+}
+.prev-dept{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+.prev-title{font-family:var(--fh);font-size:26px;font-weight:800;line-height:1.15;margin-bottom:8px}
+.prev-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.prev-chip{background:rgba(255,255,255,.12);border-radius:99px;padding:3px 10px;font-size:11px;font-weight:500}
+.prev-obj{background:rgba(255,255,255,.1);border-radius:8px;padding:10px 14px;font-size:12.5px;line-height:1.6}
+.prev-stripe{height:3px;background:var(--p)}
+.prev-body{background:var(--white);padding:24px 32px;border-radius:0 0 var(--radius) var(--radius);box-shadow:var(--shadow-lg)}
+.prev-phase-list{display:flex;flex-direction:column;gap:10px}
+.prev-phase{border-radius:var(--radius-sm);overflow:hidden;border:1.5px solid var(--gray-200)}
+.prev-ph-head{display:flex;align-items:center;gap:8px;padding:9px 14px;font-family:var(--fh);font-size:12px;font-weight:700}
+.prev-ph-body{padding:12px 14px;font-size:12.5px;line-height:1.8;color:var(--gray-700);white-space:pre-wrap}
+.prev-ph-empty{padding:10px 14px;font-size:12px;color:var(--gray-300);font-style:italic}
+
+.prev-kw{margin-top:16px}
+.prev-kw-head{padding:10px 14px;font-family:var(--fh);font-size:12px;font-weight:700;color:#fff;border-radius:8px 8px 0 0}
+.prev-kw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;padding:12px;border:1.5px solid var(--gray-200);border-top:none;border-radius:0 0 8px 8px;background:var(--gray-50)}
+.prev-kw-card{background:var(--white);border-radius:6px;padding:8px 10px;border:1.5px solid var(--gray-200)}
+.prev-kw-word{font-weight:700;font-size:12px}
+.prev-kw-def{font-size:11px;color:var(--gray-400);margin-top:2px}
+
+/* ─── BOTTOM BAR ──────────────────────────────────── */
+.btm{
+  position:fixed;bottom:0;left:0;right:0;z-index:200;
+  background:rgba(255,255,255,.96);backdrop-filter:blur(10px);
+  border-top:1px solid var(--gray-200);
+  padding:10px 24px;display:flex;align-items:center;justify-content:space-between;
+  box-shadow:0 -4px 16px rgba(0,0,0,.06);
+}
+.btm-left{display:flex;align-items:center;gap:8px}
+.btm-status{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--gray-400)}
+.btm-dot{width:7px;height:7px;border-radius:50%;background:#22c55e}
+.btm-topic{font-family:var(--fh);font-size:13px;font-weight:700;color:var(--gray-900)}
+.btm-right{display:flex;gap:8px;align-items:center}
+
+/* ─── SECTION CARD ────────────────────────────────── */
+.section-card{background:var(--white);border-radius:var(--radius);border:1.5px solid var(--gray-200);padding:20px;margin-bottom:16px;box-shadow:var(--shadow-sm)}
+.section-card h3{font-family:var(--fh);font-size:14px;font-weight:700;color:var(--gray-900);margin-bottom:4px}
+.section-card .desc{font-size:12px;color:var(--gray-400);margin-bottom:14px}
+
+/* ─── MISC ────────────────────────────────────────── */
+.tag{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:3px 8px;border-radius:99px}
+.progress-bar{height:3px;background:var(--gray-100);border-radius:99px;overflow:hidden;margin-top:4px}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--p),var(--a2));border-radius:99px;transition:width .5s ease}
+.empty-hint{text-align:center;padding:32px 20px;color:var(--gray-400)}
+.empty-hint .em-icon{font-size:32px;margin-bottom:10px;display:block}
+.empty-hint p{font-size:13px;max-width:280px;margin:0 auto;line-height:1.6}
+
+
+
+
+/* ─── MODE SWITCHER ─────────────────────────────── */
+.mode-switcher{
+  display:grid;grid-template-columns:1fr 1fr;gap:6px;
+  margin-bottom:10px;
+}
+.mode-btn{
+  display:flex;align-items:center;gap:8px;
+  padding:9px 10px;border-radius:var(--radius-sm);
+  border:1.5px solid var(--gray-200);background:var(--white);
+  cursor:pointer;transition:all .15s;position:relative;
+  overflow:hidden;
+}
+.mode-btn:hover{border-color:var(--gray-300);background:var(--gray-50)}
+.mode-btn.active{
+  border-color:var(--p);background:var(--pl);
+}
+.mode-btn.active:last-child{
+  border-color:#dc2626;background:#fff5f5;
+}
+.mode-btn-icon{font-size:18px;flex-shrink:0;line-height:1}
+.mode-btn-text{flex:1;min-width:0}
+.mode-btn-label{font-size:12px;font-weight:700;color:var(--gray-900);line-height:1.2}
+.mode-btn-sub{font-size:10px;color:var(--gray-400);margin-top:1px;line-height:1.3}
+.mode-btn.active .mode-btn-label{color:var(--pd)}
+.mode-btn.active:last-child .mode-btn-label{color:#991b1b}
+.mode-active-dot{
+  position:absolute;top:6px;right:6px;
+  width:6px;height:6px;border-radius:50%;background:var(--p);
+}
+.mode-btn.active:last-child .mode-active-dot{background:#dc2626}
+
+/* ─── EXAM HERO BUTTON ───────────────────────────── */
+.gen-hero-exam{
+  background:linear-gradient(135deg,#dc2626 0%,#991b1b 100%)!important;
+  box-shadow:0 4px 16px rgba(220,38,38,.3)!important;
+}
+.gen-hero-exam:hover{box-shadow:0 8px 24px rgba(220,38,38,.4)!important}
+
+/* ─── EXAM MODE BADGE ────────────────────────────── */
+.exam-mode-badge{
+  display:inline-flex;align-items:center;gap:4px;
+  background:#fef2f2;color:#dc2626;
+  font-size:10px;font-weight:800;letter-spacing:.5px;
+  padding:3px 9px;border-radius:99px;
+  border:1.5px solid #fecaca;
+  white-space:nowrap;flex-shrink:0;
+}
+.build-header-exam{border-bottom-color:#fecaca}
+.export-hero-btn-exam{
+  background:linear-gradient(135deg,#dc2626,#991b1b)!important;
+  box-shadow:0 4px 14px rgba(220,38,38,.3)!important;
+}
+.export-hero-btn-exam:hover{box-shadow:0 6px 20px rgba(220,38,38,.4)!important}
+.gen-progress-exam .gen-step-dot.active{background:#dc2626}
+.gen-progress-exam .gen-step.active .gen-step-label{color:#dc2626}
+
+/* ─── EXAM EMPTY STATE ───────────────────────────── */
+.exam-empty-badge{
+  display:inline-block;background:#fef2f2;color:#dc2626;
+  font-size:11px;font-weight:800;letter-spacing:1px;
+  padding:4px 12px;border-radius:99px;border:1.5px solid #fecaca;
+  text-transform:uppercase;
+}
+.exam-feature-list{
+  display:flex;flex-direction:column;gap:6px;
+  max-width:400px;margin:20px auto 0;text-align:left;
+}
+.exam-feature-item{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:8px 12px;background:var(--white);
+  border-radius:var(--radius-xs);
+  box-shadow:var(--shadow-sm);
+  font-size:13px;
+}
+.exam-feature-item span{flex-shrink:0;font-size:16px;margin-top:1px}
+/* ─── PROGRESSIVE SIDEBAR ───────────────────────── */
+.qs-hero{background:linear-gradient(135deg,var(--pl),#fdf9ff);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:12px;border:1.5px solid rgba(146,39,143,.15)}
+.qs-eyebrow{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--p);margin-bottom:3px}
+.qs-title{font-family:var(--fh);font-size:16px;font-weight:800;color:var(--gray-900);margin-bottom:4px}
+.qs-desc{font-size:11px;color:var(--gray-500);line-height:1.5}
+.sb-field-hero{margin-bottom:10px}
+.inp-hero{font-family:var(--fh);font-weight:600;font-size:14px!important;padding:10px 12px!important;border-color:var(--gray-300)!important}
+.inp-hero:focus{border-color:var(--p)!important;box-shadow:0 0 0 3px rgba(146,39,143,.12)!important}
+.sb-field-focus .inp-hero{border-color:var(--p);box-shadow:0 0 0 3px rgba(146,39,143,.08)}
+.sb-progress{margin:10px 0 4px;padding:8px 10px;background:var(--gray-50);border-radius:var(--radius-xs);border:1px solid var(--gray-100)}
+.sb-progress-row{display:flex;justify-content:space-between;font-size:11px;font-weight:600;color:var(--gray-700);margin-bottom:5px}
+.sb-adv-toggle{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:600;color:var(--gray-500);cursor:pointer;padding:6px 2px;border-radius:4px;transition:color .15s}
+.sb-adv-toggle:hover{color:var(--p)}
+.sb-adv{background:var(--gray-50);border-radius:var(--radius-xs);padding:10px;margin-top:6px;border:1px solid var(--gray-100)}
+.sb-theme-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.sb-clear-btn{width:100%;padding:6px;font-size:11px;font-weight:500;color:var(--gray-400);background:transparent;border:none;cursor:pointer;text-align:center;border-radius:4px;transition:color .15s}
+.sb-clear-btn:hover{color:var(--a)}
+
+/* ─── EMPTY STATE ────────────────────────────────── */
+.empty-screen{text-align:center;padding:60px 32px 40px;max-width:520px;margin:0 auto}
+.empty-icon{font-size:44px;display:block;margin-bottom:14px}
+.empty-title{font-family:var(--fh);font-size:22px;font-weight:800;color:var(--gray-900);margin-bottom:8px}
+.empty-sub{font-size:14px;color:var(--gray-400);line-height:1.6;margin-bottom:24px}
+.empty-sub strong{color:var(--p)}
+.empty-phases{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.empty-phase-chip{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:99px;border:1.5px solid;font-size:11px}
+
+/* ─── BUILD HEADER ───────────────────────────────── */
+.build-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--gray-100)}
+.build-title{font-family:var(--fh);font-size:20px;font-weight:800;color:var(--gray-900);margin-bottom:3px}
+.build-meta{font-size:12px;color:var(--gray-400);font-weight:500}
+.export-hero-btn{
+  display:inline-flex;align-items:center;gap:7px;
+  background:linear-gradient(135deg,var(--p),var(--pd));color:#fff;
+  padding:10px 18px;border-radius:var(--radius-sm);border:none;
+  font-family:var(--fb);font-size:13px;font-weight:700;cursor:pointer;
+  box-shadow:0 4px 14px rgba(146,39,143,.3);transition:all .2s;
+  white-space:nowrap;flex-shrink:0;
+}
+.export-hero-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(146,39,143,.4)}
+.export-hero-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+
+/* ─── QUALITY TAGS ───────────────────────────────── */
+.quality-tag{
+  display:inline-flex;align-items:center;
+  font-size:9px;font-weight:700;letter-spacing:.3px;
+  padding:2px 7px;border-radius:99px;
+  background:var(--gray-100);color:var(--gray-500);
+  white-space:nowrap;
+}
+.pcard.open .quality-tag{background:rgba(146,39,143,.08);color:var(--p)}
+
+/* ─── PHASE CONTENT ──────────────────────────────── */
+.phase-textarea{
+  width:100%;border:1.5px solid var(--gray-200);border-radius:var(--radius-xs);
+  padding:12px;font-family:var(--fb);font-size:13px;color:var(--gray-700);
+  background:var(--white);line-height:1.8;resize:vertical;min-height:120px;
+  outline:none;transition:border-color .15s;
+}
+.phase-textarea:focus{border-color:var(--p);box-shadow:0 0 0 3px rgba(146,39,143,.08)}
+
+/* ─── MICRO-ACTION TOOLBAR ───────────────────────── */
+.phase-toolbar{
+  display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;
+  padding:8px 0 4px;border-top:1px solid var(--gray-100);
+}
+.phase-action-btn{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:5px 11px;border-radius:99px;font-size:12px;font-weight:600;
+  color:var(--gray-500);background:var(--gray-50);
+  border:1.5px solid var(--gray-200);cursor:pointer;transition:all .15s;
+  white-space:nowrap;
+}
+.phase-action-btn:hover{color:var(--p);border-color:var(--p);background:var(--pl)}
+
+/* ─── GEN STEP QUALITY TAG ───────────────────────── */
+.gen-step-tag{
+  font-size:9px;font-weight:700;padding:1px 6px;
+  border-radius:99px;background:#dcfce7;color:#15803d;
+  margin-left:auto;white-space:nowrap;
+}
+/* ─── PREVIEW TITLE SLIDE ────────────────────────── */
+.prev-title-slide{
+  position:relative;background:#fff;
+  border-radius:var(--radius) var(--radius) 0 0;
+  overflow:hidden;height:260px;
+  border:1.5px solid var(--gray-200);border-bottom:none;
+}
+.prev-shapes{position:absolute;inset:0;pointer-events:none}
+/* Four diagonal strips — bottom-right, matching the template */
+.prev-shape-4{position:absolute;right:-80px;top:-20px;width:130px;height:340px;background:#e8d0ed;opacity:.5;transform:rotate(20deg);transform-origin:top right}
+.prev-shape-3{position:absolute;right:-40px;top:-20px;width:100px;height:340px;background:#c49fcc;opacity:.7;transform:rotate(20deg);transform-origin:top right}
+.prev-shape-2{position:absolute;right:20px;top:-20px;width:90px;height:340px;transform:rotate(20deg);transform-origin:top right}
+.prev-shape-1{position:absolute;right:90px;top:-20px;width:75px;height:340px;transform:rotate(20deg);transform-origin:top right}
+.prev-date{
+  position:absolute;top:16px;left:20px;
+  font-size:13px;font-weight:700;font-family:Calibri,sans-serif;
+}
+.prev-iq-label{
+  position:absolute;top:72px;left:0;right:40%;
+  text-align:center;
+  font-size:13px;font-weight:700;font-style:italic;font-family:Calibri,sans-serif;
+}
+.prev-iq-question{
+  position:absolute;bottom:44px;left:20px;right:42%;
+  font-size:22px;font-weight:400;font-family:Calibri,sans-serif;
+  line-height:1.25;text-decoration:underline;
+}
+.prev-iq-meta{
+  position:absolute;bottom:16px;left:20px;
+  font-size:11px;font-weight:600;font-family:Calibri,sans-serif;opacity:.7;
+}
+/* ─── MWB CAMEO ──────────────────────────────────── */
+.mwb-cameo{
+  margin:14px 0 4px;
+  border-radius:var(--radius-sm);
+  border:2px solid #d1d5db;
+  background:#fff;
+  overflow:hidden;
+  box-shadow:inset 0 2px 8px rgba(0,0,0,.04), 0 2px 8px rgba(0,0,0,.06);
+}
+.mwb-top{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:8px 12px;background:var(--gray-50);border-bottom:1px solid var(--gray-200);
+}
+.mwb-label{
+  display:flex;align-items:center;gap:6px;
+  font-size:11px;font-weight:700;color:var(--gray-500);
+  letter-spacing:.4px;text-transform:uppercase;
+}
+.mwb-hint{font-size:11px;color:var(--gray-400);margin-left:8px}
+.mwb-canvas{
+  display:block;width:100%;height:auto;
+  cursor:crosshair;touch-action:none;
+  background:repeating-linear-gradient(0deg,transparent,transparent 27px,#e8e4f0 28px),
+             repeating-linear-gradient(90deg,transparent,transparent 27px,#f0edf7 28px),
+             #f9f8fd;
+}
+.mwb-tools{
+  display:flex;align-items:center;gap:6px;
+  padding:7px 12px;background:var(--gray-50);
+  border-top:1px solid var(--gray-200);flex-wrap:wrap;
+}
+.mwb-color{
+  width:20px;height:20px;border-radius:50%;cursor:pointer;
+  border:2.5px solid transparent;transition:all .15s;flex-shrink:0;
+}
+.mwb-color:hover{transform:scale(1.15)}
+.mwb-color.active{border-color:var(--gray-900);box-shadow:0 0 0 2px #fff,0 0 0 4px currentColor}
+.mwb-size{
+  width:28px;height:28px;border-radius:6px;cursor:pointer;
+  border:1.5px solid var(--gray-200);background:var(--white);
+  display:flex;align-items:center;justify-content:center;
+  transition:all .15s;flex-shrink:0;
+}
+.mwb-size:hover{border-color:var(--p)}
+.mwb-size.active{border-color:var(--p);background:var(--pl)}
+.mwb-sep{width:1px;height:20px;background:var(--gray-200);margin:0 2px;flex-shrink:0}
+.mwb-erase{
+  display:flex;align-items:center;gap:5px;
+  padding:4px 10px;border-radius:6px;cursor:pointer;
+  font-size:11px;font-weight:600;color:var(--gray-500);
+  border:1.5px solid var(--gray-200);background:var(--white);
+  transition:all .15s;flex-shrink:0;
+}
+.mwb-erase:hover{border-color:var(--a);color:var(--a)}
+.mwb-erase.active{border-color:var(--a);background:#fef2f2;color:var(--a)}
+.mwb-clear-btn{
+  font-size:11px;font-weight:600;color:var(--gray-400);
+  background:transparent;border:1.5px solid var(--gray-200);
+  border-radius:5px;padding:3px 9px;cursor:pointer;transition:all .15s;
+}
+.mwb-clear-btn:hover{color:#dc2626;border-color:#fca5a5;background:#fef2f2}
+@media print{.mwb-cameo{display:none!important}}
+@media print{
+  .hdr,.sidebar,.btm{display:none!important}
+  .shell{padding-top:0;display:block}
+  .content{padding:0;overflow:visible}
+  .prev-body{box-shadow:none}
+}
+
+/* --- EXAM BOARD SELECTOR --- */
+.sb-board-row{display:flex;align-items:center;gap:5px;margin-bottom:8px;flex-wrap:wrap}
+.board-btn{padding:4px 8px;border-radius:99px;font-size:10px;font-weight:700;border:1.5px solid var(--gray-200);background:var(--white);color:var(--gray-500);cursor:pointer;transition:all .15s;white-space:nowrap}
+.board-btn:hover{border-color:var(--p);color:var(--p)}
+.board-btn.active{background:var(--p);border-color:var(--p);color:#fff}
+/* --- PREVIEW TOOLBAR --- */
+.preview-toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:16px;padding:10px 14px;background:var(--white);border-radius:var(--radius);border:1.5px solid var(--gray-200);box-shadow:var(--shadow-sm)}
+.eb-badge{background:linear-gradient(135deg,var(--p),var(--pd));color:#fff;font-size:10px;font-weight:800;letter-spacing:.6px;padding:3px 10px;border-radius:99px;white-space:nowrap}
+.answer-toggle-wrap{display:flex;align-items:center;gap:8px;margin-left:auto}
+/* --- TOGGLE SWITCH --- */
+.toggle-switch{position:relative;display:inline-block;width:36px;height:20px;flex-shrink:0}
+.toggle-switch input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;inset:0;cursor:pointer;background:#d1d5db;border-radius:99px;transition:.2s}
+.toggle-slider::before{content:'';position:absolute;height:14px;width:14px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.2s}
+.toggle-switch input:checked+.toggle-slider{background:var(--p)}
+.toggle-switch input:checked+.toggle-slider::before{transform:translateX(16px)}
+.prev-ph-hidden{padding:10px 14px;font-size:12px;background:#fafafa;border-top:1px dashed #e5e7eb}
+/* --- MOBILE HAMBURGER --- */
+.hamburger-btn{display:none;background:transparent;border:none;cursor:pointer;padding:6px;border-radius:6px;margin-left:8px;transition:background .15s;flex-shrink:0}
+.hamburger-btn:hover{background:rgba(255,255,255,.1)}
+@media(max-width:768px){
+  .hamburger-btn{display:flex;align-items:center;justify-content:center}
+  .nav-item{padding:0 8px;font-size:11px}
+  .sidebar{position:fixed;top:var(--hdr);left:0;bottom:0;z-index:250;transform:translateX(0);transition:transform .25s ease;box-shadow:4px 0 20px rgba(0,0,0,.15)}
+  .sidebar.sidebar-closed{transform:translateX(-100%)}
+  .content{padding:1rem 1rem 80px}
+  .btm{padding:8px 12px}
+}
+@media(min-width:769px){.sidebar{transform:none!important}}
+
+
+/* --- AI PROVIDER PICKER --- */
+.ai-provider-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px;max-width:600px}
+.ai-provider-card{
+  border:2px solid var(--gray-200);border-radius:var(--radius);
+  padding:20px 18px;cursor:pointer;transition:all .2s;
+  background:var(--white);position:relative;
+}
+.ai-provider-card:hover{border-color:var(--gray-300);box-shadow:var(--shadow-md)}
+.ai-provider-card.selected{border-color:var(--p);box-shadow:0 0 0 3px rgba(146,39,143,.08),var(--shadow-md)}
+.ai-card-logo{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.ai-card-name{font-family:var(--fh);font-size:15px;font-weight:700;margin-bottom:2px}
+.ai-card-by{font-size:11px;color:var(--gray-400);margin-bottom:10px}
+.ai-card-desc{font-size:12px;color:var(--gray-500);line-height:1.6;margin-bottom:12px}
+.ai-card-badge{
+  display:inline-block;font-size:10px;font-weight:700;letter-spacing:.4px;
+  padding:2px 8px;border-radius:99px;
+  background:linear-gradient(135deg,var(--p),var(--pd));color:#fff;
+}
+.ai-card-badge.school{background:linear-gradient(135deg,#0078D4,#004ba0)}
+.ai-provider-card.selected::after{
+  content:'✓';position:absolute;top:12px;right:12px;
+  width:22px;height:22px;border-radius:50%;
+  background:var(--p);color:#fff;font-size:12px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* --- AI SETUP SECTION --- */
+.ai-setup-section{
+  background:var(--white);border:1.5px solid var(--gray-200);
+  border-radius:var(--radius);padding:22px;margin-bottom:16px;
+  max-width:600px;box-shadow:var(--shadow-sm);
+}
+.ai-setup-title{font-family:var(--fh);font-size:15px;font-weight:700;color:var(--gray-900);margin-bottom:14px}
+.ai-key-row{display:flex;gap:8px;margin-bottom:14px}
+.ai-key-input{flex:1;font-family:monospace;font-size:12px;letter-spacing:.5px}
+.ai-connected-badge{
+  display:flex;align-items:center;gap:8px;
+  background:#f0fdf4;border:1.5px solid #86efac;
+  border-radius:8px;padding:8px 12px;
+  font-size:13px;font-weight:600;color:#15803d;
+  margin-bottom:12px;
+}
+.ai-instructions{
+  background:var(--gray-50);border:1px solid var(--gray-200);
+  border-radius:8px;padding:14px 16px;margin-top:6px;
+}
+.ai-inst-title{font-family:var(--fh);font-size:12px;font-weight:700;color:var(--gray-700);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px}
+.ai-inst-steps{padding-left:18px;font-size:13px;color:var(--gray-700);line-height:1.8}
+.ai-inst-steps li{margin-bottom:2px}
+.ai-inst-steps a.ai-link{color:var(--p);font-weight:600}
+.ai-inst-steps code{background:var(--pl);color:var(--pd);font-size:11px;padding:1px 5px;border-radius:3px}
+
+/* --- COPILOT SPECIFIC --- */
+.ai-notice-box{
+  display:flex;gap:12px;align-items:flex-start;
+  background:#fffbeb;border:1.5px solid #fcd34d;border-radius:8px;
+  padding:12px 14px;margin-bottom:14px;font-size:13px;line-height:1.6;color:#374151;
+}
+.ai-notice-icon{font-size:20px;flex-shrink:0}
+.ai-email-template{
+  background:#1e1b2e;color:#e2d9f3;border-radius:8px;
+  padding:14px 16px;font-family:monospace;font-size:12px;
+  line-height:1.8;margin:8px 0 10px;white-space:pre-wrap;
+}
+.ai-cors-warning{
+  font-size:12px;color:#6b7280;background:#fafafa;border:1px solid #e5e7eb;
+  border-radius:6px;padding:10px 12px;margin-top:10px;line-height:1.6;
+}
+
+/* --- SIDEBAR AI STATUS --- */
+.ai-status-bar{
+  display:flex;align-items:center;gap:8px;
+  padding:7px 10px;border-radius:7px;margin-bottom:8px;
+  background:var(--gray-50);border:1px solid var(--gray-200);
+  font-size:12px;
+}
+.ai-status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.ai-status-dot.connected{background:#22c55e}
+.ai-status-dot.warn{background:#f59e0b}
+.ai-status-label{flex:1;font-weight:500;color:var(--gray-700)}
+.ai-status-link{
+  font-size:11px;font-weight:600;color:var(--p);
+  background:transparent;border:none;cursor:pointer;padding:0;
+  text-decoration:underline;
+}
+
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script>
+// ===================================================
+// STATE
+// ===================================================
+// -- Load saved state from localStorage --
+function loadSaved(){
+  try{
+    const saved=localStorage.getItem('lessoncraft_v4');
+    if(saved){
+      const p=JSON.parse(saved);
+      // Restore non-volatile fields
+      if(p.topic)return p;
+    }
+  }catch(e){}
+  return null;
+}
+function saveState(){
+  try{
+    const snap={
+      topic:S.topic,subject:S.subject,year:S.year,duration:S.duration,
+      objectives:S.objectives,inquiry:S.inquiry,theme:S.theme,mode:S.mode,examBoard:S.examBoard,
+      aiProvider:S.aiProvider,claudeKey:S.claudeKey,copilotKey:S.copilotKey,copilotEndpoint:S.copilotEndpoint,
+      phases:Object.fromEntries(Object.entries(S.phases).map(([k,v])=>
+        [k,{content:v.content,parsed:v.parsed,generated:v.generated,generating:false}]
+      )),
+      keywords:S.keywords,nextKwId:S.nextKwId
+    };
+    localStorage.setItem('lessoncraft_v4',JSON.stringify(snap));
+  }catch(e){}
+}
+
+const _saved=loadSaved();
+var S = {
+  tab:'build',
+  theme:(_saved&&_saved.theme)||{loaded:false,filename:'',primary:'#92278F',primaryDark:'#632E62',primaryLight:'#EAE5EB',accent:'#e94560',accent2:'#FFC000'},
+  topic:(_saved&&_saved.topic)||'',subject:(_saved&&_saved.subject)||'',
+  year:(_saved&&_saved.year)||'',duration:(_saved&&_saved.duration)||'60',
+  objectives:(_saved&&_saved.objectives)||'',inquiry:(_saved&&_saved.inquiry)||'',
+  worksheetName:'',worksheetBase64:'',
+  phases:(_saved&&_saved.phases)||{
+    prior:{content:'',parsed:null,generated:false,generating:false},
+    newknow:{content:'',parsed:null,generated:false,generating:false},
+    ido:{content:'',parsed:null,generated:false,generating:false},
+    guided:{content:'',parsed:null,generated:false,generating:false},
+    independent:{content:'',parsed:null,generated:false,generating:false},
+    reflect:{content:'',parsed:null,generated:false,generating:false}
+  },
+  open:{prior:true,newknow:true,ido:true,guided:true,independent:true,reflect:true,warmup:false,examqs:false,workedex:false,marksch:false,drillqs:false,examtips:false},
+  keywords:(_saved&&_saved.keywords)||[{id:1,word:'',def:''}],
+  nextKwId:(_saved&&_saved.nextKwId)||2,
+  generatingAll:false,genSteps:[],
+  showAdvanced:false,
+  mode:(_saved&&_saved.mode)||'lesson',  // 'lesson' | 'exam'
+  examBoard:(_saved&&_saved.examBoard)||'AQA',  // AQA|Edexcel|OCR|WJEC|CCEA
+  showAnswers:true,  // mark scheme toggle in preview
+  sidebarOpen:true,  // mobile sidebar
+  aiProvider:(_saved&&_saved.aiProvider)||'claude',  // 'claude' | 'copilot'
+  claudeKey:(_saved&&_saved.claudeKey)||'',
+  copilotKey:(_saved&&_saved.copilotKey)||'',
+  copilotEndpoint:(_saved&&_saved.copilotEndpoint)||''
+};
+
+var PHASES=[
+  {id:'prior',label:'Prior Knowledge',sub:'Activate what students already know',icon:'🧠',col:'#7c3aed',bg:'#f5f3ff'},
+  {id:'newknow',label:'New Knowledge',sub:'Introduce the concept or skill',icon:'💡',col:'#059669',bg:'#ecfdf5'},
+  {id:'ido',label:'I Do',sub:'Teacher-modelled worked examples',icon:'👁️',col:'#2563eb',bg:'#eff6ff'},
+  {id:'guided',label:'Guided Practice',sub:'We Do -- supported by teacher',icon:'🤝',col:'#d97706',bg:'#fffbeb'},
+  {id:'independent',label:'Independent Practice',sub:'You Do -- students work alone',icon:'✏️',col:'#dc2626',bg:'#fef2f2'},
+  {id:'reflect',label:'Reflect & Respond',sub:'Consolidate and close the lesson',icon:'🔄',col:'#0891b2',bg:'#ecfeff'}
+];
+
+// Exam Focus phases -- different structure for Y11 exam prep
+var EXAM_PHASES=[
+  {id:'warmup',   label:'Warm-Up',          sub:'Retrieval: quick recall of key facts',     icon:'⚡',col:'#d97706',bg:'#fffbeb'},
+  {id:'examqs',   label:'Exam Questions',   sub:'Past-paper style questions with marks',    icon:'📝',col:'#dc2626',bg:'#fef2f2'},
+  {id:'workedex', label:'Worked Solution',  sub:'Model answer -- show every mark step',      icon:'✅',col:'#2563eb',bg:'#eff6ff'},
+  {id:'marksch',  label:'Mark Scheme',      sub:'Examiner-style mark scheme & AO codes',    icon:'🎯',col:'#7c3aed',bg:'#f5f3ff'},
+  {id:'drillqs',  label:'Drill Practice',   sub:'Repeated practice -- 6 similar questions',  icon:'🔁',col:'#059669',bg:'#ecfdf5'},
+  {id:'examtips', label:'Examiner Tips',    sub:'Common mistakes & how to gain marks',      icon:'💡',col:'#0891b2',bg:'#ecfeff'}
+];
+
+const EXAM_QUALITY_TAGS={
+  warmup:  ['Spaced retrieval','Timed','Low stakes'],
+  examqs:  ['Past-paper style','Mark allocated','Exam board aligned'],
+  workedex:['Full working','Mark-step aligned','Model answer'],
+  marksch: ['AO1/AO2/AO3','Examiner points','Accept alternatives'],
+  drillqs: ['6 questions','Varied context','Self-mark'],
+  examtips:['Common errors','Examiner advice','Gain marks']
+};
+
+// ===================================================
+// COLOUR EXTRACTION
+// ===================================================
+function getHue(h){var r=parseInt(h.slice(1,3),16)/255,g=parseInt(h.slice(3,5),16)/255,b=parseInt(h.slice(5,7),16)/255,mx=Math.max(r,g,b),mn=Math.min(r,g,b);if(mx===mn)return 0;var hv;if(mx===r)hv=(g-b)/(mx-mn)%6;else if(mx===g)hv=(b-r)/(mx-mn)+2;else hv=(r-g)/(mx-mn)+4;return hv*60}
+function hexLum(h){var r=parseInt(h.slice(1,3),16)/255,g=parseInt(h.slice(3,5),16)/255,b=parseInt(h.slice(5,7),16)/255;return .2126*r+.7152*g+.0722*b}
+async function extractTheme(file){
+  try{
+    var zip=await JSZip.loadAsync(file),themeXml='',slideXmls=[];
+    for(var n of Object.keys(zip.files)){
+      if(/ppt\/theme\/theme1\.xml/.test(n))themeXml=await zip.files[n].async('text');
+      if(/ppt\/slides\/slide\d+\.xml/.test(n)&&slideXmls.length<6)slideXmls.push(await zip.files[n].async('text'));
+    }
+    var all=themeXml+slideXmls.join(''),re=/srgbClr\s+val="([0-9A-Fa-f]{6})"/g,counts={},m;
+    while((m=re.exec(all))!==null){var c='#'+m[1].toUpperCase();counts[c]=(counts[c]||0)+1}
+    var tc={},tr=/<a:(dk1|dk2|lt1|lt2|accent1|accent2|accent3|accent4)[^>]*>[\s\S]*?srgbClr\s+val="([0-9A-Fa-f]{6})"/g;
+    while((m=tr.exec(themeXml))!==null)tc[m[1]]='#'+m[2].toUpperCase();
+    var sorted=Object.entries(counts).filter(e=>!['#FFFFFF','#000000','#FEFEFE'].includes(e[0])).sort((a,b)=>b[1]-a[1]);
+    var chromatic=sorted.filter(e=>{var r2=parseInt(e[0].slice(1,3),16),g2=parseInt(e[0].slice(3,5),16),b2=parseInt(e[0].slice(5,7),16),mx=Math.max(r2,g2,b2),mn=Math.min(r2,g2,b2);return mx>0&&(mx-mn)/mx>.2});
+    var primary=tc.accent1||(chromatic[0]&&chromatic[0][0])||'#92278F';
+    var primaryDark=tc.dk1||(chromatic[1]&&chromatic[1][0])||'#632E62';
+    var primaryLight='#F0E8F0';
+    for(var i=0;i<sorted.length;i++){if(hexLum(sorted[i][0])>.7&&sorted[i][0]!=='#FFFFFF'){primaryLight=sorted[i][0];break}}
+    var accent='#e94560',accent2='#FFC000',ph=getHue(primary);
+    for(var j=0;j<chromatic.length;j++){var c2=chromatic[j][0];if(c2===primary||c2===primaryDark)continue;var h2=getHue(c2),d=Math.min(Math.abs(h2-ph),360-Math.abs(h2-ph));if(d>60){if(accent==='#e94560')accent=c2;else if(accent2==='#FFC000'&&c2!==accent){accent2=c2;break}}}
+    if(tc.accent2)accent=tc.accent2;if(tc.accent3)accent2=tc.accent3;
+    return{loaded:true,filename:file.name,primary,primaryDark,primaryLight,accent,accent2};
+  }catch(e){console.error(e);return null}
+}
+
+// ===================================================
+// AI
+// ===================================================
+async function callAI(sys,usr){
+  if(S.aiProvider==='copilot'){
+    return await callCopilot(sys,usr);
+  } else {
+    return await callClaude(sys,usr);
+  }
+}
+
+async function callClaude(sys,usr){
+  const key=S.claudeKey;
+  const headers={'Content-Type':'application/json'};
+  if(key)headers['x-api-key']=key;
+  // anthropic-dangerous-direct-browser-access header needed for direct browser calls with key
+  if(key)headers['anthropic-dangerous-direct-browser-access']='true';
+  const body={model:'claude-sonnet-4-20250514',max_tokens:1000,system:sys,messages:[{role:'user',content:usr}]};
+  const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers,body:JSON.stringify(body)});
+  const d=await r.json();
+  if(d.error)throw new Error(d.error.message||JSON.stringify(d.error));
+  return d.content[0].text;
+}
+
+async function callCopilot(sys,usr){
+  // Azure OpenAI / Copilot Studio endpoint
+  // Teachers paste their Azure OpenAI endpoint + key from IT
+  const endpoint=S.copilotEndpoint;
+  const key=S.copilotKey;
+  if(!endpoint||!key)throw new Error('Copilot endpoint and key are required. See the AI Setup tab.');
+  // Azure OpenAI Chat Completions format
+  const url=endpoint.replace(/\/$/,'')+(endpoint.includes('/chat/completions')?'':'/chat/completions?api-version=2024-02-15-preview');
+  const body={
+    messages:[
+      {role:'system',content:sys},
+      {role:'user',content:usr}
+    ],
+    max_tokens:1000,
+    temperature:0.7
+  };
+  const r=await fetch(url,{
+    method:'POST',
+    headers:{'Content-Type':'application/json','api-key':key},
+    body:JSON.stringify(body)
+  });
+  const d=await r.json();
+  if(d.error)throw new Error(d.error.message||JSON.stringify(d.error));
+  if(!d.choices||!d.choices[0])throw new Error('No response from Copilot. Check your endpoint URL and key.');
+  return d.choices[0].message.content;
+}
+
+// Quality tags per phase
+const QUALITY_TAGS={
+  prior:['GCSE-aligned','Prerequisite check','Spaced recall'],
+  newknow:['Curriculum-mapped','Key concepts','Formula included'],
+  ido:['Worked examples','Step-by-step','Fully solved'],
+  guided:['Real-world context','Scaffolded','Answer provided'],
+  independent:['Mixed difficulty','Exam-style','4 questions'],
+  reflect:['Exit ticket','Self-assessment','I can... statements']
+};
+
+async function generatePhase(id, isImprovement=false){
+  const ph=S.phases[id];
+  const prevContent=ph.content;
+  ph.generating=true;ph.generated=false;render();
+  const topic=S.topic||'this topic',subject=S.subject||'Maths',year=S.year||'secondary';
+  const ws=S.worksheetBase64?'\n\nA worksheet has been uploaded -- match its question style, difficulty and number complexity.':'';
+  const prev=isImprovement&&prevContent?`\n\nPrevious version (improve on this):\n${prevContent}`:'';
+  const sys=`You are an expert ${subject} teacher creating GCSE-aligned lesson content for Year ${year} UK secondary students.\nTopic: ${topic}${ws}${prev}\nRespond ONLY with valid JSON. No markdown, no preamble, no explanation.`;
+  let prompt='',parse=null;
+  if(id==='prior'){
+    prompt=`Activating prior knowledge for "${topic}". JSON: {"title":"string","items":["question 1","question 2","question 3"]}. Items should probe prerequisite knowledge.`;
+    parse=d=>{ph.content=(d.items||[]).map((x,i)=>(i+1)+'. '+x).join('\n')};
+  }else if(id==='newknow'){
+    prompt=`New knowledge content for "${topic}". JSON: {"title":"string","points":["key fact 1","key fact 2","key fact 3","key fact 4"],"formula":"the key formula or rule, or empty string"}`;
+    parse=d=>{ph.content=(d.points||[]).join('\n')+(d.formula?'\n\nKey formula: '+d.formula:'')};
+  }else if(id==='ido'){
+    prompt=`2 teacher-modelled worked examples for "${topic}". JSON: {"title":"string","examples":[{"question":"concrete question with specific numbers","solution":"clear step-by-step working"},{"question":"...","solution":"..."}]}`;
+    parse=d=>{ph.content=(d.examples||[]).map((e,i)=>'Ex '+(i+1)+': '+e.question+'\nSolution: '+e.solution).join('\n\n')};
+  }else if(id==='guided'){
+    prompt=`2 guided practice questions for "${topic}" (We Do, with teacher support). JSON: {"questions":[{"question":"real-world word problem","solution":"full answer with working","image_desc":"brief diagram description or empty string"},{"question":"...","solution":"...","image_desc":""}]}`;
+    parse=d=>{ph.content=(d.questions||[]).map((q,i)=>'Q'+(i+1)+': '+q.question+'\nAnswer: '+q.solution).join('\n\n')};
+  }else if(id==='independent'){
+    prompt=`4 independent practice questions for "${topic}" (You Do, no teacher). JSON: {"questions":[{"question":"..."},{"question":"..."},{"question":"..."},{"question":"..."}]}. Mix: 2 routine, 1 applied/real-world, 1 challenging exam-style. No solutions.`;
+    parse=d=>{ph.content=(d.questions||[]).map((q,i)=>(i+1)+'. '+q.question).join('\n')};
+  }else if(id==='reflect'){
+    prompt=`Reflect & respond for "${topic}". JSON: {"prompt":"exit ticket question for students to answer","items":["reflection point 1","reflection point 2","reflection point 3","I can... success statement"]}`;
+    parse=d=>{ph.content='Exit ticket: '+d.prompt+'\n\n'+(d.items||[]).map(x=>'\u2022 '+x).join('\n')};
+  }
+  // Try up to 2 times silently
+  for(let attempt=0;attempt<2;attempt++){
+    try{
+      const raw=await callAI(sys,prompt);
+      const parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());
+      if(parse)parse(parsed);
+      ph.parsed=parsed;ph.generated=true;
+      ph.generating=false;saveState();render();return;
+    }catch(e){
+      if(attempt===1){
+        // Both attempts failed -- show friendly message, keep previous content if any
+        ph.content=prevContent||'';
+        ph.generated=!!prevContent;
+        showToast('Generation failed -- try again','error');
+      }
+    }
+  }
+  ph.generating=false;saveState();render();
+}
+
+async function generateAll(){
+  if(!S.topic){showToast('Add a topic first','error');return}
+  S.generatingAll=true;S.genSteps=PHASES.map(p=>({id:p.id,label:p.label,status:'pending'}));
+  S.tab='build';S.open={prior:false,newknow:false,ido:false,guided:false,independent:false,reflect:false};
+  render();
+  for(var i=0;i<S.genSteps.length;i++){
+    S.genSteps[i].status='active';render();
+    await generatePhase(S.genSteps[i].id);
+    S.genSteps[i].status='done';render();
+  }
+  S.generatingAll=false;
+  PHASES.forEach(p=>{S.open[p.id]=true;});
+  render();
+  showToast('Lesson ready!','success');
+}
+
+// -- Generate a single exam-focus phase --
+async function generateExamPhase(id, isImprovement=false){
+  const ph=S.phases[id];
+  const prevContent=ph.content;
+  ph.generating=true;ph.generated=false;render();
+  const topic=S.topic||'this topic',subject=S.subject||'Maths',year=S.year||'11';
+  const ws=S.worksheetBase64?'\n\nRevision material has been uploaded -- base questions on this content.':'';
+  const prev=isImprovement&&prevContent?'\n\nPrevious version (improve on this):\n'+prevContent:'';
+  const boardCtx2={'AQA':'Use AQA-style structured mark scheme with specific mark points. AQA command words: state, describe, explain, evaluate, calculate, show that.','Edexcel':'Use Edexcel (Pearson) mark scheme format. Include method marks (M) and accuracy marks (A). Edexcel question stems and command words.','OCR':'Use OCR mark scheme with levels descriptors for extended writing. OCR command words and assessment objectives AO1/AO2/AO3.','WJEC':'Use WJEC/Eduqas mark scheme with band descriptors. WJEC style includes both shorter structured and extended response questions.','CCEA':'Use CCEA Northern Ireland mark scheme conventions. CCEA assessment objectives and command words for GCSE.'};
+  const boardNote2=boardCtx2[S.examBoard]||'';
+  const sys='You are an expert '+subject+' examiner preparing Year '+year+' students for their '+S.examBoard+' GCSE exams.\nTopic: '+topic+ws+prev+'\n'+boardNote2+'\nInclude mark allocations e.g. [2 marks]. Respond ONLY with valid JSON. No markdown, no preamble.';
+
+  let prompt='', parse=null;
+  if(id==='warmup'){
+    prompt='Short warm-up retrieval activity for "'+topic+'" (5 mins, Year '+year+' GCSE). JSON: {"title":"string","questions":["fact recall Q1 [1 mark]","fact recall Q2 [1 mark]","short calc Q [2 marks]","formula/definition Q [1 mark]"]}';
+    parse=function(d){ph.content=(d.questions||[]).map(function(q,i){return (i+1)+'. '+q;}).join('\n');};
+  } else if(id==='examqs'){
+    prompt='Write 3 exam-style questions on "'+topic+'" for Year '+year+' GCSE. Vary marks: 1 short (2 marks), 1 medium (4 marks), 1 extended (6 marks). JSON: {"questions":[{"question":"full question text with mark allocation [2 marks]","marks":2},{"question":"...","marks":4},{"question":"...","marks":6}]}';
+    parse=function(d){ph.content=(d.questions||[]).map(function(q,i){return 'Q'+(i+1)+' ['+q.marks+' marks]\n'+q.question;}).join('\n\n');};
+  } else if(id==='workedex'){
+    prompt='Write a fully worked model answer for an exam question on "'+topic+'" as a Year '+year+' GCSE student would write it for full marks. JSON: {"question":"the exam question [4 marks]","steps":["Step 1: ...","Step 2: ...","Step 3: ...","Step 4: ..."],"finalAnswer":"final answer clearly stated"}';
+    parse=function(d){ph.content=d.question+'\n\nModel Answer:\n'+(d.steps||[]).join('\n')+'\n\nFinal answer: '+d.finalAnswer;};
+  } else if(id==='marksch'){
+    prompt='Write an examiner-style mark scheme for a 6-mark question on "'+topic+'" (Year '+year+' GCSE). JSON: {"question":"the question [6 marks]","marks":[{"point":"mark point 1","ao":"AO1","accept":"acceptable alternatives"},{"point":"...","ao":"AO2","accept":"..."},{"point":"...","ao":"AO2","accept":"..."},{"point":"...","ao":"AO3","accept":"..."},{"point":"...","ao":"AO3","accept":"..."},{"point":"...","ao":"AO3","accept":"..."}]}';
+    parse=function(d){ph.content=d.question+'\n\nMark Scheme:\n'+(d.marks||[]).map(function(m,i){return '['+m.ao+'] '+m.point+'\n  Accept: '+m.accept;}).join('\n');};
+  } else if(id==='drillqs'){
+    prompt='Write 6 short drill questions on "'+topic+'" for Year '+year+' GCSE -- same skill, varied numbers/context. Students self-mark. JSON: {"skill":"what skill is being drilled","questions":[{"q":"question","a":"answer"},{"q":"...","a":"..."},{"q":"...","a":"..."},{"q":"...","a":"..."},{"q":"...","a":"..."},{"q":"...","a":"..."}]}';
+    parse=function(d){ph.content='Drill: '+d.skill+'\n\n'+(d.questions||[]).map(function(q,i){return (i+1)+'. '+q.q+'\n   Answer: '+q.a;}).join('\n');};
+  } else if(id==='examtips'){
+    prompt='Write examiner tips for "'+topic+'" for Year '+year+' GCSE students. JSON: {"commonErrors":["mistake 1","mistake 2","mistake 3"],"howToGainMarks":["tip 1","tip 2","tip 3"],"keyWords":["keyword 1","keyword 2","keyword 3"]}';
+    parse=function(d){ph.content='Common mistakes:\n'+(d.commonErrors||[]).map(function(e){return '- '+e;}).join('\n')+'\n\nHow to gain marks:\n'+(d.howToGainMarks||[]).map(function(t){return '- '+t;}).join('\n')+'\n\nKey words to use:\n'+(d.keyWords||[]).map(function(k){return '- '+k;}).join('\n');};
+  }
+
+  for(var attempt=0;attempt<2;attempt++){
+    try{
+      var raw=await callAI(sys,prompt);
+      var parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());
+      if(parse)parse(parsed);
+      ph.parsed=parsed;ph.generated=true;
+      ph.generating=false;saveState();render();return;
+    }catch(e){
+      if(attempt===1){
+        ph.content=prevContent||'';
+        ph.generated=!!prevContent;
+        showToast('Generation failed -- try again','error');
+      }
+    }
+  }
+  ph.generating=false;saveState();render();
+}
+
+async function generateAllExam(){
+  if(!S.topic){showToast('Add a topic first','error');return}
+  S.generatingAll=true;
+  S.genSteps=EXAM_PHASES.map(p=>({id:p.id,label:p.label,status:'pending'}));
+  S.tab='build';
+  // Reset exam phases
+  EXAM_PHASES.forEach(p=>{S.phases[p.id]={content:'',parsed:null,generated:false,generating:false};S.open[p.id]=false;});
+  render();
+  for(let i=0;i<S.genSteps.length;i++){
+    S.genSteps[i].status='active';render();
+    await generateExamPhase(S.genSteps[i].id);
+    S.genSteps[i].status='done';render();
+  }
+  S.generatingAll=false;
+  EXAM_PHASES.forEach(p=>{S.open[p.id]=true;});
+  render();
+  showToast('Exam pack ready!','success');
+}
+
+// Toast notification
+function showToast(msg,type){
+  var t=document.createElement('div');
+  t.style.cssText='position:fixed;bottom:80px;right:20px;z-index:9999;padding:10px 16px;border-radius:8px;font-size:13px;font-weight:600;font-family:Inter,sans-serif;box-shadow:0 4px 16px rgba(0,0,0,.15);animation:fadeIn .2s ease;'+(type==='success'?'background:#dcfce7;color:#15803d;border:1.5px solid #86efac':'background:#fef2f2;color:#dc2626;border:1.5px solid #fca5a5');
+  t.textContent=msg;document.body.appendChild(t);
+  setTimeout(()=>t.style.opacity='0',2200);setTimeout(()=>t.remove(),2600);
+}
+
+// ===================================================
+// PPTX DOWNLOAD
+// ===================================================
+async function buildAndDownloadPPTX(){
+  if(!window.PptxGenJS){
+    const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js';
+    document.head.appendChild(s);await new Promise(r=>{s.onload=r});
+  }
+  const t=S.theme,pres=new PptxGenJS();
+  pres.layout='LAYOUT_16x9';
+  const P=t.primary.replace('#',''),PD=t.primaryDark.replace('#',''),A2=t.accent2.replace('#','');
+  function bg(sl){
+    sl.background={color:'FFFFFF'};
+    sl.addShape(pres.ShapeType.rect,{x:0,y:0,w:10,h:.45,fill:{color:PD},line:{color:PD,width:0}});
+    sl.addShape(pres.ShapeType.rect,{x:0,y:5.18,w:10,h:.45,fill:{color:PD},line:{color:PD,width:0}});
+    sl.addShape(pres.ShapeType.rect,{x:0,y:.45,w:.07,h:4.73,fill:{color:P},line:{color:P,width:0}});
+    sl.addShape(pres.ShapeType.ellipse,{x:8.2,y:3.3,w:2.8,h:2.8,fill:{color:P,transparency:88},line:{color:P,transparency:80}});
+  }
+  function tag(sl,lbl,col){
+    sl.addShape(pres.ShapeType.rect,{x:.12,y:.5,w:2.2,h:.3,fill:{color:col.replace('#','')},line:{color:col.replace('#',''),width:0}});
+    sl.addText(lbl,{x:.12,y:.5,w:2.2,h:.3,fontSize:8,bold:true,color:'FFFFFF',align:'center',valign:'middle',margin:0});
+  }
+  // Slide 1 -- Title (matches school template)
+  {
+    const sl=pres.addSlide();
+    sl.background={color:'FFFFFF'};
+    // Diagonal geometric strips -- bottom-right, matching uploaded template
+    // Lightest lavender (outermost left of group)
+    sl.addShape(pres.ShapeType.rect,{x:4.8,y:1.8,w:1.2,h:5.5,fill:{color:'EDD9F0',transparency:40},line:{color:'EDD9F0',transparency:40},rotate:20});
+    // Light purple strip
+    sl.addShape(pres.ShapeType.rect,{x:5.7,y:1.2,w:1.3,h:5.5,fill:{color:'C49FCC',transparency:25},line:{color:'C49FCC',transparency:25},rotate:20});
+    // Primary purple strip
+    sl.addShape(pres.ShapeType.rect,{x:6.8,y:0.4,w:1.5,h:5.8,fill:{color:P},line:{color:P,width:0},rotate:20});
+    // Dark purple strip (rightmost, hard edge)
+    sl.addShape(pres.ShapeType.rect,{x:7.95,y:-0.3,w:2.5,h:6.5,fill:{color:PD},line:{color:PD,width:0},rotate:20});
+    // Date -- top left, bold primary purple
+    sl.addText("Today's date: "+new Date().toLocaleDateString('en-GB'),{x:0.3,y:0.2,w:5.5,h:0.4,fontSize:13,bold:true,color:P,fontFace:'Calibri',valign:'middle'});
+    // "Inquiry question" -- centred, italic, dark purple
+    sl.addText('Inquiry question',{x:0,y:1.55,w:7.5,h:0.4,fontSize:14,bold:true,italic:true,color:PD,align:'center',valign:'middle',fontFace:'Calibri'});
+    // Main question -- bottom-left, large, underlined, dark purple
+    const qText=S.inquiry||(S.topic?'How do I '+S.topic.toLowerCase()+'?':'What is the inquiry question?');
+    sl.addText(qText,{x:0.3,y:2.6,w:6.6,h:2.2,fontSize:28,underline:true,color:PD,fontFace:'Calibri',wrap:true,valign:'bottom'});
+  }
+  // Slides 2-7 from parsed data
+  const pp=S.phases.prior.parsed;
+  if(pp){const sl=pres.addSlide();bg(sl);tag(sl,'Prior Knowledge','555555');
+    sl.addText(pp.title||'Prior Knowledge',{x:.2,y:.88,w:9.4,h:.42,fontSize:15,bold:true,color:PD,fontFace:'Sora'});
+    let py=1.38;(pp.items||[]).slice(0,5).forEach((it,i)=>{
+      sl.addShape(pres.ShapeType.rect,{x:.2,y:py,w:9.3,h:.42,fill:{color:i%2?'FFFFFF':'F9F5FF'},line:{color:'E8E0F0',width:.5}});
+      sl.addText([{text:(i+1)+'.  ',options:{bold:true,color:P}},{text:String(it).replace(/^\d+\.\s*/,''),options:{color:'333333'}}],{x:.28,y:py+.04,w:9.1,h:.34,fontSize:11.5,valign:'middle',wrap:true});
+      py+=.46;});
+  }
+  const np=S.phases.newknow.parsed;
+  if(np){const sl=pres.addSlide();bg(sl);tag(sl,'New Knowledge','059669');
+    sl.addText(np.title||'New Knowledge',{x:.2,y:.88,w:9.4,h:.42,fontSize:15,bold:true,color:PD,fontFace:'Sora'});
+    let py=1.38;(np.points||[]).slice(0,5).forEach(pt=>{
+      sl.addShape(pres.ShapeType.ellipse,{x:.22,y:py+.1,w:.16,h:.16,fill:{color:P},line:{color:P,width:0}});
+      sl.addText(String(pt),{x:.48,y:py,w:9,h:.38,fontSize:12,color:'333333',wrap:true,valign:'middle'});
+      py+=.44;});
+    if(np.formula){
+      sl.addShape(pres.ShapeType.rect,{x:.2,y:py+.12,w:9.3,h:.55,fill:{color:P,transparency:88},line:{color:P,width:1.5}});
+      sl.addText(np.formula,{x:.3,y:py+.14,w:9.1,h:.5,fontSize:14,bold:true,color:PD,align:'center',valign:'middle',wrap:true,fontFace:'Sora'});
+    }
+  }
+  const ip=S.phases.ido.parsed;
+  if(ip){const sl=pres.addSlide();bg(sl);tag(sl,'I Do -- Worked Examples','2563eb');
+    sl.addText(ip.title||'Worked Examples',{x:.2,y:.88,w:9.4,h:.38,fontSize:14,bold:true,color:PD,fontFace:'Sora'});
+    (ip.examples||[]).slice(0,2).forEach((ex,i)=>{
+      const x=i===0?.12:5.02,cw=4.6;
+      sl.addShape(pres.ShapeType.rect,{x,y:1.36,w:cw,h:3.55,fill:{color:'EEF4FF'},line:{color:'2563eb',width:1.5}});
+      sl.addShape(pres.ShapeType.rect,{x,y:1.36,w:.5,h:.32,fill:{color:'2563eb'},line:{color:'2563eb',width:0}});
+      sl.addText('Ex '+(i+1),{x,y:1.36,w:.5,h:.32,fontSize:8,bold:true,color:'FFFFFF',align:'center',margin:0});
+      sl.addText(ex.question,{x:x+.1,y:1.72,w:cw-.2,h:1.6,fontSize:11.5,color:'333333',wrap:true,valign:'top'});
+      sl.addShape(pres.ShapeType.rect,{x,y:3.2,w:cw,h:1.71,fill:{color:A2,transparency:40},line:{color:A2,width:1}});
+      sl.addText('Solution',{x:x+.1,y:3.22,w:1.5,h:.22,fontSize:8,bold:true,color:PD});
+      sl.addText(ex.solution,{x:x+.1,y:3.46,w:cw-.2,h:1.4,fontSize:11,color:'333333',bold:true,wrap:true,valign:'top'});
+    });
+  }
+  const gp=S.phases.guided.parsed;
+  if(gp){(gp.questions||[]).slice(0,2).forEach((q,qi)=>{
+    const sl=pres.addSlide();bg(sl);tag(sl,'Guided Practice','d97706');
+    sl.addText('Q'+(qi+1),{x:.2,y:.88,w:.5,h:.4,fontSize:18,bold:true,color:P,fontFace:'Sora'});
+    sl.addText(q.question,{x:.72,y:.88,w:8.8,h:.9,fontSize:13,color:'333333',wrap:true,valign:'top'});
+    if(q.image_desc&&q.image_desc.length>2){
+      sl.addShape(pres.ShapeType.rect,{x:6.4,y:1.85,w:3.1,h:2.55,fill:{color:'F0E8F0'},line:{color:P,width:1}});
+      sl.addText('[Diagram: '+q.image_desc+']',{x:6.45,y:1.9,w:3,h:2.45,fontSize:9.5,color:P,italic:true,align:'center',valign:'middle',wrap:true});
+    }
+    sl.addShape(pres.ShapeType.rect,{x:.2,y:4.5,w:5.5,h:.45,fill:{color:A2,transparency:30},line:{color:A2,width:1}});
+    sl.addText(q.solution||'See solution',{x:.3,y:4.5,w:5.3,h:.45,fontSize:11,bold:true,color:PD,valign:'middle',wrap:true});
+  });}
+  const indp=S.phases.independent.parsed;
+  if(indp){const sl=pres.addSlide();bg(sl);tag(sl,'Independent Practice','dc2626');
+    sl.addText('Independent Practice',{x:.2,y:.88,w:9.4,h:.38,fontSize:14,bold:true,color:PD,fontFace:'Sora'});
+    const qs=indp.questions||[];const half=Math.ceil(qs.length/2);
+    qs.slice(0,6).forEach((q,i)=>{
+      const col=i<half?0:1,row=i%half,x=col?5.02:.12,y=1.36+row*1.35,cw=4.6,h=1.22;
+      sl.addShape(pres.ShapeType.rect,{x,y,w:cw,h,fill:{color:'FFF5F5'},line:{color:'dc2626',width:1}});
+      sl.addShape(pres.ShapeType.rect,{x,y,w:.28,h,fill:{color:'dc2626'},line:{color:'dc2626',width:0}});
+      sl.addText(String(i+1),{x,y:y+.04,w:.28,h:h-.08,fontSize:11,bold:true,color:'FFFFFF',align:'center',valign:'top',margin:0});
+      sl.addText(String(q.question).replace(/^\d+\.\s*/,''),{x:x+.35,y:y+.08,w:cw-.45,h:h-.16,fontSize:11,color:'333333',wrap:true,valign:'top'});
+    });
+  }
+  const rp=S.phases.reflect.parsed;
+  if(rp){const sl=pres.addSlide();bg(sl);tag(sl,'Reflect & Respond','0891b2');
+    sl.addText(rp.prompt||'Reflect on your learning',{x:.2,y:.88,w:9.4,h:.42,fontSize:14,bold:true,color:PD,fontFace:'Sora'});
+    let py=1.42;(rp.items||[]).slice(0,5).forEach((it,i)=>{
+      sl.addShape(pres.ShapeType.rect,{x:.2,y:py,w:9.3,h:.48,fill:{color:i%2?'FFFFFF':'E8F8FC'},line:{color:'0891b2',width:.5}});
+      sl.addText([{text:'\u2022 ',options:{bold:true,color:'0891b2'}},{text:String(it),options:{color:'333333'}}],{x:.3,y:py+.05,w:9.1,h:.38,fontSize:12,valign:'middle',wrap:true});
+      py+=.52;});
+  }
+  const fname=(S.topic||'lesson').replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_-]/g,'')+'_lesson.pptx';
+  await pres.writeFile({fileName:fname});
+}
+
+// ===================================================
+// DOM HELPERS
+// ===================================================
+function el(tag,attrs){
+  const e=document.createElement(tag);
+  if(attrs)for(const k in attrs){
+    if(k==='class')e.className=attrs[k];
+    else if(k==='html')e.innerHTML=attrs[k];
+    else if(k.startsWith('on'))e.addEventListener(k.slice(2).toLowerCase(),attrs[k]);
+    else e.setAttribute(k,attrs[k]);
+  }
+  for(let i=2;i<arguments.length;i++){
+    const c=arguments[i];if(c==null)continue;
+    if(typeof c==='string')e.appendChild(document.createTextNode(c));
+    else if(Array.isArray(c))c.forEach(x=>{if(x!=null)e.appendChild(typeof x==='string'?document.createTextNode(x):x)});
+    else e.appendChild(c);
+  }
+  return e;
+}
+function div(cls,children){const d=el('div',{'class':cls});(Array.isArray(children)?children:[children]).forEach(c=>{if(c)d.appendChild(typeof c==='string'?document.createTextNode(c):c)});return d}
+function applyCSS(t){
+  const s=document.getElementById('theme-css');
+  if(s)s.textContent=':root{--p:'+t.primary+';--pd:'+t.primaryDark+';--pl:'+t.primaryLight+';--a:'+t.accent+';--a2:'+t.accent2+';}';
+}
+
+// ===================================================
+// RENDER
+// ===================================================
+function render(){
+  applyCSS(S.theme);
+  const root=document.getElementById('root');
+  root.innerHTML='';
+  root.appendChild(buildHeader());
+  const shell=el('div',{'class':'shell'});
+  shell.appendChild(buildSidebar());
+  // Mobile overlay to close sidebar on tap
+  if(!S.sidebarOpen){
+    // sidebar closed, no overlay needed
+  } else {
+    const overlay=el('div',{'class':'sidebar-overlay'});
+    overlay.style.display='none'; // hidden by default, CSS shows on mobile
+    overlay.addEventListener('click',()=>{S.sidebarOpen=false;render();});
+    shell.appendChild(overlay);
+  }
+  const content=el('div',{'class':'content'});
+  if(S.tab==='aisetup')content.appendChild(buildAISetupTab());
+  else if(S.tab==='theme')content.appendChild(buildThemeTab());
+  else if(S.tab==='build')content.appendChild(buildBuildTab());
+  else if(S.tab==='keywords')content.appendChild(buildKwTab());
+  else content.appendChild(buildPreviewTab());
+  shell.appendChild(content);
+  root.appendChild(shell);
+  root.appendChild(buildBottomBar());
+  saveState();
+}
+
+// --- HEADER --------------------------------------
+function buildHeader(){
+  const h=el('div',{'class':'hdr'});
+  // Logo
+  const logo=el('div',{'class':'hdr-logo'});
+  logo.innerHTML=`<svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect width="22" height="22" rx="6" fill="rgba(255,255,255,0.15)"/><path d="M6 16L10 7l4 9M7.5 13h5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  logo.appendChild(document.createTextNode(' LessonCraft'));
+  logo.appendChild(el('span',{'class':'logo-pill'},'AI'));
+  h.appendChild(logo);
+  // Nav
+  const nav=el('div',{'class':'hdr-nav'});
+  const tabs=[['theme','Theme'],['build','Build'],['keywords','Keywords'],['preview','Preview']];
+  tabs.forEach(([id,lbl],i)=>{
+    const done=id!=='theme'&&(
+      (id==='build'&&PHASES.some(p=>S.phases[p.id].generated))||
+      (id==='keywords'&&S.keywords.some(k=>k.word))||
+      (id==='preview'&&false)
+    );
+    const active=S.tab===id;
+    const item=el('div',{'class':'nav-item'+(active?' active':done?' done':'')});
+    item.appendChild(el('span',{'class':'nav-num'},String(i+1)));
+    item.appendChild(document.createTextNode(lbl));
+    item.addEventListener('click',()=>{S.tab=id;render()});
+    nav.appendChild(item);
+  });
+  h.appendChild(nav);
+  // Right
+  // Mobile hamburger
+  const hamburger=el('button',{'class':'hamburger-btn'});
+  hamburger.innerHTML='<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 5h14M3 10h14M3 15h14" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg>';
+  hamburger.addEventListener('click',()=>{S.sidebarOpen=!S.sidebarOpen;render();});
+  h.appendChild(hamburger);
+
+  if(S.theme.loaded||S.topic){
+    const right=el('div',{'class':'hdr-right'});
+    if(S.theme.loaded){
+      const pill=el('div',{'class':'hdr-theme-pill'});
+      pill.appendChild(el('div',{'class':'theme-dot','style':'background:'+S.theme.primary}));
+      pill.appendChild(document.createTextNode(S.theme.filename.replace('.pptx','').slice(0,20)));
+      right.appendChild(pill);
+    }
+    h.appendChild(right);
+  }
+  return h;
+}
+
+// --- SIDEBAR ------------------------------------
+function buildSidebar(){
+  const sb=el('div',{'class':'sidebar'+(S.sidebarOpen?'':' sidebar-closed')});
+  const scroll=el('div',{'class':'sb-scroll'});
+
+  // -- Quick Start hero (only if nothing generated yet) --
+  const currentPhases=S.mode==='exam'?EXAM_PHASES:PHASES;
+  const anyDone=currentPhases.some(p=>S.phases[p.id]&&S.phases[p.id].generated);
+  if(!anyDone){
+    const qs=el('div',{'class':'qs-hero'});
+    qs.innerHTML=`<div class="qs-eyebrow">Start here</div><div class="qs-title">Quick Start</div><div class="qs-desc">Enter a topic and year, then generate your full lesson in one click.</div>`;
+    scroll.appendChild(qs);
+  }
+
+  // -- Topic + Year (always visible, prominent) --
+  const topicField=el('div',{'class':'sb-field sb-field-hero'+(anyDone?'':' sb-field-focus')});
+  topicField.appendChild(el('label',{},'Topic'));
+  const topicInp=el('input',{'type':'text','placeholder':'e.g. Surface area of a cylinder','value':S.topic,'class':'inp-hero'});
+  topicInp.addEventListener('input',e=>{S.topic=e.target.value;saveState()});
+  topicField.appendChild(topicInp);
+  scroll.appendChild(topicField);
+
+  const row2=el('div',{'class':'row2','style':'margin-bottom:10px;'});
+  const yrF=el('div',{'class':'sb-field'});yrF.appendChild(el('label',{},'Year'));
+  const yrInp=el('input',{'type':'text','placeholder':'e.g. 9','value':S.year});
+  yrInp.addEventListener('input',e=>{S.year=e.target.value;saveState()});
+  yrF.appendChild(yrInp);row2.appendChild(yrF);
+  const subF=el('div',{'class':'sb-field'});subF.appendChild(el('label',{},'Subject'));
+  const subInp=el('input',{'type':'text','placeholder':'Maths','value':S.subject});
+  subInp.addEventListener('input',e=>{S.subject=e.target.value;saveState()});
+  subF.appendChild(subInp);row2.appendChild(subF);
+  scroll.appendChild(row2);
+
+  // -- AI Status indicator --
+  const aiStatusBar=el('div',{'class':'ai-status-bar'});
+  const isConfigured=(S.aiProvider==='claude'&&S.claudeKey)||(S.aiProvider==='copilot'&&S.copilotKey&&S.copilotEndpoint);
+  const isClaude=S.aiProvider==='claude';
+  aiStatusBar.innerHTML='<span class="ai-status-dot '+(isConfigured?'connected':'warn')+'"></span>'
+    +'<span class="ai-status-label">'+(isClaude?'Claude':'Copilot')+' '+(isConfigured?'connected':'-- setup needed')+'</span>'
+    +'<button class="ai-status-link" id="ai-cfg-btn">Configure</button>';
+  scroll.appendChild(aiStatusBar);
+  requestAnimationFrame(()=>{const b=document.getElementById('ai-cfg-btn');if(b)b.addEventListener('click',()=>{S.tab='aisetup';render();});});
+
+  // -- Exam board selector (shown in advanced or always) --
+  const boardWrap=el('div',{'class':'sb-board-row'});
+  boardWrap.appendChild(el('span',{'class':'sb-label','style':'margin:0;'},'Exam Board:'));
+  ['AQA','Edexcel','OCR','WJEC','CCEA'].forEach(function(board){
+    var b=el('button',{'class':'board-btn'+(S.examBoard===board?' active':'')});
+    b.textContent=board==='Edexcel'?'Edexcel':board;
+    b.addEventListener('click',function(){S.examBoard=board;saveState();render();});
+    boardWrap.appendChild(b);
+  });
+  scroll.appendChild(boardWrap);
+
+  // -- Mode Switcher --
+  const modeSwitcher=el('div',{'class':'mode-switcher'});
+  [{id:'lesson',icon:'📖',label:'Lesson',sub:'Full lesson structure'},{id:'exam',icon:'🎯',label:'Exam Focus',sub:'Y11 exam practice'}].forEach(m=>{
+    const btn=el('div',{'class':'mode-btn'+(S.mode===m.id?' active':'')});
+    btn.innerHTML=`<span class="mode-btn-icon">${m.icon}</span><div class="mode-btn-text"><div class="mode-btn-label">${m.label}</div><div class="mode-btn-sub">${m.sub}</div></div>`;
+    if(S.mode===m.id)btn.appendChild(el('span',{'class':'mode-active-dot'}));
+    btn.addEventListener('click',()=>{
+      if(S.mode===m.id)return;
+      S.mode=m.id;
+      // Reset phases for the new mode
+      const phasesToReset=m.id==='exam'?EXAM_PHASES:PHASES;
+      phasesToReset.forEach(p=>{
+        if(!S.phases[p.id])S.phases[p.id]={content:'',parsed:null,generated:false,generating:false};
+        S.open[p.id]=S.phases[p.id].generated||false;
+      });
+      render();
+    });
+    modeSwitcher.appendChild(btn);
+  });
+  scroll.appendChild(modeSwitcher);
+
+  // -- Generate CTA --
+  const activePhasesForMode=S.mode==='exam'?EXAM_PHASES:PHASES;
+  const anyDoneMode=activePhasesForMode.some(p=>S.phases[p.id]&&S.phases[p.id].generated);
+  const genBtn=el('button',{'class':'gen-hero'+(S.mode==='exam'?' gen-hero-exam':'')});
+  const genLabel=anyDoneMode?'Regenerate All':(S.mode==='exam'?'Generate Exam Pack':'Quick Start Lesson');
+  const genSub=anyDoneMode?'Replace all with AI':(S.mode==='exam'?'6 exam-focused activities':'AI builds all 6 phases');
+  genBtn.innerHTML=`<span class="gen-hero-icon">${S.mode==='exam'?'🎯':'✨'}</span><div class="gen-hero-text"><div class="gen-hero-title">${genLabel}</div><div class="gen-hero-sub">${genSub}</div></div>`;
+  genBtn.addEventListener('click',function(){S.mode==='exam'?generateAllExam():generateAll();});
+  scroll.appendChild(genBtn);
+
+  // Progress bar (shown once generation has started)
+  const totalP=currentPhases.length;
+  const doneP=currentPhases.filter(p=>S.phases[p.id]&&S.phases[p.id].generated).length;
+  if(doneP>0){
+    const prog=el('div',{'class':'sb-progress'});
+    const prow=el('div',{'class':'sb-progress-row'});
+    prow.appendChild(el('span',{},doneP===totalP?'Lesson ready v':doneP+'/'+totalP+' phases'));
+    prow.appendChild(el('span',{'style':'color:var(--gray-400);font-size:10px;'},Math.round(doneP/totalP*100)+'%'));
+    prog.appendChild(prow);
+    const bar=el('div',{'class':'progress-bar'});
+    const fill=el('div',{'class':'progress-fill','style':'width:'+(doneP/totalP*100)+'%'});
+    bar.appendChild(fill);prog.appendChild(bar);scroll.appendChild(prog);
+  }
+
+  scroll.appendChild(el('div',{'class':'sb-divider'}));
+
+  // -- Advanced options (collapsible) --
+  const advToggle=el('div',{'class':'sb-adv-toggle'});
+  advToggle.innerHTML=`<span>${S.showAdvanced?'v':'>'} More options</span><span style="font-size:10px;color:var(--gray-400);">duration, objectives...</span>`;
+  advToggle.addEventListener('click',()=>{S.showAdvanced=!S.showAdvanced;render()});
+  scroll.appendChild(advToggle);
+
+  if(S.showAdvanced){
+    const adv=el('div',{'class':'sb-adv'});
+    // Duration
+    const durF=el('div',{'class':'sb-field'});durF.appendChild(el('label',{},'Duration (mins)'));
+    const durI=el('input',{'type':'number','placeholder':'60','value':S.duration});
+    durI.addEventListener('input',e=>{S.duration=e.target.value;saveState()});
+    durF.appendChild(durI);adv.appendChild(durF);
+    // Inquiry question
+    const iqF=el('div',{'class':'sb-field'});iqF.appendChild(el('label',{},'Inquiry question'));
+    const iqI=el('input',{'type':'text','placeholder':'How do I...?','value':S.inquiry});
+    iqI.addEventListener('input',e=>{S.inquiry=e.target.value;saveState()});
+    iqF.appendChild(iqI);adv.appendChild(iqF);
+    // Objectives
+    const obF=el('div',{'class':'sb-field'});obF.appendChild(el('label',{},'Objectives'));
+    const obI=el('textarea',{'placeholder':'Students will be able to...','rows':'2'});
+    obI.value=S.objectives;obI.addEventListener('input',e=>{S.objectives=e.target.value;saveState()});
+    obF.appendChild(obI);adv.appendChild(obF);
+    scroll.appendChild(adv);
+    scroll.appendChild(el('div',{'class':'sb-divider'}));
+  }
+
+  // -- Worksheet upload --
+  const wsLabel=el('div',{'class':'sb-label','style':'margin-top:4px;'},'Reference Worksheet');
+  scroll.appendChild(wsLabel);
+  if(S.worksheetName){
+    const wl=el('div',{'class':'ws-loaded'});
+    wl.appendChild(el('div',{'class':'ws-loaded-icon'},'📄'));
+    const wi=el('div',{});
+    wi.appendChild(el('div',{'class':'ws-loaded-name'},S.worksheetName.replace(/\.pptx|\.pdf/,'')));
+    wi.appendChild(el('div',{'class':'ws-loaded-sub'},'AI will match question style'));
+    wl.appendChild(wi);scroll.appendChild(wl);
+    const rm=el('button',{'class':'btn btn-ghost btn-sm btn-full','style':'margin-top:6px;'});
+    rm.textContent='Remove';rm.addEventListener('click',()=>{S.worksheetName='';S.worksheetBase64='';render()});
+    scroll.appendChild(rm);
+  } else {
+    const wz=el('div',{'class':'ws-zone'});
+    wz.innerHTML=`<div style="font-size:18px;margin-bottom:3px">📋</div><div style="font-size:12px;font-weight:600;color:var(--gray-700)">Upload a worksheet</div><div style="font-size:10px;color:var(--gray-400);margin-top:1px">AI matches question style</div>`;
+    const fi=el('input',{'type':'file','accept':'.pptx,.pdf'});
+    fi.addEventListener('change',e=>{
+      const f=e.target.files[0];if(!f)return;S.worksheetName=f.name;
+      const r=new FileReader();r.onload=ev=>{S.worksheetBase64=ev.target.result.split(',')[1];render()};r.readAsDataURL(f);
+    });
+    wz.appendChild(fi);scroll.appendChild(wz);
+  }
+
+  scroll.appendChild(el('div',{'class':'sb-divider'}));
+
+  // -- Active theme / clear --
+  const themeRow=el('div',{'class':'sb-theme-row'});
+  if(S.theme.loaded){
+    const swatches=el('div',{'class':'swatch-row'});
+    [S.theme.primary,S.theme.primaryDark,S.theme.primaryLight,S.theme.accent,S.theme.accent2].forEach(c=>{
+      swatches.appendChild(el('div',{'class':'swatch','style':'background:'+c}));
+    });
+    themeRow.appendChild(swatches);
+    const chg=el('button',{'class':'btn btn-ghost btn-xs','style':'flex-shrink:0;'});
+    chg.textContent='Change';chg.addEventListener('click',()=>{S.tab='theme';render()});
+    themeRow.appendChild(chg);
+  } else {
+    const noTheme=el('button',{'class':'btn btn-ghost btn-sm btn-full'});
+    noTheme.textContent='🎨 Upload school template';
+    noTheme.addEventListener('click',()=>{S.tab='theme';render()});
+    themeRow.appendChild(noTheme);
+  }
+  scroll.appendChild(themeRow);
+
+  // -- Clear session --
+  const clearBtn=el('button',{'class':'sb-clear-btn'});
+  clearBtn.textContent='Start new lesson';
+  clearBtn.addEventListener('click',()=>{
+    if(confirm('Clear everything and start fresh?')){
+      localStorage.removeItem('lessoncraft_v4');
+      location.reload();
+    }
+  });
+  scroll.appendChild(clearBtn);
+
+  sb.appendChild(scroll);
+  return sb;
+}
+
+// --- AI SETUP TAB --------------------------------
+function buildAISetupTab(){
+  const d=el('div',{});
+  const hero=el('div',{'class':'page-hero'});
+  hero.appendChild(el('h1',{},'AI Setup'));
+  hero.appendChild(el('p',{},'Choose which AI powers your lesson generation. Both produce the same lesson structure.'));
+  d.appendChild(hero);
+
+  // Provider picker
+  const grid=el('div',{'class':'ai-provider-grid'});
+  [{id:'claude',name:'Claude',by:'by Anthropic',desc:'Get a free API key from console.anthropic.com. Around 1p per lesson. Very high quality output.',badge:'Recommended',badgeCls:''},{id:'copilot',name:'Microsoft Copilot',by:'via Azure OpenAI',desc:'Uses your school Microsoft licence via Azure OpenAI. Requires IT to provide an endpoint URL and API key.',badge:'School licence',badgeCls:' school'}].forEach(function(p){
+    var card=el('div',{'class':'ai-provider-card'+(S.aiProvider===p.id?' selected':'')});
+    var logo=el('div',{'class':'ai-card-logo'});
+    if(p.id==='claude'){logo.style.background='#FEF3C7';logo.style.borderRadius='10px';logo.style.width='44px';logo.style.height='44px';logo.style.display='flex';logo.style.alignItems='center';logo.style.justifyContent='center';logo.style.fontSize='24px';logo.textContent='C';}
+    else{logo.style.background='#EFF6FF';logo.style.borderRadius='10px';logo.style.width='44px';logo.style.height='44px';logo.style.display='flex';logo.style.alignItems='center';logo.style.justifyContent='center';logo.style.fontSize='20px';logo.style.fontWeight='800';logo.style.color='#0078D4';logo.textContent='M';}
+    card.appendChild(logo);
+    card.appendChild(el('div',{'class':'ai-card-name'},p.name));
+    card.appendChild(el('div',{'class':'ai-card-by'},p.by));
+    card.appendChild(el('div',{'class':'ai-card-desc'},p.desc));
+    card.appendChild(el('div',{'class':'ai-card-badge'+p.badgeCls},p.badge));
+    card.addEventListener('click',function(){S.aiProvider=p.id;saveState();render();});
+    grid.appendChild(card);
+  });
+  d.appendChild(grid);
+
+  // Claude config
+  if(S.aiProvider==='claude'){
+    var sec=el('div',{'class':'ai-setup-section'});
+    sec.appendChild(el('div',{'class':'ai-setup-title'},'Claude API Key'));
+    if(S.claudeKey){
+      var ok=el('div',{'class':'ai-connected-badge'});ok.textContent='Connected -- Claude is ready';sec.appendChild(ok);
+    }
+    var keyRow=el('div',{'class':'ai-key-row'});
+    var keyInp=el('input',{'type':'password','placeholder':'sk-ant-api03-...','value':S.claudeKey,'class':'ai-key-input'});
+    keyInp.addEventListener('input',function(e){S.claudeKey=e.target.value.trim();saveState();});
+    var testBtn=el('button',{'class':'btn btn-primary btn-sm'});testBtn.textContent='Test';
+    testBtn.addEventListener('click',async function(){
+      testBtn.disabled=true;testBtn.textContent='Testing...';
+      try{await callClaude('You are a helpful assistant.','Reply with just the word: connected');showToast('Claude connected!','success');}
+      catch(e){showToast('Failed: '+e.message,'error');}
+      testBtn.disabled=false;testBtn.textContent='Test';
+    });
+    keyRow.appendChild(keyInp);keyRow.appendChild(testBtn);sec.appendChild(keyRow);
+    var inst=el('div',{'class':'ai-instructions'});
+    inst.innerHTML='<div class="ai-inst-title">How to get a Claude API key (free)</div><ol class="ai-inst-steps">'
+      +'<li>Go to <a href="https://console.anthropic.com" target="_blank" class="ai-link">console.anthropic.com</a></li>'
+      +'<li>Create a free account (just an email)</li>'
+      +'<li>Click <strong>API Keys</strong> in the left menu</li>'
+      +'<li>Click <strong>Create Key</strong>, name it "LessonCraft"</li>'
+      +'<li>Copy the key (starts with <code>sk-ant-</code>) and paste above</li>'
+      +'<li>Free tier gives ~100 lessons/month. Paid is about 1p per lesson.</li>'
+      +'</ol>';
+    sec.appendChild(inst);d.appendChild(sec);
+  }
+
+  // Copilot config
+  if(S.aiProvider==='copilot'){
+    var sec2=el('div',{'class':'ai-setup-section'});
+    sec2.appendChild(el('div',{'class':'ai-setup-title'},'Microsoft Copilot / Azure OpenAI'));
+    var notice=el('div',{'class':'ai-notice-box'});
+    notice.innerHTML='<div class="ai-notice-icon">⚠️</div>'
+      +'<div><strong>Read this first</strong><br>'
+      +'Your school Copilot licence (Teams/Word/Outlook) does <strong>not</strong> give API access automatically. '
+      +'You need IT to enable <strong>Azure OpenAI Service</strong> on your school Azure subscription -- '
+      +'this is separate from the Copilot chat you see in Teams.<br><br>'
+      +'Ask IT: <em>"Can you create an Azure OpenAI deployment and give me the endpoint URL and API key?"</em></div>';
+    sec2.appendChild(notice);
+    if(S.copilotKey&&S.copilotEndpoint){
+      var ok2=el('div',{'class':'ai-connected-badge'});ok2.textContent='Copilot endpoint configured';sec2.appendChild(ok2);
+    }
+    var epF=el('div',{'class':'sb-field','style':'margin-bottom:10px;'});
+    epF.appendChild(el('label',{},'Azure OpenAI Endpoint URL'));
+    var epNote=el('div',{'style':'font-size:11px;color:var(--gray-400);margin-bottom:4px;'});
+    epNote.textContent='From IT -- looks like: https://yourschool.openai.azure.com/openai/deployments/gpt-4/chat/completions?api-version=2024-02-15-preview';
+    epF.appendChild(epNote);
+    var epInp=el('input',{'type':'text','placeholder':'https://yourschool.openai.azure.com/...','value':S.copilotEndpoint});
+    epInp.addEventListener('input',function(e){S.copilotEndpoint=e.target.value.trim();saveState();});
+    epF.appendChild(epInp);sec2.appendChild(epF);
+    var kF=el('div',{'class':'sb-field','style':'margin-bottom:12px;'});
+    kF.appendChild(el('label',{},'Azure API Key'));
+    var kInp=el('input',{'type':'password','placeholder':'Paste your Azure OpenAI key here','value':S.copilotKey});
+    kInp.addEventListener('input',function(e){S.copilotKey=e.target.value.trim();saveState();});
+    kF.appendChild(kInp);sec2.appendChild(kF);
+    var testBtn2=el('button',{'class':'btn btn-primary btn-sm','style':'margin-bottom:16px;'});testBtn2.textContent='Test Connection';
+    testBtn2.addEventListener('click',async function(){
+      testBtn2.disabled=true;testBtn2.textContent='Testing...';
+      try{await callCopilot('You are a helpful assistant.','Reply with just the word: connected');showToast('Copilot connected!','success');}
+      catch(e){showToast('Failed: '+e.message,'error');}
+      testBtn2.disabled=false;testBtn2.textContent='Test Connection';
+    });
+    sec2.appendChild(testBtn2);
+    var emailWrap=el('div',{'class':'ai-instructions'});
+    var emailText='Hi,\n\nI am using a lesson planning tool that connects to AI via Azure OpenAI. Could you help set this up?\n\nI need:\n1. An Azure OpenAI resource on our school Azure subscription\n2. A GPT-4o or GPT-4 model deployed\n3. The endpoint URL\n4. An API key for that resource\n\nCost is negligible (~1p per lesson). CORS will need to allow requests from the HTML file.\n\nThanks';
+    emailWrap.appendChild(el('div',{'class':'ai-inst-title'},'Email template for your IT department'));
+    var emailBox=el('div',{'class':'ai-email-template'});emailBox.textContent=emailText;emailWrap.appendChild(emailBox);
+    var copyBtn=el('button',{'class':'btn btn-ghost btn-sm'});copyBtn.textContent='Copy email text';
+    copyBtn.addEventListener('click',function(){
+      if(navigator.clipboard)navigator.clipboard.writeText(emailText).then(function(){showToast('Email text copied!','success');});
+      else{var t=document.createElement('textarea');t.value=emailText;document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t);showToast('Copied!','success');}
+    });
+    emailWrap.appendChild(copyBtn);sec2.appendChild(emailWrap);
+    var corsW=el('div',{'class':'ai-cors-warning'});
+    corsW.innerHTML='<strong>Note on CORS:</strong> Azure OpenAI blocks direct browser requests by default. IT need to enable CORS for your origin, or set up a simple proxy.';
+    sec2.appendChild(corsW);d.appendChild(sec2);
+  }
+  return d;
+}
+
+// --- THEME TAB -----------------------------------
+function buildThemeTab(){
+  const d=el('div',{});
+  d.appendChild(el('div',{'class':'page-hero'},
+    el('h1',{},'School Template'),
+    el('p',{},'Upload any PowerPoint from your school or department. LessonCraft reads the colour palette and applies it throughout your lesson.')
+  ));
+
+  if(S.theme.loaded){
+    const lc=el('div',{'class':'theme-loaded-card'});
+    lc.innerHTML=`<div style="font-size:28px;flex-shrink:0">✅</div>`;
+    const info=el('div',{'style':'flex:1;'});
+    info.appendChild(el('div',{'style':'font-weight:700;font-size:14px;color:#15803d;'},'Theme loaded'));
+    info.appendChild(el('div',{'style':'font-size:12px;color:#166534;margin-top:2px;'},S.theme.filename));
+    const pal=el('div',{'class':'palette-display','style':'margin-top:10px;'});
+    [{c:S.theme.primary,l:'Primary'},{c:S.theme.primaryDark,l:'Dark'},{c:S.theme.primaryLight,l:'Light'},{c:S.theme.accent,l:'Accent'},{c:S.theme.accent2,l:'Highlight'}].forEach(p=>{
+      const chip=el('div',{'class':'pal-chip'});
+      chip.appendChild(el('div',{'class':'pal-chip-color','style':'background:'+p.c}));
+      chip.appendChild(el('div',{'class':'pal-chip-name'},p.l));
+      chip.appendChild(el('div',{'class':'pal-chip-hex'},p.c));
+      pal.appendChild(chip);
+    });
+    info.appendChild(pal);lc.appendChild(info);d.appendChild(lc);
+  }
+
+  // Upload zone
+  const zone=el('div',{'class':'theme-upload-card'});
+  zone.innerHTML=`<span class="tuc-icon">📂</span><div class="tuc-title">${S.theme.loaded?'Upload a different template':'Drop your .pptx here'}</div><div class="tuc-sub">Any school or department PowerPoint -- maths, science, English...</div>`;
+  const fi=el('input',{'type':'file','accept':'.pptx'});
+  fi.addEventListener('change',async e=>{
+    const f=e.target.files[0];if(!f)return;
+    zone.innerHTML='<div style="padding:1rem;font-size:14px;color:var(--p);">⏳ Extracting colours...</div>';
+    const t=await extractTheme(f);if(t){S.theme=t;applyCSS(t)}render();
+  });
+  zone.addEventListener('dragover',e=>{e.preventDefault();zone.classList.add('dz-over')});
+  zone.addEventListener('dragleave',()=>zone.classList.remove('dz-over'));
+  zone.addEventListener('drop',async e=>{
+    e.preventDefault();zone.classList.remove('dz-over');
+    const f=e.dataTransfer.files[0];
+    if(f&&f.name.endsWith('.pptx')){
+      zone.innerHTML='<div style="padding:1rem;font-size:14px;color:var(--p);">⏳ Extracting colours...</div>';
+      const t=await extractTheme(f);if(t){S.theme=t;applyCSS(t)}render();
+    }
+  });
+  zone.appendChild(fi);d.appendChild(zone);
+
+  // Manual
+  const mc=el('div',{'class':'section-card','style':'margin-top:20px;max-width:560px;'});
+  mc.appendChild(el('h3',{},'Set colours manually'));
+  mc.appendChild(el('div',{'class':'desc'},'Fine-tune extracted colours or enter your school hex codes directly.'));
+  const cg=el('div',{'class':'manual-col-grid'});
+  [{key:'primary',label:'Primary colour'},{key:'primaryDark',label:'Dark variant'},{key:'accent',label:'Accent colour'},{key:'accent2',label:'Highlight colour'}].forEach(f=>{
+    const field=el('div',{'class':'col-field'});
+    field.appendChild(el('label',{},f.label));
+    const row=el('div',{'class':'col-input-row'});
+    const sw=el('input',{'type':'color','class':'col-swatch','value':S.theme[f.key]});
+    const tx=el('input',{'type':'text','value':S.theme[f.key],'style':'font-size:12px;font-family:monospace;'});
+    sw.addEventListener('input',e=>{tx.value=e.target.value;S.theme[f.key]=e.target.value;S.theme.loaded=true;applyCSS(S.theme)});
+    tx.addEventListener('change',e=>{if(/^#[0-9A-Fa-f]{6}$/.test(e.target.value)){sw.value=e.target.value;S.theme[f.key]=e.target.value;S.theme.loaded=true;applyCSS(S.theme)}});
+    row.appendChild(sw);row.appendChild(tx);field.appendChild(row);cg.appendChild(field);
+  });
+  mc.appendChild(cg);
+  const ab=el('button',{'class':'btn btn-primary'});ab.textContent='Apply colours';
+  ab.addEventListener('click',()=>{S.theme.loaded=true;applyCSS(S.theme);render();showToast('Theme applied v','success')});
+  mc.appendChild(ab);d.appendChild(mc);
+  return d;
+}
+
+// --- BUILD TAB -----------------------------------
+function buildBuildTab(){
+  const d=el('div',{});
+  const isExam=S.mode==='exam';
+  const activePhases=isExam?EXAM_PHASES:PHASES;
+  const anyDone=activePhases.some(p=>S.phases[p.id]&&S.phases[p.id].generated);
+
+  // Empty state
+  if(!anyDone&&!S.generatingAll){
+    const empty=el('div',{'class':'empty-screen'});
+    if(isExam){
+      empty.innerHTML='<div class="exam-empty-badge">🎯 EXAM FOCUS</div>'+
+        '<div class="empty-icon" style="margin-top:10px">📝</div>'+
+        '<h2 class="empty-title">'+(S.topic||'Year 11 Exam Prep')+'</h2>'+
+        '<p class="empty-sub">'+(S.topic?'Click <strong>Generate Exam Pack</strong> to build a full exam-style practice set instantly.':'Enter a topic, then click <strong>Generate Exam Pack</strong>. Optionally upload revision notes.')+'</p>'+
+        '<div class="exam-feature-list">'+
+        EXAM_PHASES.map(p=>'<div class="exam-feature-item" style="border-left:3px solid '+p.col+'"><span>'+p.icon+'</span><div><div style="font-weight:700;font-size:12px;color:'+p.col+'">'+p.label+'</div><div style="font-size:11px;color:var(--gray-400)">'+p.sub+'</div></div></div>').join('')+
+        '</div>';
+    } else {
+      empty.innerHTML='<div class="empty-icon">✨</div>'+
+        '<h2 class="empty-title">'+(S.topic||'Ready to build')+'</h2>'+
+        '<p class="empty-sub">'+(S.topic?'Click <strong>Quick Start Lesson</strong> in the sidebar to generate your lesson instantly.':'Enter a topic in the sidebar, then click <strong>Quick Start Lesson</strong>.')+'</p>'+
+        '<div class="empty-phases">'+
+        PHASES.map(p=>'<div class="empty-phase-chip" style="border-color:'+p.col+'20;background:'+p.bg+'"><span>'+p.icon+'</span><span style="font-size:11px;color:'+p.col+';font-weight:600;">'+p.label+'</span></div>').join('')+
+        '</div>';
+    }
+    d.appendChild(empty);
+    return d;
+  }
+
+  // Header
+  if(S.topic){
+    const hdr=el('div',{'class':'build-header'+(isExam?' build-header-exam':'')});
+    const htxt=el('div',{});
+    const titleRow=el('div',{'style':'display:flex;align-items:center;gap:10px;'});
+    if(isExam)titleRow.appendChild(el('span',{'class':'exam-mode-badge'},'🎯 EXAM FOCUS'));
+    titleRow.appendChild(el('h1',{'class':'build-title'},S.topic));
+    htxt.appendChild(titleRow);
+    if(S.subject||S.year){
+      htxt.appendChild(el('div',{'class':'build-meta'},([S.subject,S.year?'Year '+S.year:'',isExam?'GCSE Exam Prep':'',S.duration?S.duration+' min':'']).filter(Boolean).join(' | ')));
+    }
+    hdr.appendChild(htxt);
+    const expBtn=el('button',{'class':'export-hero-btn'+(isExam?' export-hero-btn-exam':'')});
+    expBtn.innerHTML=`<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1v9M5 7l3 3 3-3M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg> ${isExam?'Download Exam Pack':'Download PPTX'}`;
+    expBtn.addEventListener('click',async()=>{
+      expBtn.disabled=true;expBtn.textContent='Building...';
+      try{await buildAndDownloadPPTX();showToast('Downloaded v','success')}
+      catch(e){showToast('Error: '+e.message,'error')}
+      expBtn.disabled=false;expBtn.innerHTML=`<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1v9M5 7l3 3 3-3M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg> ${isExam?'Download Exam Pack':'Download PPTX'}`;
+    });
+    hdr.appendChild(expBtn);
+    d.appendChild(hdr);
+  }
+
+  // Generation progress
+  if(S.generatingAll&&S.genSteps.length){
+    const gp=el('div',{'class':'gen-progress-card'+(isExam?' gen-progress-exam':'')});
+    const gtitle=el('div',{'class':'gen-progress-title'});
+    gtitle.innerHTML=`<span class="spinner" style="width:16px;height:16px;"></span> ${isExam?'Building exam pack...':'Building your lesson...'}`;
+    gp.appendChild(gtitle);
+    const steps=el('div',{'class':'gen-steps'});
+    S.genSteps.forEach(s=>{
+      const phase=activePhases.find(p=>p.id===s.id);if(!phase)return;
+      const step=el('div',{'class':'gen-step '+s.status});
+      const dot=el('div',{'class':'gen-step-dot '+s.status});
+      dot.textContent=s.status==='done'?'v':s.status==='active'?'...':'·';
+      step.appendChild(dot);
+      step.appendChild(el('div',{'class':'gen-step-label'},phase.icon+' '+s.label));
+      if(s.status==='done'){
+        const tags=isExam?EXAM_QUALITY_TAGS:QUALITY_TAGS;
+        step.appendChild(el('span',{'class':'gen-step-tag'},(tags[s.id]&&tags[s.id][0])||''));
+      }
+      steps.appendChild(step);
+    });
+    gp.appendChild(steps);d.appendChild(gp);
+  }
+
+  const phases=el('div',{'class':'phases'});
+  activePhases.forEach(p=>phases.appendChild(buildPhaseCard(p,isExam)));
+  d.appendChild(phases);
+  return d;
+}
+
+function buildPhaseCard(phase, isExam=false){
+  const ph=S.phases[phase.id];
+  const isOpen=S.open[phase.id];
+  const card=el('div',{'class':'pcard'+(isOpen?' open':'')+(ph.generated&&!isOpen?' generated':'')});
+
+  // Head -- click to collapse only (content shown by default)
+  const head=el('div',{'class':'phead'});
+  head.appendChild(el('div',{'class':'phase-color-bar','style':'background:'+phase.col}));
+  const iconWrap=el('div',{'class':'phase-icon-wrap','style':'background:'+phase.bg});
+  iconWrap.textContent=phase.icon;
+  head.appendChild(iconWrap);
+  const txt=el('div',{'class':'phase-text'});
+  txt.appendChild(el('div',{'class':'phase-label'},phase.label));
+  txt.appendChild(el('div',{'class':'phase-sub'},phase.sub));
+  head.appendChild(txt);
+
+  const meta=el('div',{'class':'phase-meta'});
+  // Quality tags
+  if(ph.generated&&!ph.generating){
+    const tagSet=isExam?EXAM_QUALITY_TAGS:QUALITY_TAGS;
+    const tags=(tagSet[phase.id]||[]);
+    tags.slice(0,2).forEach(tag=>{
+      meta.appendChild(el('span',{'class':'quality-tag'},tag));
+    });
+  }
+  if(ph.generating){
+    const pill=el('div',{'class':'status-pill generating'});
+    pill.innerHTML='<span class="spinner" style="width:10px;height:10px;border-width:1.5px;"></span>';
+    meta.appendChild(pill);
+  }
+  meta.appendChild(el('div',{'class':'chev'+(isOpen?' open':'')},'⌄'));
+  head.appendChild(meta);
+  head.addEventListener('click',()=>{S.open[phase.id]=!S.open[phase.id];render()});
+  card.appendChild(head);
+
+  if(isOpen){
+    const body=el('div',{'class':'pbody'});
+    const inner=el('div',{'class':'pbody-inner'});
+
+    if(ph.generating){
+      const ag=el('div',{'class':'ai-generating'});
+      ag.innerHTML=`<div class="spinner"></div><div><div style="font-size:13px;font-weight:600;color:var(--p);">Writing ${phase.label}...</div><div style="font-size:11px;color:var(--gray-400);margin-top:2px;">Takes a few seconds</div></div>`;
+      inner.appendChild(ag);
+    } else if(ph.generated){
+      // Content display -- prominent
+      const contentWrap=el('div',{'class':'phase-content-wrap'});
+      const ta=el('textarea',{'class':'phase-textarea','rows':'6'});
+      ta.value=ph.content||'';
+      ta.addEventListener('input',e=>{S.phases[phase.id].content=e.target.value;saveState()});
+      contentWrap.appendChild(ta);
+      inner.appendChild(contentWrap);
+
+      // Micro-actions toolbar
+      const toolbar=el('div',{'class':'phase-toolbar'});
+      const genFn=isExam?generateExamPhase:generatePhase;
+      const regenBtn=el('button',{'class':'phase-action-btn'});
+      regenBtn.innerHTML='🔄 Regenerate';
+      regenBtn.addEventListener('click',e=>{e.stopPropagation();genFn(phase.id,false)});
+      const improveBtn=el('button',{'class':'phase-action-btn'});
+      improveBtn.innerHTML='✨ Improve this';
+      improveBtn.addEventListener('click',e=>{e.stopPropagation();genFn(phase.id,true)});
+      toolbar.appendChild(regenBtn);
+      toolbar.appendChild(improveBtn);
+      // Harder for question phases
+      const hardPhases=isExam?['examqs','drillqs']:['guided','independent','ido'];
+      if(hardPhases.includes(phase.id)){
+        const hardBtn=el('button',{'class':'phase-action-btn'});
+        hardBtn.innerHTML='📈 Make harder';
+        hardBtn.addEventListener('click',e=>{
+          e.stopPropagation();
+          S.phases[phase.id].content+='\n\n[Request: make questions harder]';
+          genFn(phase.id,true);
+        });
+        toolbar.appendChild(hardBtn);
+      }
+      // Extra exam-only action: add more questions
+      if(isExam&&['examqs','drillqs'].includes(phase.id)){
+        const moreBtn=el('button',{'class':'phase-action-btn'});
+        moreBtn.innerHTML='➕ More questions';
+        moreBtn.addEventListener('click',e=>{
+          e.stopPropagation();
+          S.phases[phase.id].content+='\n\n[Request: add 3 more similar questions]';
+          genFn(phase.id,true);
+        });
+        toolbar.appendChild(moreBtn);
+      }
+      inner.appendChild(toolbar);
+
+      // MWB cameo for I Do and Guided Practice
+      if(phase.id==='ido'||phase.id==='guided'){
+        inner.appendChild(buildMWB(phase.id));
+      }
+    } else {
+      // Not yet generated
+      inner.appendChild(el('div',{'class':'phase-hint'},phase.hint));
+      const genBtn=el('button',{'class':'btn btn-primary btn-sm'});
+      genBtn.innerHTML='✨ Generate this phase';
+      genBtn.addEventListener('click',e=>{e.stopPropagation();if(!S.topic){showToast('Add a topic first','error');return}isExam?generateExamPhase(phase.id,false):generatePhase(phase.id,false)});
+      inner.appendChild(genBtn);
+      const ta=el('textarea',{'placeholder':'Or write manually...','rows':'3','style':'margin-top:10px;'});
+      ta.value='';
+      ta.addEventListener('input',e=>{S.phases[phase.id].content=e.target.value;S.phases[phase.id].generated=!!e.target.value;saveState()});
+      inner.appendChild(ta);
+    }
+
+    body.appendChild(inner);card.appendChild(body);
+  }
+  return card;
+}
+
+// -- MWB builder (extracted for reuse) --
+function buildMWB(phaseId){
+  const mwbKey='mwb_'+phaseId;
+  const mwb=el('div',{'class':'mwb-cameo'});
+  const mwbTop=el('div',{'class':'mwb-top'});
+  mwbTop.innerHTML=`<div class="mwb-label"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="flex-shrink:0"><rect x="1" y="1" width="12" height="9" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M4 13h6M7 10v3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg> MWB Working Space</div><div class="mwb-hint">Show working on the board here</div>`;
+  const mwbClear=el('button',{'class':'mwb-clear-btn'});mwbClear.textContent='Clear';
+  mwbClear.addEventListener('click',e=>{e.stopPropagation();S.mwb=S.mwb||{};S.mwb[mwbKey]='';const cvs=document.getElementById('cvs-'+mwbKey);if(cvs){const ctx=cvs.getContext('2d');ctx.clearRect(0,0,cvs.width,cvs.height);}});
+  mwbTop.appendChild(mwbClear);mwb.appendChild(mwbTop);
+  const cvs=el('canvas',{'id':'cvs-'+mwbKey,'class':'mwb-canvas'});cvs.width=700;cvs.height=220;mwb.appendChild(cvs);
+  const tools=el('div',{'class':'mwb-tools'});
+  const colors=['#1e1b2e','#2563eb','#dc2626','#059669','#d97706'];
+  const sizes=[2,4,7];
+  S.mwb=S.mwb||{};S.mwb[mwbKey+'_col']=S.mwb[mwbKey+'_col']||'#1e1b2e';S.mwb[mwbKey+'_sz']=S.mwb[mwbKey+'_sz']||4;S.mwb[mwbKey+'_erase']=false;
+  colors.forEach(col=>{
+    const cp=el('div',{'class':'mwb-color'+(S.mwb[mwbKey+'_col']===col?' active':''),'style':'background:'+col});
+    cp.addEventListener('click',e=>{e.stopPropagation();S.mwb[mwbKey+'_col']=col;S.mwb[mwbKey+'_erase']=false;document.querySelectorAll('.mwb-color').forEach(x=>x.classList.toggle('active',x.style.background===col||x.style.backgroundColor===col));document.querySelectorAll('.mwb-erase').forEach(x=>x.classList.remove('active'));});
+    tools.appendChild(cp);
+  });
+  tools.appendChild(el('div',{'class':'mwb-sep'}));
+  sizes.forEach(sz=>{
+    const sp=el('div',{'class':'mwb-size'+(S.mwb[mwbKey+'_sz']===sz?' active':'')});
+    sp.appendChild(el('div',{'style':`width:${sz*2+4}px;height:${sz*2+4}px;border-radius:50%;background:#1e1b2e;`}));
+    sp.addEventListener('click',e=>{e.stopPropagation();S.mwb[mwbKey+'_sz']=sz;document.querySelectorAll('.mwb-size').forEach(x=>x.classList.remove('active'));sp.classList.add('active');});
+    tools.appendChild(sp);
+  });
+  tools.appendChild(el('div',{'class':'mwb-sep'}));
+  const eraseBtn=el('div',{'class':'mwb-erase'});
+  eraseBtn.innerHTML='<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 11L5.5 4l4 6H2z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg> Erase';
+  eraseBtn.addEventListener('click',e=>{e.stopPropagation();S.mwb[mwbKey+'_erase']=!S.mwb[mwbKey+'_erase'];eraseBtn.classList.toggle('active',S.mwb[mwbKey+'_erase']);});
+  tools.appendChild(eraseBtn);mwb.appendChild(tools);
+  requestAnimationFrame(()=>{
+    const canvas=document.getElementById('cvs-'+mwbKey);if(!canvas)return;
+    const ctx=canvas.getContext('2d');
+    if(S.mwb[mwbKey+'_img']){const img=new Image();img.onload=()=>ctx.drawImage(img,0,0);img.src=S.mwb[mwbKey+'_img'];}
+    let drawing=false,lx=0,ly=0;
+    function getPos(e){const r=canvas.getBoundingClientRect(),sx=canvas.width/r.width,sy=canvas.height/r.height;const src=e.touches?e.touches[0]:e;return{x:(src.clientX-r.left)*sx,y:(src.clientY-r.top)*sy};}
+    function startDraw(e){e.preventDefault();drawing=true;const p=getPos(e);lx=p.x;ly=p.y;}
+    function doDraw(e){if(!drawing)return;e.preventDefault();const p=getPos(e);const er=S.mwb[mwbKey+'_erase'];ctx.globalCompositeOperation=er?'destination-out':'source-over';ctx.strokeStyle=S.mwb[mwbKey+'_col']||'#1e1b2e';ctx.lineWidth=(S.mwb[mwbKey+'_sz']||4)*(er?5:1);ctx.lineCap='round';ctx.lineJoin='round';ctx.beginPath();ctx.moveTo(lx,ly);ctx.lineTo(p.x,p.y);ctx.stroke();lx=p.x;ly=p.y;}
+    function stopDraw(){if(drawing){drawing=false;ctx.globalCompositeOperation='source-over';S.mwb[mwbKey+'_img']=canvas.toDataURL();}}
+    canvas.addEventListener('mousedown',startDraw);canvas.addEventListener('mousemove',doDraw);canvas.addEventListener('mouseup',stopDraw);canvas.addEventListener('mouseleave',stopDraw);canvas.addEventListener('touchstart',startDraw,{passive:false});canvas.addEventListener('touchmove',doDraw,{passive:false});canvas.addEventListener('touchend',stopDraw);
+  });
+  return mwb;
+}
+
+// --- KEYWORDS TAB --------------------------------
+function buildKwTab(){
+  const d=el('div',{});
+  d.appendChild(el('div',{'class':'page-hero'},
+    el('h1',{},'Key Words'),
+    el('p',{},'Build vocabulary using I Say / You Say -- particularly effective for EAL learners.')
+  ));
+  const banner=el('div',{'class':'eal-banner'});
+  banner.appendChild(el('div',{'class':'eal-icon'},'🌍'));
+  const bt=el('div',{'class':'eal-text'});
+  bt.innerHTML='<strong>I Say / You Say:</strong> Say the key word clearly -- students repeat it. Then say the definition -- students repeat that. Builds pronunciation, confidence and vocabulary retention.';
+  banner.appendChild(bt);d.appendChild(banner);
+
+  const table=el('div',{'class':'kw-table'});
+  const thead=el('div',{'class':'kw-thead'});
+  ['I Say (key word)','You Say (definition / translation)',''].forEach(h=>{thead.appendChild(el('div',{'class':'kw-thead-cell'},h))});
+  table.appendChild(thead);
+  const tbody=el('div',{'class':'kw-tbody'});
+  S.keywords.forEach((kw,i)=>{
+    const row=el('div',{'class':'kw-row'});
+    const w=el('input',{'type':'text','placeholder':'e.g. circumference','value':kw.word});
+    const def=el('input',{'type':'text','placeholder':'The distance around a circle','value':kw.def});
+    const del=el('button',{'class':'btn-icon'});del.textContent='x';
+    w.addEventListener('input',e=>S.keywords[i].word=e.target.value);
+    def.addEventListener('input',e=>S.keywords[i].def=e.target.value);
+    del.addEventListener('click',()=>{S.keywords.splice(i,1);if(!S.keywords.length)S.keywords.push({id:S.nextKwId++,word:'',def:''});render()});
+    row.appendChild(w);row.appendChild(def);row.appendChild(del);tbody.appendChild(row);
+  });
+  table.appendChild(tbody);d.appendChild(table);
+
+  const acts=el('div',{'style':'display:flex;gap:10px;margin-top:14px;align-items:center;'});
+  const add=el('button',{'class':'btn btn-ghost btn-sm'});add.textContent='+ Add row';
+  add.addEventListener('click',()=>{S.keywords.push({id:S.nextKwId++,word:'',def:''});render()});
+  acts.appendChild(add);
+  const aiKw=el('button',{'class':'btn btn-primary btn-sm'});
+  aiKw.innerHTML='✨ AI Suggest Keywords';
+  aiKw.addEventListener('click',async()=>{
+    if(!S.topic){showToast('Add a topic first','error');return}
+    aiKw.disabled=true;aiKw.textContent='Generating...';
+    try{
+      const raw=await callAI('You are a maths teacher. Respond ONLY with valid JSON.','Suggest 6 key vocabulary words and concise definitions for: "'+S.topic+'". JSON: {"keywords":[{"word":"...","def":"..."}]}');
+      const parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());
+      S.keywords=(parsed.keywords||[]).map(k=>({id:S.nextKwId++,word:k.word,def:k.def}));render();
+      showToast('Keywords generated v','success');
+    }catch(e){showToast('AI error: '+e.message,'error')}
+    aiKw.disabled=false;
+  });
+  acts.appendChild(aiKw);d.appendChild(acts);
+  return d;
+}
+
+// --- PREVIEW TAB ---------------------------------
+function buildPreviewTab(){
+  const d=el('div',{});
+  const t=S.theme;
+  const isExam=S.mode==='exam';
+  const activePhases=isExam?EXAM_PHASES:PHASES;
+
+  // Toolbar row
+  const toolbar=el('div',{'class':'preview-toolbar'});
+  // Exam board badge
+  const ebBadge=el('div',{'class':'eb-badge'});
+  ebBadge.textContent=S.examBoard+' Aligned';
+  toolbar.appendChild(ebBadge);
+  // Answer toggle (for exam mode)
+  if(isExam){
+    const togWrap=el('div',{'class':'answer-toggle-wrap'});
+    togWrap.appendChild(el('span',{'style':'font-size:12px;color:var(--gray-500);'},'Answers:'));
+    const tog=el('label',{'class':'toggle-switch'});
+    const inp=el('input',{'type':'checkbox'});
+    if(S.showAnswers)inp.setAttribute('checked','');
+    inp.checked=S.showAnswers;
+    inp.addEventListener('change',e=>{S.showAnswers=e.target.checked;render();});
+    const slider=el('span',{'class':'toggle-slider'});
+    tog.appendChild(inp);tog.appendChild(slider);
+    togWrap.appendChild(tog);
+    togWrap.appendChild(el('span',{'style':'font-size:12px;color:var(--gray-500);'},S.showAnswers?'Shown':'Hidden'));
+    toolbar.appendChild(togWrap);
+  }
+  // Share button
+  const shareBtn=el('button',{'class':'btn btn-ghost btn-sm'});
+  shareBtn.innerHTML='🔗 Share';
+  shareBtn.addEventListener('click',shareLesson);
+  toolbar.appendChild(shareBtn);
+  // Student worksheet button
+  const wsBtn=el('button',{'class':'btn btn-ghost btn-sm'});
+  wsBtn.innerHTML='📄 Student Worksheet';
+  wsBtn.addEventListener('click',downloadWorksheet);
+  toolbar.appendChild(wsBtn);
+  d.appendChild(toolbar);
+
+  const shell=el('div',{'class':'preview-shell'});
+  // Title slide
+  const top=el('div',{'class':'prev-title-slide'});
+  const shapes=el('div',{'class':'prev-shapes'});
+  const shapeStyles=['opacity:0.35;background:'+t.primaryLight,'opacity:0.6;background:'+t.primaryLight,'opacity:0.9;background:'+t.primary,'opacity:1;background:'+t.primaryDark];
+  ['prev-shape-4','prev-shape-3','prev-shape-2','prev-shape-1'].forEach((cls,i)=>{
+    const s=el('div',{'class':cls,'style':shapeStyles[i]});shapes.appendChild(s);
+  });
+  top.appendChild(shapes);
+  const dateEl=el('div',{'class':'prev-date','style':'color:'+t.primary});
+  dateEl.textContent="Today's date: "+new Date().toLocaleDateString('en-GB');
+  top.appendChild(dateEl);
+  const iqLabel=el('div',{'class':'prev-iq-label','style':'color:'+t.primaryDark});
+  iqLabel.textContent=isExam?'Exam Focus -- '+S.examBoard:'Inquiry question';
+  top.appendChild(iqLabel);
+  const qText=S.inquiry||(S.topic?'How do I '+S.topic.toLowerCase()+'?':'Enter your inquiry question...');
+  const qEl=el('div',{'class':'prev-iq-question','style':'color:'+t.primaryDark});
+  qEl.textContent=qText;
+  top.appendChild(qEl);
+  if(S.subject||S.year){
+    const metaEl=el('div',{'class':'prev-iq-meta','style':'color:'+t.primary});
+    metaEl.textContent=([S.subject,S.year?'Year '+S.year:'',S.duration?S.duration+' min':'']).filter(Boolean).join(' | ');
+    top.appendChild(metaEl);
+  }
+  shell.appendChild(top);
+  const body=el('div',{'class':'prev-body'});
+  const list=el('div',{'class':'prev-phase-list'});
+
+  activePhases.forEach(phase=>{
+    const phState=S.phases[phase.id];
+    if(!phState||!phState.content)return;
+    const p=el('div',{'class':'prev-phase'});
+    const ph=el('div',{'class':'prev-ph-head','style':'background:'+phase.bg+';border-bottom:1.5px solid '+phase.col+'33'});
+    ph.appendChild(document.createTextNode(phase.icon+' '));
+    ph.appendChild(el('span',{'style':'color:'+phase.col+';font-weight:700;'},phase.label));
+    ph.appendChild(el('span',{'style':'color:var(--gray-400);font-size:11px;font-weight:400;margin-left:5px;'},'-- '+phase.sub));
+    p.appendChild(ph);
+    // For exam phases: hide answers when toggle is off
+    let displayContent=phState.content;
+    if(isExam&&!S.showAnswers){
+      // Strip answers from worked solution and mark scheme
+      if(phase.id==='workedex'||phase.id==='marksch'){
+        const pb=el('div',{'class':'prev-ph-body prev-ph-hidden'});
+        pb.innerHTML='<em style="color:var(--gray-400)">Answers hidden -- toggle to reveal</em>';
+        p.appendChild(pb);
+        list.appendChild(p);return;
+      }
+      // Strip answer lines from drill questions
+      if(phase.id==='drillqs'){
+        displayContent=phState.content.split('\n').filter(l=>!l.trim().startsWith('Answer:')).join('\n');
+      }
+    }
+    const pb=el('div',{'class':'prev-ph-body'});pb.textContent=displayContent;p.appendChild(pb);
+    list.appendChild(p);
+  });
+  body.appendChild(list);
+
+  const fkw=S.keywords.filter(k=>k.word.trim());
+  if(fkw.length){
+    const kw=el('div',{'class':'prev-kw'});
+    kw.appendChild(el('div',{'class':'prev-kw-head','style':'background:'+t.primary},'🌍 Key Vocabulary -- I Say / You Say'));
+    const kg=el('div',{'class':'prev-kw-grid'});
+    fkw.forEach(k=>{
+      const c=el('div',{'class':'prev-kw-card'});
+      c.appendChild(el('div',{'class':'prev-kw-word','style':'color:'+t.primaryDark},k.word));
+      c.appendChild(el('div',{'class':'prev-kw-def'},k.def||'--'));
+      kg.appendChild(c);
+    });
+    kw.appendChild(kg);body.appendChild(kw);
+  }
+  shell.appendChild(body);d.appendChild(shell);
+  return d;
+}
+
+
+// --- BOTTOM BAR ----------------------------------
+function buildBottomBar(){
+  const bar=el('div',{'class':'btm'});
+  const left=el('div',{'class':'btm-left'});
+  const st=el('div',{'class':'btm-status'});
+  st.appendChild(el('div',{'class':'btm-dot'}));
+  st.appendChild(document.createTextNode('Saved'));
+  left.appendChild(st);
+  if(S.topic)left.appendChild(el('div',{'class':'btm-topic'},S.topic));
+  bar.appendChild(left);
+  const right=el('div',{'class':'btm-right'});
+  const pv=el('button',{'class':'btn btn-ghost btn-sm'});pv.textContent='👁 Preview';pv.addEventListener('click',()=>{S.tab='preview';render()});
+  const dlh=el('button',{'class':'btn btn-ghost btn-sm'});dlh.textContent='⬇ HTML';dlh.addEventListener('click',downloadHTML);
+  const dlp=el('button',{'class':'btn btn-primary btn-sm'});
+  dlp.innerHTML=`<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 1v9M5 7l3 3 3-3M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg> Download PPTX`;
+  dlp.addEventListener('click',async()=>{
+    dlp.disabled=true;dlp.textContent='Building...';
+    try{await buildAndDownloadPPTX();showToast('Lesson downloaded v','success')}
+    catch(e){showToast('PPTX error: '+e.message,'error');console.error(e)}
+    dlp.disabled=false;dlp.innerHTML=`<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 1v9M5 7l3 3 3-3M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg> Download PPTX`;
+  });
+  const prt=el('button',{'class':'btn btn-dark btn-sm'});prt.textContent='🖨 Print';prt.addEventListener('click',()=>{S.tab='preview';render();setTimeout(()=>window.print(),400)});
+  right.appendChild(pv);right.appendChild(dlh);right.appendChild(dlp);right.appendChild(prt);
+  bar.appendChild(right);return bar;
+}
+
+// --- DOWNLOAD HTML -------------------------------
+function downloadHTML(){
+  const t=S.theme;
+  const fkw=S.keywords.filter(k=>k.word.trim());
+  const kwHtml=fkw.length?`<div style="background:${t.primary};color:#fff;padding:10px 16px;font-family:Sora,sans-serif;font-size:13px;font-weight:700;border-radius:8px 8px 0 0;margin-top:16px;">🌍 Key Vocabulary</div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;padding:12px;border:1.5px solid ${t.primary}33;border-top:none;border-radius:0 0 8px 8px;">` + fkw.map(k=>`<div style="background:#fff;border-radius:6px;padding:8px 10px;border:1.5px solid ${t.primary}22;"><div style="font-weight:700;font-size:12px;color:${t.primaryDark};">${k.word}</div><div style="font-size:11px;color:#777;margin-top:2px;">${k.def||'--'}</div></div>`).join('')+'</div>':'';
+  const phHtml=PHASES.map(p=>{const c=S.phases[p.id].content;return'<div style="border-radius:8px;overflow:hidden;border:1.5px solid #e5e7eb;margin-bottom:10px;">'+
+    '<div style="display:flex;align-items:center;gap:8px;padding:9px 14px;background:'+p.bg+';border-bottom:1.5px solid '+p.col+'33;font-family:Sora,sans-serif;font-size:12px;">'+
+    '<span>'+p.icon+'</span><span style="color:'+p.col+';font-weight:700;">'+p.label+'</span>'+
+    '<span style="color:#9ca3af;font-size:11px;margin-left:4px;">-- '+p.sub+'</span></div>'+
+    (c?'<div style="padding:12px 14px;font-size:13px;line-height:1.8;color:#374151;white-space:pre-wrap;">'+c+'</div>':'<div style="padding:10px 14px;font-size:12px;color:#d1d5db;font-style:italic;">Not filled in</div>')+
+    '</div>';}).join('');
+  const meta=[S.year?'Year '+S.year:'',S.duration?S.duration+' min':'',new Date().toLocaleDateString('en-GB')].filter(Boolean).join(' | ');
+  const html=`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>${S.topic||'Lesson Plan'}</title><link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet"><style>body{font-family:Inter,sans-serif;margin:0;padding:2rem;background:#f8f7fc;}.page{max-width:820px;margin:0 auto;}.top{background:${t.primaryDark};border-radius:12px 12px 0 0;padding:28px 32px;color:#fff;}.dept{font-size:10px;font-weight:800;letter-spacing:2px;color:${t.accent2};margin-bottom:8px;}.title{font-family:Sora,sans-serif;font-size:26px;font-weight:800;margin-bottom:8px;line-height:1.2;}.meta{font-size:12px;opacity:.7;}.stripe{background:${t.primary};height:3px;}.body{background:#fff;padding:24px 32px;border-radius:0 0 12px 12px;box-shadow:0 4px 24px rgba(0,0,0,.08);}@media print{body{background:#fff;padding:0;}.page .top{border-radius:0;}.page .body{box-shadow:none;}}</style></head><body><div class="page"><div class="top">'+(S.subject?'<div class="dept">'+S.subject.toUpperCase()+'</div>':'')+'<div class="title">${S.topic||'Lesson Plan'}</div><div class="meta">${meta}</div>'+(S.objectives?'<div style="background:rgba(255,255,255,.1);border-radius:8px;padding:10px 14px;font-size:13px;margin-top:12px;">🎯 '+S.objectives+'</div>':'')+'</div><div class="stripe"></div><div class="body">${phHtml}${kwHtml}</div></div></body></html>`;
+  const blob=new Blob([html],{type:'text/html'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download=(S.topic||'lesson').replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_-]/g,'')+'_lesson.html';a.click();
+}
+
+// ===================================================
+// FEATURE: SHARE LESSON (URL-based)
+// ===================================================
+function shareLesson(){
+  try{
+    const snap={
+      topic:S.topic,subject:S.subject,year:S.year,mode:S.mode,examBoard:S.examBoard,
+      phases:Object.fromEntries(Object.entries(S.phases).map(([k,v])=>[k,{content:v.content,generated:v.generated}])),
+      keywords:S.keywords,theme:{primary:S.theme.primary,primaryDark:S.theme.primaryDark,primaryLight:S.theme.primaryLight,accent:S.theme.accent,accent2:S.theme.accent2}
+    };
+    const encoded=btoa(unescape(encodeURIComponent(JSON.stringify(snap))));
+    const url=window.location.href.split('?')[0]+'?lesson='+encoded;
+    if(navigator.share){
+      navigator.share({title:'LessonCraft: '+S.topic,url:url});
+    } else if(navigator.clipboard){
+      navigator.clipboard.writeText(url).then(()=>showToast('Link copied to clipboard!','success'));
+    } else {
+      prompt('Copy this link to share your lesson:',url);
+    }
+  }catch(e){showToast('Could not create share link','error');}
+}
+
+function loadSharedLesson(){
+  try{
+    const params=new URLSearchParams(window.location.search);
+    const encoded=params.get('lesson');
+    if(!encoded)return;
+    const snap=JSON.parse(decodeURIComponent(escape(atob(encoded))));
+    if(snap.topic){
+      S.topic=snap.topic||'';S.subject=snap.subject||'';S.year=snap.year||'';
+      S.mode=snap.mode||'lesson';S.examBoard=snap.examBoard||'AQA';
+      if(snap.phases){
+        Object.entries(snap.phases).forEach(([k,v])=>{
+          if(!S.phases[k])S.phases[k]={content:'',parsed:null,generated:false,generating:false};
+          S.phases[k].content=v.content||'';S.phases[k].generated=v.generated||false;
+        });
+      }
+      if(snap.keywords)S.keywords=snap.keywords;
+      if(snap.theme){S.theme=Object.assign({},S.theme,snap.theme,{loaded:true,filename:'Shared'});}
+      const activeP=S.mode==='exam'?EXAM_PHASES:PHASES;
+      activeP.forEach(p=>{S.open[p.id]=S.phases[p.id]&&S.phases[p.id].generated;});
+      S.tab='build';
+      showToast('Shared lesson loaded!','success');
+    }
+  }catch(e){console.log('No shared lesson in URL');}
+}
+
+// ===================================================
+// FEATURE: STUDENT WORKSHEET DOWNLOAD
+// ===================================================
+function downloadWorksheet(){
+  const t=S.theme;
+  const isExam=S.mode==='exam';
+  const activePhases=isExam?EXAM_PHASES:PHASES;
+  // Only include question phases, strip all answers
+  const questionPhases=isExam
+    ?['warmup','examqs','drillqs']
+    :['prior','newknow','independent'];
+  const rows=activePhases.filter(p=>questionPhases.includes(p.id)).map(phase=>{
+    const phState=S.phases[phase.id];
+    if(!phState||!phState.content)return '';
+    // Strip answer lines
+    const clean=phState.content.split('\n')
+      .filter(l=>!l.trim().startsWith('Answer:')&&!l.trim().startsWith('Solution:')&&!l.trim().startsWith('Final answer:'))
+      .join('\n');
+    return '<div style="margin-bottom:24px;page-break-inside:avoid;">'
+      +'<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:'+phase.bg+';border-radius:6px 6px 0 0;border:1.5px solid '+phase.col+'33;">'
+      +'<span>'+phase.icon+'</span><span style="font-family:Sora,sans-serif;font-size:13px;font-weight:700;color:'+phase.col+';">'+phase.label+'</span>'
+      +'</div>'
+      +'<div style="padding:14px 16px;border:1.5px solid '+phase.col+'22;border-top:none;border-radius:0 0 6px 6px;font-size:13px;line-height:1.9;white-space:pre-wrap;">'+clean+'</div>'
+      +'</div>';
+  }).join('');
+  // Answer boxes for independent questions
+  const answerRows=isExam?activePhases.filter(p=>['examqs'].includes(p.id)).map(phase=>{
+    const phState=S.phases[phase.id];if(!phState||!phState.content)return '';
+    const qs=phState.content.split('\n\n').filter(Boolean);
+    return '<div style="margin-top:32px;"><div style="font-family:Sora,sans-serif;font-size:14px;font-weight:700;color:'+t.primaryDark+';margin-bottom:12px;border-bottom:2px solid '+t.primary+';padding-bottom:6px;">Working space</div>'
+      +qs.map(()=>'<div style="border:1px solid #d1d5db;border-radius:6px;height:80px;margin-bottom:10px;"></div>').join('')+'</div>';
+  }).join(''):'';
+
+  const meta=[S.subject,S.year?'Year '+S.year:'',new Date().toLocaleDateString('en-GB'),S.examBoard].filter(Boolean).join(' | ');
+  const html='<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">'
+    +'<title>'+( S.topic||'Worksheet')+'</title>'
+    +'<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet">'
+    +'<style>body{font-family:Inter,sans-serif;margin:0;padding:2.5cm;color:#1a1a2e;}'
+    +'.header{border-bottom:3px solid '+t.primary+';padding-bottom:12px;margin-bottom:24px;}'
+    +'.title{font-family:Sora,sans-serif;font-size:22px;font-weight:800;color:'+t.primaryDark+';}'
+    +'.meta{font-size:11px;color:#6b7280;margin-top:4px;}'
+    +'.name-box{display:flex;gap:32px;margin:16px 0 28px;}'
+    +'.name-field{flex:1;border-bottom:1.5px solid #d1d5db;padding-bottom:4px;font-size:12px;color:#9ca3af;}'
+    +'@media print{body{padding:1.5cm;}}</style></head><body>'
+    +'<div class="header">'
+    +'<div class="title">'+(S.topic||'Worksheet')+'</div>'
+    +'<div class="meta">'+meta+'</div></div>'
+    +'<div class="name-box">'
+    +'<div class="name-field">Name: ___________________________</div>'
+    +'<div class="name-field">Class: ________________</div>'
+    +'<div class="name-field">Date: ________________</div>'
+    +'</div>'
+    +rows+answerRows
+    +'</body></html>';
+  const blob=new Blob([html],{type:'text/html'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download=(S.topic||'worksheet').replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_-]/g,'')+'_worksheet.html';
+  a.click();
+  showToast('Worksheet downloaded -- open and print','success');
+}
+
+// --- INIT -----------------------------------------
+const themeCSS=document.createElement('style');themeCSS.id='theme-css';document.head.appendChild(themeCSS);
+applyCSS(S.theme);
+
+// Open all phases that have content on load
+PHASES.forEach(p=>{S.open[p.id]=S.phases[p.id].generated||false});
+// Start on build tab if we have a topic
+if(S.topic)S.tab='build';
+
+
+loadSharedLesson();
+render();
+</script>
+</body>
+</html>
