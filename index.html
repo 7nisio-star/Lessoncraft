@@ -799,7 +799,7 @@ textarea{resize:vertical;line-height:1.6}
 //           Format: 'sk-ant-api03-...'
 //           When deploying to Netlify/school server, set this once and all teachers
 //           can use the app immediately with no setup required.
-var LESSONCRAFT_API_KEY = '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';
+var LESSONCRAFT_API_KEY = '';
 
 // ===================================================
 // STATE
@@ -932,10 +932,8 @@ async function callAI(sys,usr){
 
 async function callClaude(sys,usr){
   const key=S.claudeKey||LESSONCRAFT_API_KEY||'';
-  const headers={'Content-Type':'application/json'};
-  if(key)headers['x-api-key']=key;
-  // anthropic-dangerous-direct-browser-access header needed for direct browser calls with key
-  if(key)headers['anthropic-dangerous-direct-browser-access']='true';
+  if(!key)throw new Error('No Claude API key set. Go to the AI Setup tab and paste your key.');
+  const headers={'Content-Type':'application/json','x-api-key':key,'anthropic-dangerous-direct-browser-access':'true'};
   const body={model:'claude-sonnet-4-20250514',max_tokens:1000,system:sys,messages:[{role:'user',content:usr}]};
   const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers,body:JSON.stringify(body)});
   const d=await r.json();
@@ -1303,7 +1301,7 @@ function buildHeader(){
   h.appendChild(logo);
   // Nav
   const nav=el('div',{'class':'hdr-nav'});
-  const tabs=[['theme','Theme'],['build','Build'],['keywords','Keywords'],['preview','Preview']];
+  const tabs=[['aisetup','⚙ AI Setup'],['theme','Theme'],['build','Build'],['keywords','Keywords'],['preview','Preview']];
   tabs.forEach(([id,lbl],i)=>{
     const done=id!=='theme'&&(
       (id==='build'&&PHASES.some(p=>S.phases[p.id].generated))||
@@ -1379,7 +1377,8 @@ function buildSidebar(){
     +'<span class="ai-status-label">'+(isClaude?'Claude':'Copilot')+' '+(isConfigured?'connected':'-- setup needed')+'</span>'
     +'<button class="ai-status-link" id="ai-cfg-btn">Configure</button>';
   scroll.appendChild(aiStatusBar);
-  requestAnimationFrame(()=>{const b=document.getElementById('ai-cfg-btn');if(b)b.addEventListener('click',()=>{S.tab='aisetup';render();});});
+  // wire up configure button via event delegation on document
+  setTimeout(()=>{const b=document.getElementById('ai-cfg-btn');if(b)b.onclick=function(){S.tab='aisetup';render();};},0);
 
   // -- Exam board selector (shown in advanced or always) --
   const boardWrap=el('div',{'class':'sb-board-row'});
