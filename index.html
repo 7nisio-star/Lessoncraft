@@ -688,15 +688,138 @@ textarea{resize:vertical;line-height:1.6}
 /* --- MOBILE HAMBURGER --- */
 .hamburger-btn{display:none;background:transparent;border:none;cursor:pointer;padding:6px;border-radius:6px;margin-left:8px;transition:background .15s;flex-shrink:0}
 .hamburger-btn:hover{background:rgba(255,255,255,.1)}
-@media(max-width:768px){
-  .hamburger-btn{display:flex;align-items:center;justify-content:center}
-  .nav-item{padding:0 8px;font-size:11px}
-  .sidebar{position:fixed;top:var(--hdr);left:0;bottom:0;z-index:250;transform:translateX(0);transition:transform .25s ease;box-shadow:4px 0 20px rgba(0,0,0,.15)}
-  .sidebar.sidebar-closed{transform:translateX(-100%)}
-  .content{padding:1rem 1rem 80px}
-  .btm{padding:8px 12px}
+/* ======================================
+   RESPONSIVE — TABLET (max 1024px)
+   ====================================== */
+@media(max-width:1024px){
+  :root{--sb:240px}
+  .nav-item{padding:0 10px;font-size:12px}
+  .content{padding:1.2rem 1.4rem 80px}
+  .phases{gap:8px}
+  .ai-provider-grid{grid-template-columns:1fr 1fr}
+  .build-header{flex-direction:column;align-items:flex-start;gap:10px}
+  .export-hero-btn{width:100%}
 }
-@media(min-width:769px){.sidebar{transform:none!important}}
+
+/* ======================================
+   RESPONSIVE — MOBILE (max 768px)
+   ====================================== */
+@media(max-width:768px){
+  :root{--hdr:52px;--sb:280px}
+
+  /* Header: logo + hamburger only */
+  .hdr{padding:0 1rem}
+  .hdr-logo{font-size:15px;padding:0 12px 0 0;border-right:none}
+  .hdr-nav{display:none}
+  .hamburger-btn{display:flex;align-items:center;justify-content:center;margin-left:auto}
+  .hdr-right{display:none}
+
+  /* Sidebar: full-height drawer */
+  .sidebar{
+    position:fixed;top:var(--hdr);left:0;bottom:60px;
+    z-index:250;width:var(--sb);
+    transform:translateX(0);
+    transition:transform .25s ease;
+    box-shadow:4px 0 24px rgba(0,0,0,.18);
+    overflow-y:auto;
+  }
+  .sidebar.sidebar-closed{transform:translateX(-100%)}
+
+  /* Main content fills full width */
+  .shell{padding-top:0}
+  .content{
+    padding:1rem 1rem 80px;
+    width:100%;
+    min-width:0;
+  }
+
+  /* Bottom bar — compact */
+  .btm{padding:8px 12px;gap:6px}
+  .btm-left{display:none}
+  .btm-right{width:100%;justify-content:space-between}
+  .btm-right .btn{flex:1;font-size:11px;padding:7px 6px}
+
+  /* Phase cards — full width */
+  .pcard{border-radius:8px}
+  .phase-label{font-size:12px}
+  .phase-sub{display:none}
+  .quality-tag{display:none}
+
+  /* AI provider grid — stack */
+  .ai-provider-grid{grid-template-columns:1fr}
+
+  /* Preview — no horizontal padding */
+  .preview-shell{max-width:100%}
+  .prev-topbar{padding:1.2rem 1.2rem}
+  .prev-title{font-size:18px}
+  .prev-body{padding:1rem 1rem}
+  .prev-title-slide{height:200px}
+  .prev-iq-question{font-size:16px;bottom:36px}
+  .preview-toolbar{flex-wrap:wrap;gap:6px}
+  .preview-toolbar .btn{font-size:11px;padding:5px 10px}
+  .answer-toggle-wrap{margin-left:0}
+
+  /* Build header — stack */
+  .build-header{flex-direction:column;align-items:flex-start;gap:8px}
+  .build-title{font-size:16px}
+  .export-hero-btn{width:100%;justify-content:center}
+
+  /* Keyword table */
+  .kw-thead{display:none}
+  .kw-row{grid-template-columns:1fr 32px;gap:6px}
+  .kw-row input:nth-child(2){display:none}
+
+  /* MWB — shorter on mobile */
+  .mwb-canvas{height:auto;max-height:160px}
+
+  /* Board buttons — wrap tighter */
+  .sb-board-row{gap:4px}
+  .board-btn{padding:3px 7px;font-size:10px}
+
+  /* Gen hero button */
+  .gen-hero{padding:11px 12px}
+  .gen-hero-title{font-size:12px}
+  .gen-hero-sub{font-size:9px}
+
+  /* Mode switcher */
+  .mode-switcher{gap:5px}
+  .mode-btn{padding:8px}
+  .mode-btn-sub{display:none}
+
+  /* No key banner */
+  .no-key-banner{flex-direction:column;text-align:center;gap:10px}
+
+  /* Gen steps */
+  .gen-progress-card{padding:14px}
+  .gen-step-desc{display:none}
+
+  /* Setup section */
+  .ai-setup-section{padding:14px}
+  .ai-key-row{flex-direction:column}
+  .ai-key-row .btn{width:100%}
+
+  /* Empty state */
+  .empty-screen{padding:32px 16px}
+  .empty-phases{gap:6px}
+  .empty-phase-chip{padding:4px 8px;font-size:10px}
+}
+
+/* ======================================
+   RESPONSIVE — SMALL MOBILE (max 400px)
+   ====================================== */
+@media(max-width:400px){
+  :root{--sb:100vw}
+  .sidebar{width:100vw}
+  .btm-right .btn-dark{display:none}
+  .hdr-logo .logo-pill{display:none}
+  .nav-item span:first-child{display:none}
+}
+
+/* Desktop: sidebar always visible */
+@media(min-width:769px){
+  .sidebar{transform:none!important;position:relative;top:auto}
+  .hamburger-btn{display:none!important}
+}
 
 
 /* --- AI PROVIDER PICKER --- */
@@ -796,6 +919,91 @@ textarea{resize:vertical;line-height:1.6}
 }
 .no-key-banner strong{color:var(--gray-900)}
 
+
+/* --- ABILITY SELECTOR --- */
+.sb-ability-row{display:flex;align-items:center;gap:5px;margin-bottom:8px;flex-wrap:wrap}
+.ability-btn{padding:4px 10px;border-radius:99px;font-size:11px;font-weight:700;border:1.5px solid var(--gray-200);background:var(--white);color:var(--gray-500);cursor:pointer;transition:all .15s}
+.ability-btn:hover{border-color:var(--p);color:var(--p)}
+.ability-btn.active{background:var(--p);border-color:var(--p);color:#fff}
+
+/* --- PHASE TIMING --- */
+.phase-timing-grid{background:var(--gray-50);border:1px solid var(--gray-200);border-radius:8px;padding:10px;margin:8px 0}
+.timing-header{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--gray-500);margin-bottom:6px}
+.timing-row{display:flex;align-items:center;gap:6px;margin-bottom:4px}
+.timing-label{flex:1;font-size:11px;color:var(--gray-700);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.timing-inp{width:44px!important;padding:3px 6px!important;font-size:12px!important;text-align:center}
+.timing-min{font-size:10px;color:var(--gray-400)}
+.timing-total{font-size:11px;font-weight:700;margin-top:6px;padding-top:6px;border-top:1px solid var(--gray-200)}
+.timing-total.ok{color:var(--green)}
+.timing-total.over{color:#dc2626}
+
+/* --- PHASE CARD: hover-reveal toolbar --- */
+.phase-toolbar{
+  display:none;gap:6px;flex-wrap:wrap;
+  margin-top:8px;padding:8px 0 4px;border-top:1px solid var(--gray-100);
+}
+.pcard:hover .phase-toolbar,.pcard.open .phase-toolbar{display:flex}
+.phase-action-btn{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:5px 11px;border-radius:99px;font-size:12px;font-weight:600;
+  color:var(--gray-500);background:var(--gray-50);
+  border:1.5px solid var(--gray-200);cursor:pointer;transition:all .15s;white-space:nowrap;
+}
+.phase-action-btn:hover{color:var(--p);border-color:var(--p);background:var(--pl)}
+
+/* --- PHASE CARD: timing badge --- */
+.phase-timing-badge{
+  font-size:10px;font-weight:600;color:var(--gray-400);
+  background:var(--gray-100);border-radius:99px;
+  padding:2px 7px;white-space:nowrap;flex-shrink:0;
+}
+
+/* --- SPLIT VIEW --- */
+.shell.split-view{display:flex}
+.shell.split-view .content{flex:1;min-width:0}
+.split-preview-pane{
+  width:380px;min-width:380px;
+  background:var(--gray-50);border-left:1px solid var(--gray-200);
+  overflow-y:auto;padding:16px;padding-bottom:80px;
+}
+@media(max-width:1200px){.split-preview-pane{display:none}}
+
+/* --- ACTIVE PHASE HIGHLIGHT --- */
+.pcard.phase-active{
+  border-color:var(--p);
+  box-shadow:0 0 0 3px rgba(146,39,143,.1),var(--shadow-md);
+}
+
+/* --- GENERATING ANIMATION on phase card --- */
+.pcard.phase-generating .phead{
+  background:linear-gradient(90deg,var(--white) 0%,var(--pl) 50%,var(--white) 100%);
+  background-size:200% 100%;
+  animation:shimmer 1.5s ease infinite;
+}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+
+/* --- WORKSHEET FORMAT PICKER --- */
+.ws-btn-wrap{position:relative}
+.ws-main-btn{white-space:nowrap}
+.ws-format-picker{
+  position:absolute;top:calc(100% + 6px);right:0;
+  background:var(--white);border:1.5px solid var(--gray-200);
+  border-radius:var(--radius);box-shadow:var(--shadow-lg);
+  z-index:500;min-width:220px;overflow:hidden;
+  animation:fadeIn .15s ease;
+}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+.ws-format-row{
+  display:flex;align-items:center;gap:12px;
+  padding:11px 14px;cursor:pointer;transition:background .1s;
+}
+.ws-format-row:hover{background:var(--gray-50)}
+.ws-format-row+.ws-format-row{border-top:1px solid var(--gray-100)}
+.ws-fmt-icon{font-size:20px;flex-shrink:0}
+.ws-fmt-label{font-size:13px;font-weight:600;color:var(--gray-900)}
+.ws-fmt-sub{font-size:11px;color:var(--gray-400);margin-top:1px}
+
 </style>
 </head>
 <body>
@@ -818,11 +1026,12 @@ var LESSONCRAFT_API_KEY = '';
 // -- Load saved state from localStorage --
 function loadSaved(){
   try{
-    const saved=localStorage.getItem('lessoncraft_v4');
-    if(saved){
-      const p=JSON.parse(saved);
-      // Restore non-volatile fields
-      if(p.topic)return p;
+    const rawSaved=localStorage.getItem('lessoncraft_v4');
+    if(rawSaved){
+      const p=JSON.parse(rawSaved);
+      // Version check: clear stale state missing new fields
+      if(!p.timings||!p.ability){localStorage.removeItem('lessoncraft_v4');return null;}
+      if(p.topic||p.phases)return p;
     }
   }catch(e){}
   return null;
@@ -944,7 +1153,7 @@ async function callAI(sys,usr){
 async function callClaude(sys,usr){
   const key=S.claudeKey||LESSONCRAFT_API_KEY||'';
   if(!key)throw new Error('No Claude API key set. Go to the AI Setup tab and paste your key.');
-  const headers={'Content-Type':'application/json','x-api-key':key,'anthropic-dangerous-direct-browser-access':'true'};
+  const headers={'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'};
   const body={model:'claude-sonnet-4-20250514',max_tokens:1000,system:sys,messages:[{role:'user',content:usr}]};
   const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers,body:JSON.stringify(body)});
   const d=await r.json();
@@ -996,7 +1205,9 @@ async function generatePhase(id, isImprovement=false){
   const topic=S.topic||'this topic',subject=S.subject||'Maths',year=S.year||'secondary';
   const ws=S.worksheetBase64?'\n\nA worksheet has been uploaded -- match its question style, difficulty and number complexity.':'';
   const prev=isImprovement&&prevContent?`\n\nPrevious version (improve on this):\n${prevContent}`:'';
-  const sys=`You are an expert ${subject} teacher creating GCSE-aligned lesson content for Year ${year} UK secondary students.\nTopic: ${topic}${ws}${prev}\nRespond ONLY with valid JSON. No markdown, no preamble, no explanation.`;
+  const abilityNote=S.ability==='lower'?'Target lower ability: simpler language, more scaffolding, concrete examples.':S.ability==='higher'?'Target higher ability: technical vocabulary, multi-step problems, stretch questions.':'Target mixed ability: accessible entry points plus stretch elements.';
+  const boardNote2={'AQA':'AQA command words and mark scheme style.','Edexcel':'Edexcel (Pearson) question style and mark scheme.','OCR':'OCR levels-based mark schemes.','WJEC':'WJEC/Eduqas band mark schemes.','CCEA':'CCEA Northern Ireland conventions.'}[S.examBoard]||'';
+  const sys=`You are an expert ${subject} teacher creating ${S.examBoard}-aligned lesson content for Year ${year} UK secondary students.\n${boardNote2}\n${abilityNote}\nTopic: ${topic}${ws}${prev}\nRespond ONLY with valid JSON. No markdown, no preamble, no explanation.`;
   let prompt='',parse=null;
   if(id==='prior'){
     prompt=`Activating prior knowledge for "${topic}". JSON: {"title":"string","items":["question 1","question 2","question 3"]}. Items should probe prerequisite knowledge.`;
@@ -1039,21 +1250,18 @@ async function generatePhase(id, isImprovement=false){
 
 async function generateAll(){
   if(!S.topic){showToast('Add a topic first','error');return;}
-var hasK=(LESSONCRAFT_API_KEY&&LESSONCRAFT_API_KEY.length>5)||(S.claudeKey&&S.claudeKey.length>5)||(S.aiProvider==='copilot'&&S.copilotKey);
-if(!hasK){showToast('Go to AI Setup tab first -- no key configured','error');S.tab='aisetup';render();return;}
-var hasK=(LESSONCRAFT_API_KEY&&LESSONCRAFT_API_KEY.length>5)||(S.claudeKey&&S.claudeKey.length>5)||(S.aiProvider==='copilot'&&S.copilotKey);
-if(!hasK){showToast('Set up your AI first -- click AI Setup tab','error');S.tab='aisetup';render();return;}
-  S.generatingAll=true;S.genSteps=PHASES.map(p=>({id:p.id,label:p.label,status:'pending'}));
-  S.tab='build';S.open={prior:false,newknow:false,ido:false,guided:false,independent:false,reflect:false};
-  render();
+  var hasK=(LESSONCRAFT_API_KEY&&LESSONCRAFT_API_KEY.length>5)||(S.claudeKey&&S.claudeKey.length>5)||(S.aiProvider==='copilot'&&S.copilotKey);
+  if(!hasK){showToast('Go to AI Setup tab first','error');S.tab='aisetup';render();return;}
+  S.generatingAll=true;S.genSteps=PHASES.map(function(p){return{id:p.id,label:p.label,status:'pending'};});
+  S.tab='build';PHASES.forEach(function(p){S.open[p.id]=false;});S.activePhaseIdx=0;render();
   for(var i=0;i<S.genSteps.length;i++){
-    S.genSteps[i].status='active';render();
+    S.genSteps[i].status='active';
+    PHASES.forEach(function(p,j){S.open[p.id]=(j===i);});
+    S.activePhaseIdx=i;render();
     await generatePhase(S.genSteps[i].id);
-    S.genSteps[i].status='done';render();
+    S.genSteps[i].status='done';
   }
-  S.generatingAll=false;
-  PHASES.forEach(p=>{S.open[p.id]=true;});
-  render();
+  S.generatingAll=false;PHASES.forEach(function(p){S.open[p.id]=p.id==='ido'||p.id==='guided';});render();
   showToast('Lesson ready!','success');
 }
 
@@ -1110,22 +1318,19 @@ async function generateExamPhase(id, isImprovement=false){
 
 async function generateAllExam(){
   if(!S.topic){showToast('Add a topic first','error');return;}
-var hasK=(LESSONCRAFT_API_KEY&&LESSONCRAFT_API_KEY.length>5)||(S.claudeKey&&S.claudeKey.length>5)||(S.aiProvider==='copilot'&&S.copilotKey);
-if(!hasK){showToast('Go to AI Setup tab first -- no key configured','error');S.tab='aisetup';render();return;}
-  S.generatingAll=true;
-  S.genSteps=EXAM_PHASES.map(p=>({id:p.id,label:p.label,status:'pending'}));
-  S.tab='build';
-  // Reset exam phases
-  EXAM_PHASES.forEach(p=>{S.phases[p.id]={content:'',parsed:null,generated:false,generating:false};S.open[p.id]=false;});
-  render();
-  for(let i=0;i<S.genSteps.length;i++){
-    S.genSteps[i].status='active';render();
+  var hasK=(LESSONCRAFT_API_KEY&&LESSONCRAFT_API_KEY.length>5)||(S.claudeKey&&S.claudeKey.length>5)||(S.aiProvider==='copilot'&&S.copilotKey);
+  if(!hasK){showToast('Go to AI Setup tab first','error');S.tab='aisetup';render();return;}
+  S.generatingAll=true;S.genSteps=EXAM_PHASES.map(function(p){return{id:p.id,label:p.label,status:'pending'};});
+  S.tab='build';EXAM_PHASES.forEach(function(p){S.phases[p.id]={content:'',parsed:null,generated:false,generating:false};S.open[p.id]=false;});
+  S.activePhaseIdx=0;render();
+  for(var i=0;i<S.genSteps.length;i++){
+    S.genSteps[i].status='active';
+    EXAM_PHASES.forEach(function(p,j){S.open[p.id]=(j===i);});
+    S.activePhaseIdx=i;render();
     await generateExamPhase(S.genSteps[i].id);
-    S.genSteps[i].status='done';render();
+    S.genSteps[i].status='done';
   }
-  S.generatingAll=false;
-  EXAM_PHASES.forEach(p=>{S.open[p.id]=true;});
-  render();
+  S.generatingAll=false;EXAM_PHASES.forEach(function(p){S.open[p.id]=p.id==='examqs'||p.id==='workedex';});render();
   showToast('Exam pack ready!','success');
 }
 
@@ -1291,7 +1496,7 @@ function render(){
     // sidebar closed, no overlay needed
   } else {
     const overlay=el('div',{'class':'sidebar-overlay'});
-    overlay.style.display='none'; // hidden by default, CSS shows on mobile
+    overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:240;display:block;';
     overlay.addEventListener('click',()=>{S.sidebarOpen=false;render();});
     shell.appendChild(overlay);
   }
@@ -1357,189 +1562,142 @@ function buildHeader(){
 function buildSidebar(){
   const sb=el('div',{'class':'sidebar'+(S.sidebarOpen?'':' sidebar-closed')});
   const scroll=el('div',{'class':'sb-scroll'});
-
-  // -- Quick Start hero (only if nothing generated yet) --
-  const currentPhases=S.mode==='exam'?EXAM_PHASES:PHASES;
-  const anyDone=currentPhases.some(p=>S.phases[p.id]&&S.phases[p.id].generated);
-  if(!anyDone){
-    const qs=el('div',{'class':'qs-hero'});
-    qs.innerHTML=`<div class="qs-eyebrow">Start here</div><div class="qs-title">Quick Start</div><div class="qs-desc">Enter a topic and year, then generate your full lesson in one click.</div>`;
-    scroll.appendChild(qs);
-  }
-
-  // -- Topic + Year (always visible, prominent) --
-  const topicField=el('div',{'class':'sb-field sb-field-hero'+(anyDone?'':' sb-field-focus')});
-  topicField.appendChild(el('label',{},'Topic'));
-  const topicInp=el('input',{'type':'text','placeholder':'e.g. Surface area of a cylinder','value':S.topic,'class':'inp-hero'});
-  topicInp.addEventListener('input',e=>{S.topic=e.target.value;saveState()});
-  topicField.appendChild(topicInp);
-  scroll.appendChild(topicField);
-
-  const row2=el('div',{'class':'row2','style':'margin-bottom:10px;'});
-  const yrF=el('div',{'class':'sb-field'});yrF.appendChild(el('label',{},'Year'));
-  const yrInp=el('input',{'type':'text','placeholder':'e.g. 9','value':S.year});
-  yrInp.addEventListener('input',e=>{S.year=e.target.value;saveState()});
-  yrF.appendChild(yrInp);row2.appendChild(yrF);
-  const subF=el('div',{'class':'sb-field'});subF.appendChild(el('label',{},'Subject'));
-  const subInp=el('input',{'type':'text','placeholder':'Maths','value':S.subject});
-  subInp.addEventListener('input',e=>{S.subject=e.target.value;saveState()});
-  subF.appendChild(subInp);row2.appendChild(subF);
-  scroll.appendChild(row2);
-
-  // -- AI Status indicator --
-  const aiStatusBar=el('div',{'class':'ai-status-bar'});
   const isConfigured=(S.aiProvider==='claude'&&(S.claudeKey||LESSONCRAFT_API_KEY))||(S.aiProvider==='copilot'&&S.copilotKey&&S.copilotEndpoint);
-  const isClaude=S.aiProvider==='claude';
-  aiStatusBar.innerHTML='<span class="ai-status-dot '+(isConfigured?'connected':'warn')+'"></span>'
-    +'<span class="ai-status-label">'+(isClaude?'Claude':'Copilot')+' '+(isConfigured?'connected':'-- setup needed')+'</span>'
-    +'<button class="ai-status-link" id="ai-cfg-btn">Configure</button>';
-  scroll.appendChild(aiStatusBar);
-  // wire up configure button via event delegation on document
-  setTimeout(()=>{const b=document.getElementById('ai-cfg-btn');if(b)b.onclick=function(){S.tab='aisetup';render();};},0);
+  var activePhasesMode=S.mode==='exam'?EXAM_PHASES:PHASES;
+  var anyDoneMode=activePhasesMode.some(function(p){return S.phases[p.id]&&S.phases[p.id].generated;});
 
-  // -- Exam board selector (shown in advanced or always) --
-  const boardWrap=el('div',{'class':'sb-board-row'});
-  boardWrap.appendChild(el('span',{'class':'sb-label','style':'margin:0;'},'Exam Board:'));
+  // == LEVEL 1: Always visible ==
+  // Topic (prominent)
+  var tF=el('div',{'class':'sb-field sb-field-hero'+(anyDoneMode?'':' sb-field-focus')});
+  tF.appendChild(el('label',{},'Topic'));
+  var tInp=el('input',{'type':'text','placeholder':'e.g. Surface area of a cylinder','value':S.topic,'class':'inp-hero'});
+  tInp.addEventListener('input',function(e){S.topic=e.target.value;saveState();});
+  tF.appendChild(tInp);scroll.appendChild(tF);
+
+  // Year + Subject
+  var r2=el('div',{'class':'row2'});
+  var yF=el('div',{'class':'sb-field'});yF.appendChild(el('label',{},'Year'));
+  var yI=el('input',{'type':'text','placeholder':'9','value':S.year});yI.addEventListener('input',function(e){S.year=e.target.value;saveState();});yF.appendChild(yI);r2.appendChild(yF);
+  var sF=el('div',{'class':'sb-field'});sF.appendChild(el('label',{},'Subject'));
+  var sI=el('input',{'type':'text','placeholder':'Maths','value':S.subject});sI.addEventListener('input',function(e){S.subject=e.target.value;saveState();});sF.appendChild(sI);r2.appendChild(sF);
+  scroll.appendChild(r2);
+
+  // Ability
+  var abRow=el('div',{'class':'sb-ability-row'});
+  abRow.appendChild(el('span',{'class':'sb-label','style':'margin:0;align-self:center;'},'Ability:'));
+  ['lower','mixed','higher'].forEach(function(ab){
+    var b=el('button',{'class':'ability-btn'+(S.ability===ab?' active':'')});
+    b.textContent=ab[0].toUpperCase()+ab.slice(1);
+    b.addEventListener('click',function(){S.ability=ab;saveState();render();});
+    abRow.appendChild(b);
+  });
+  scroll.appendChild(abRow);
+
+  // Mode switcher
+  var mSw=el('div',{'class':'mode-switcher'});
+  [{id:'lesson',icon:'📖',label:'Lesson',sub:'Full structure'},{id:'exam',icon:'🎯',label:'Exam Focus',sub:'Y11 practice'}].forEach(function(m){
+    var card=el('div',{'class':'mode-btn'+(S.mode===m.id?' active':'')});
+    card.innerHTML='<span class="mode-btn-icon">'+m.icon+'</span><div class="mode-btn-text"><div class="mode-btn-label">'+m.label+'</div><div class="mode-btn-sub">'+m.sub+'</div></div>';
+    if(S.mode===m.id)card.appendChild(el('span',{'class':'mode-active-dot'}));
+    card.addEventListener('click',function(){if(S.mode===m.id)return;S.mode=m.id;var phases=m.id==='exam'?EXAM_PHASES:PHASES;phases.forEach(function(p){if(!S.phases[p.id])S.phases[p.id]={content:'',parsed:null,generated:false,generating:false};S.open[p.id]=false;});S.activePhaseIdx=0;render();});
+    mSw.appendChild(card);
+  });
+  scroll.appendChild(mSw);
+
+  // Exam board
+  var bRow=el('div',{'class':'sb-board-row'});
+  bRow.appendChild(el('span',{'class':'sb-label','style':'margin:0;'},'Board:'));
   ['AQA','Edexcel','OCR','WJEC','CCEA'].forEach(function(board){
-    var b=el('button',{'class':'board-btn'+(S.examBoard===board?' active':'')});
-    b.textContent=board==='Edexcel'?'Edexcel':board;
-    b.addEventListener('click',function(){S.examBoard=board;saveState();render();});
-    boardWrap.appendChild(b);
+    var b=el('button',{'class':'board-btn'+(S.examBoard===board?' active':'')});b.textContent=board;
+    b.addEventListener('click',function(){S.examBoard=board;saveState();render();});bRow.appendChild(b);
   });
-  scroll.appendChild(boardWrap);
+  scroll.appendChild(bRow);
 
-  // -- Mode Switcher --
-  const modeSwitcher=el('div',{'class':'mode-switcher'});
-  [{id:'lesson',icon:'📖',label:'Lesson',sub:'Full lesson structure'},{id:'exam',icon:'🎯',label:'Exam Focus',sub:'Y11 exam practice'}].forEach(m=>{
-    const btn=el('div',{'class':'mode-btn'+(S.mode===m.id?' active':'')});
-    btn.innerHTML=`<span class="mode-btn-icon">${m.icon}</span><div class="mode-btn-text"><div class="mode-btn-label">${m.label}</div><div class="mode-btn-sub">${m.sub}</div></div>`;
-    if(S.mode===m.id)btn.appendChild(el('span',{'class':'mode-active-dot'}));
-    btn.addEventListener('click',()=>{
-      if(S.mode===m.id)return;
-      S.mode=m.id;
-      // Reset phases for the new mode
-      const phasesToReset=m.id==='exam'?EXAM_PHASES:PHASES;
-      phasesToReset.forEach(p=>{
-        if(!S.phases[p.id])S.phases[p.id]={content:'',parsed:null,generated:false,generating:false};
-        S.open[p.id]=S.phases[p.id].generated||false;
-      });
-      render();
-    });
-    modeSwitcher.appendChild(btn);
-  });
-  scroll.appendChild(modeSwitcher);
+  // AI status
+  var aiBar=el('div',{'class':'ai-status-bar'});
+  aiBar.innerHTML='<span class="ai-status-dot '+(isConfigured?'connected':'warn')+'"></span><span class="ai-status-label">'+(S.aiProvider==='claude'?'Claude':'Copilot')+' '+(isConfigured?'ready':'-- setup needed')+'</span><button class="ai-status-link" id="ai-cfg-btn">'+(isConfigured?'Change':'Setup')+'</button>';
+  scroll.appendChild(aiBar);
+  setTimeout(function(){var b=document.getElementById('ai-cfg-btn');if(b)b.onclick=function(){S.tab='aisetup';render();};},0);
 
-  // -- Generate CTA --
-  const activePhasesForMode=S.mode==='exam'?EXAM_PHASES:PHASES;
-  const anyDoneMode=activePhasesForMode.some(p=>S.phases[p.id]&&S.phases[p.id].generated);
-  const genBtn=el('button',{'class':'gen-hero'+(S.mode==='exam'?' gen-hero-exam':'')});
-  const genLabel=anyDoneMode?'Regenerate All':(S.mode==='exam'?'Generate Exam Pack':'Quick Start Lesson');
-  const genSub=anyDoneMode?'Replace all with AI':(S.mode==='exam'?'6 exam-focused activities':'AI builds all 6 phases');
-  genBtn.innerHTML=`<span class="gen-hero-icon">${S.mode==='exam'?'🎯':'✨'}</span><div class="gen-hero-text"><div class="gen-hero-title">${genLabel}</div><div class="gen-hero-sub">${genSub}</div></div>`;
-  genBtn.addEventListener('click',function(){S.mode==='exam'?generateAllExam():generateAll();});
+  // GENERATE BUTTON
+  var genBtn=el('button',{'class':'gen-hero'+(S.mode==='exam'?' gen-hero-exam':'')});
+  var genLabel=anyDoneMode?'Regenerate All':(S.mode==='exam'?'Generate Exam Pack':'Quick Start Lesson');
+  var genSub=anyDoneMode?'Rebuild all phases with AI':(S.mode==='exam'?'6 exam activities, ~30 sec':'Full lesson in ~30 seconds');
+  genBtn.innerHTML='<span class="gen-hero-icon">'+(S.mode==='exam'?'🎯':'✨')+'</span><div class="gen-hero-text"><div class="gen-hero-title">'+genLabel+'</div><div class="gen-hero-sub">'+genSub+'</div></div>';
+  genBtn.addEventListener('click',function(){if(window.innerWidth<=768)S.sidebarOpen=false;S.mode==='exam'?generateAllExam():generateAll();});
   scroll.appendChild(genBtn);
 
-  // Progress bar (shown once generation has started)
-  const totalP=currentPhases.length;
-  const doneP=currentPhases.filter(p=>S.phases[p.id]&&S.phases[p.id].generated).length;
+  // Progress
+  var doneP=activePhasesMode.filter(function(p){return S.phases[p.id]&&S.phases[p.id].generated;}).length;
   if(doneP>0){
-    const prog=el('div',{'class':'sb-progress'});
-    const prow=el('div',{'class':'sb-progress-row'});
-    prow.appendChild(el('span',{},doneP===totalP?'Lesson ready v':doneP+'/'+totalP+' phases'));
-    prow.appendChild(el('span',{'style':'color:var(--gray-400);font-size:10px;'},Math.round(doneP/totalP*100)+'%'));
+    var prog=el('div',{'class':'sb-progress'});
+    var prow=el('div',{'class':'sb-progress-row'});
+    prow.appendChild(el('span',{},doneP===activePhasesMode.length?'Lesson ready ✓':doneP+'/'+activePhasesMode.length+' phases'));
+    prow.appendChild(el('span',{'style':'font-size:10px;color:var(--gray-400);'},Math.round(doneP/activePhasesMode.length*100)+'%'));
     prog.appendChild(prow);
-    const bar=el('div',{'class':'progress-bar'});
-    const fill=el('div',{'class':'progress-fill','style':'width:'+(doneP/totalP*100)+'%'});
+    var bar=el('div',{'class':'progress-bar'});var fill=el('div',{'class':'progress-fill','style':'width:'+Math.round(doneP/activePhasesMode.length*100)+'%'});
     bar.appendChild(fill);prog.appendChild(bar);scroll.appendChild(prog);
   }
 
   scroll.appendChild(el('div',{'class':'sb-divider'}));
 
-  // -- Advanced options (collapsible) --
-  const advToggle=el('div',{'class':'sb-adv-toggle'});
-  advToggle.innerHTML=`<span>${S.showAdvanced?'v':'>'} More options</span><span style="font-size:10px;color:var(--gray-400);">duration, objectives...</span>`;
-  advToggle.addEventListener('click',()=>{S.showAdvanced=!S.showAdvanced;render()});
-  scroll.appendChild(advToggle);
+  // == LEVEL 2: More options ==
+  var l2tog=el('div',{'class':'sb-adv-toggle'});
+  l2tog.innerHTML='<span>'+(S.showAdvanced?'▾':'▸')+' More options</span><span style="font-size:10px;color:var(--gray-400);">duration, objectives, worksheet</span>';
+  l2tog.addEventListener('click',function(){S.showAdvanced=!S.showAdvanced;render();});
+  scroll.appendChild(l2tog);
 
   if(S.showAdvanced){
-    const adv=el('div',{'class':'sb-adv'});
+    var l2=el('div',{'class':'sb-adv'});
     // Duration
-    const durF=el('div',{'class':'sb-field'});durF.appendChild(el('label',{},'Duration (mins)'));
-    const durI=el('input',{'type':'number','placeholder':'60','value':S.duration});
-    durI.addEventListener('input',e=>{S.duration=e.target.value;saveState()});
-    durF.appendChild(durI);adv.appendChild(durF);
-    // Inquiry question
-    const iqF=el('div',{'class':'sb-field'});iqF.appendChild(el('label',{},'Inquiry question'));
-    const iqI=el('input',{'type':'text','placeholder':'How do I...?','value':S.inquiry});
-    iqI.addEventListener('input',e=>{S.inquiry=e.target.value;saveState()});
-    iqF.appendChild(iqI);adv.appendChild(iqF);
+    var dF=el('div',{'class':'sb-field'});dF.appendChild(el('label',{},'Duration (mins)'));
+    var dI=el('input',{'type':'number','placeholder':'60','value':S.duration});dI.addEventListener('input',function(e){S.duration=e.target.value;saveState();});dF.appendChild(dI);l2.appendChild(dF);
+    // Phase timings
+    var activeP=S.mode==='exam'?EXAM_PHASES:PHASES;
+    var tDiv=el('div',{'class':'phase-timing-grid'});
+    tDiv.appendChild(el('div',{'class':'timing-header'},'Phase timings'));
+    activeP.forEach(function(p){
+      var row=el('div',{'class':'timing-row'});
+      row.appendChild(el('span',{'class':'timing-label'},p.icon+' '+p.label.split(' ')[0]));
+      var ti=el('input',{'type':'number','class':'timing-inp','value':(S.timings&&S.timings[p.id])||8,'min':'2','max':'30'});
+      ti.addEventListener('input',function(e){if(!S.timings)S.timings={};S.timings[p.id]=parseInt(e.target.value)||5;saveState();});
+      row.appendChild(ti);row.appendChild(el('span',{'class':'timing-min'},'min'));tDiv.appendChild(row);
+    });
+    var tot=activeP.reduce(function(a,p){return a+((S.timings&&S.timings[p.id])||8);},0);
+    var dur=parseInt(S.duration)||60;
+    var totRow=el('div',{'class':'timing-total '+(tot>dur?'over':'ok')});totRow.textContent='Total: '+tot+' / '+dur+' min '+(tot>dur?'⚠ over':'✓');
+    tDiv.appendChild(totRow);l2.appendChild(tDiv);
+    // Inquiry
+    var iqF=el('div',{'class':'sb-field'});iqF.appendChild(el('label',{},'Inquiry question'));
+    var iqI=el('input',{'type':'text','placeholder':'How do I...?','value':S.inquiry});iqI.addEventListener('input',function(e){S.inquiry=e.target.value;saveState();});iqF.appendChild(iqI);l2.appendChild(iqF);
     // Objectives
-    const obF=el('div',{'class':'sb-field'});obF.appendChild(el('label',{},'Objectives'));
-    const obI=el('textarea',{'placeholder':'Students will be able to...','rows':'2'});
-    obI.value=S.objectives;obI.addEventListener('input',e=>{S.objectives=e.target.value;saveState()});
-    obF.appendChild(obI);adv.appendChild(obF);
-    scroll.appendChild(adv);
-    scroll.appendChild(el('div',{'class':'sb-divider'}));
-  }
-
-  // -- Worksheet upload --
-  const wsLabel=el('div',{'class':'sb-label','style':'margin-top:4px;'},'Reference Worksheet');
-  scroll.appendChild(wsLabel);
-  if(S.worksheetName){
-    const wl=el('div',{'class':'ws-loaded'});
-    wl.appendChild(el('div',{'class':'ws-loaded-icon'},'📄'));
-    const wi=el('div',{});
-    wi.appendChild(el('div',{'class':'ws-loaded-name'},S.worksheetName.replace(/\.pptx|\.pdf/,'')));
-    wi.appendChild(el('div',{'class':'ws-loaded-sub'},'AI will match question style'));
-    wl.appendChild(wi);scroll.appendChild(wl);
-    const rm=el('button',{'class':'btn btn-ghost btn-sm btn-full','style':'margin-top:6px;'});
-    rm.textContent='Remove';rm.addEventListener('click',()=>{S.worksheetName='';S.worksheetBase64='';render()});
-    scroll.appendChild(rm);
-  } else {
-    const wz=el('div',{'class':'ws-zone'});
-    wz.innerHTML=`<div style="font-size:18px;margin-bottom:3px">📋</div><div style="font-size:12px;font-weight:600;color:var(--gray-700)">Upload a worksheet</div><div style="font-size:10px;color:var(--gray-400);margin-top:1px">AI matches question style</div>`;
-    const fi=el('input',{'type':'file','accept':'.pptx,.pdf'});
-    fi.addEventListener('change',e=>{
-      const f=e.target.files[0];if(!f)return;S.worksheetName=f.name;
-      const r=new FileReader();r.onload=ev=>{S.worksheetBase64=ev.target.result.split(',')[1];render()};r.readAsDataURL(f);
-    });
-    wz.appendChild(fi);scroll.appendChild(wz);
-  }
-
-  scroll.appendChild(el('div',{'class':'sb-divider'}));
-
-  // -- Active theme / clear --
-  const themeRow=el('div',{'class':'sb-theme-row'});
-  if(S.theme.loaded){
-    const swatches=el('div',{'class':'swatch-row'});
-    [S.theme.primary,S.theme.primaryDark,S.theme.primaryLight,S.theme.accent,S.theme.accent2].forEach(c=>{
-      swatches.appendChild(el('div',{'class':'swatch','style':'background:'+c}));
-    });
-    themeRow.appendChild(swatches);
-    const chg=el('button',{'class':'btn btn-ghost btn-xs','style':'flex-shrink:0;'});
-    chg.textContent='Change';chg.addEventListener('click',()=>{S.tab='theme';render()});
-    themeRow.appendChild(chg);
-  } else {
-    const noTheme=el('button',{'class':'btn btn-ghost btn-sm btn-full'});
-    noTheme.textContent='🎨 Upload school template';
-    noTheme.addEventListener('click',()=>{S.tab='theme';render()});
-    themeRow.appendChild(noTheme);
-  }
-  scroll.appendChild(themeRow);
-
-  // -- Clear session --
-  const clearBtn=el('button',{'class':'sb-clear-btn'});
-  clearBtn.textContent='Start new lesson';
-  clearBtn.addEventListener('click',()=>{
-    if(confirm('Clear everything and start fresh?')){
-      localStorage.removeItem('lessoncraft_v4');
-      location.reload();
+    var obF=el('div',{'class':'sb-field'});obF.appendChild(el('label',{},'Objectives'));
+    var obI=el('textarea',{'placeholder':'Students will be able to...','rows':'2'});obI.value=S.objectives;obI.addEventListener('input',function(e){S.objectives=e.target.value;saveState();});obF.appendChild(obI);l2.appendChild(obF);
+    // Worksheet
+    l2.appendChild(el('div',{'class':'sb-label','style':'margin-top:8px;'},'Reference Worksheet'));
+    if(S.worksheetName){
+      var wl=el('div',{'class':'ws-loaded'});wl.appendChild(el('div',{'class':'ws-loaded-icon'},'📄'));
+      var wi=el('div',{});wi.appendChild(el('div',{'class':'ws-loaded-name'},S.worksheetName.replace(/\.pptx|\.pdf/,'')));wi.appendChild(el('div',{'class':'ws-loaded-sub'},'AI matches question style'));wl.appendChild(wi);l2.appendChild(wl);
+      var rm=el('button',{'class':'btn btn-ghost btn-sm btn-full','style':'margin-top:6px;'});rm.textContent='Remove';rm.addEventListener('click',function(){S.worksheetName='';S.worksheetBase64='';render();});l2.appendChild(rm);
+    } else {
+      var wz=el('div',{'class':'ws-zone'});wz.innerHTML='<div style="font-size:18px;margin-bottom:3px">📋</div><div style="font-size:12px;font-weight:600;color:var(--gray-700)">Upload worksheet</div><div style="font-size:10px;color:var(--gray-400);margin-top:1px">AI matches question style</div>';
+      var fi=el('input',{'type':'file','accept':'.pptx,.pdf'});fi.addEventListener('change',function(e){var f=e.target.files[0];if(!f)return;S.worksheetName=f.name;var r=new FileReader();r.onload=function(ev){S.worksheetBase64=ev.target.result.split(',')[1];render();};r.readAsDataURL(f);});wz.appendChild(fi);l2.appendChild(wz);
     }
-  });
+    scroll.appendChild(l2);
+  }
+
+  // == LEVEL 3: Branding link ==
+  scroll.appendChild(el('div',{'class':'sb-divider'}));
+  var l3=el('div',{'class':'sb-adv-toggle'});
+  l3.innerHTML='<span>▸ Branding &amp; Keywords</span><span style="font-size:10px;color:var(--gray-400);">theme, vocab</span>';
+  l3.addEventListener('click',function(){S.tab='theme';if(window.innerWidth<=768)S.sidebarOpen=false;render();});
+  scroll.appendChild(l3);
+
+  var clearBtn=el('button',{'class':'sb-clear-btn'});clearBtn.textContent='Start new lesson';
+  clearBtn.addEventListener('click',function(){if(confirm('Clear everything and start fresh?')){localStorage.removeItem('lessoncraft_v4');location.reload();}});
   scroll.appendChild(clearBtn);
 
-  sb.appendChild(scroll);
-  return sb;
+  sb.appendChild(scroll);return sb;
 }
 
 // --- AI SETUP TAB --------------------------------
@@ -1814,7 +1972,9 @@ function buildBuildTab(){
 function buildPhaseCard(phase, isExam=false){
   const ph=S.phases[phase.id];
   const isOpen=S.open[phase.id];
-  const card=el('div',{'class':'pcard'+(isOpen?' open':'')+(ph.generated&&!isOpen?' generated':'')});
+  var phaseIdx=(isExam?EXAM_PHASES:PHASES).findIndex(function(p){return p.id===phase.id;});
+  var isActive=phaseIdx===S.activePhaseIdx&&S.generatingAll;
+  const card=el('div',{'class':'pcard'+(isOpen?' open':'')+(ph.generated&&!isOpen?' generated':'')+(isActive?' phase-active':'')+(ph.generating?' phase-generating':'')});
 
   // Head -- click to collapse only (content shown by default)
   const head=el('div',{'class':'phead'});
@@ -1836,6 +1996,9 @@ function buildPhaseCard(phase, isExam=false){
       meta.appendChild(el('span',{'class':'quality-tag'},tag));
     });
   }
+  // Timing badge
+  var tMin=S.timings&&S.timings[phase.id];
+  if(tMin)meta.appendChild(el('div',{'class':'phase-timing-badge'},tMin+' min'));
   if(ph.generating){
     const pill=el('div',{'class':'status-pill generating'});
     pill.innerHTML='<span class="spinner" style="width:10px;height:10px;border-width:1.5px;"></span>';
@@ -2051,10 +2214,31 @@ function buildPreviewTab(){
   shareBtn.addEventListener('click',shareLesson);
   toolbar.appendChild(shareBtn);
   // Student worksheet button
-  const wsBtn=el('button',{'class':'btn btn-ghost btn-sm'});
-  wsBtn.innerHTML='📄 Student Worksheet';
-  wsBtn.addEventListener('click',downloadWorksheet);
-  toolbar.appendChild(wsBtn);
+  // Student Worksheet — single button with format picker popover
+  const wsWrap=el('div',{'class':'ws-btn-wrap'});
+  const wsBtn=el('button',{'class':'btn btn-ghost btn-sm ws-main-btn'});
+  wsBtn.innerHTML='📄 Student Worksheet ▾';
+  wsBtn.addEventListener('click',function(e){
+    e.stopPropagation();
+    var existing=document.getElementById('ws-format-picker');
+    if(existing){existing.remove();return;}
+    var picker=el('div',{'class':'ws-format-picker','id':'ws-format-picker'});
+    var opts=[
+      {icon:'📝',label:'Word Document',sub:'Opens in Word / Google Docs',fmt:'docx'},
+      {icon:'🖨',label:'Print / Save as PDF',sub:'Opens print dialog',fmt:'print'},
+    ];
+    opts.forEach(function(o){
+      var row=el('div',{'class':'ws-format-row'});
+      row.innerHTML='<div class="ws-fmt-icon">'+o.icon+'</div><div><div class="ws-fmt-label">'+o.label+'</div><div class="ws-fmt-sub">'+o.sub+'</div></div>';
+      row.addEventListener('click',function(e2){e2.stopPropagation();picker.remove();downloadWorksheet(o.fmt);});
+      picker.appendChild(row);
+    });
+    wsWrap.appendChild(picker);
+    // Close on outside click
+    setTimeout(function(){document.addEventListener('click',function _c(){picker.remove();document.removeEventListener('click',_c);});},0);
+  });
+  wsWrap.appendChild(wsBtn);
+  toolbar.appendChild(wsWrap);
   d.appendChild(toolbar);
 
   const shell=el('div',{'class':'preview-shell'});
@@ -2226,62 +2410,177 @@ function loadSharedLesson(){
 // ===================================================
 // FEATURE: STUDENT WORKSHEET DOWNLOAD
 // ===================================================
-function downloadWorksheet(){
+function downloadWorksheet(format){
+  // format: 'docx' | 'print'
+  format = format || 'docx';
   const t=S.theme;
   const isExam=S.mode==='exam';
   const activePhases=isExam?EXAM_PHASES:PHASES;
-  // Only include question phases, strip all answers
-  const questionPhases=isExam
-    ?['warmup','examqs','drillqs']
-    :['prior','newknow','independent'];
-  const rows=activePhases.filter(p=>questionPhases.includes(p.id)).map(phase=>{
-    const phState=S.phases[phase.id];
-    if(!phState||!phState.content)return '';
-    // Strip answer lines
-    const clean=phState.content.split('\n')
-      .filter(l=>!l.trim().startsWith('Answer:')&&!l.trim().startsWith('Solution:')&&!l.trim().startsWith('Final answer:'))
-      .join('\n');
-    return '<div style="margin-bottom:24px;page-break-inside:avoid;">'
-      +'<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:'+phase.bg+';border-radius:6px 6px 0 0;border:1.5px solid '+phase.col+'33;">'
-      +'<span>'+phase.icon+'</span><span style="font-family:Sora,sans-serif;font-size:13px;font-weight:700;color:'+phase.col+';">'+phase.label+'</span>'
-      +'</div>'
-      +'<div style="padding:14px 16px;border:1.5px solid '+phase.col+'22;border-top:none;border-radius:0 0 6px 6px;font-size:13px;line-height:1.9;white-space:pre-wrap;">'+clean+'</div>'
-      +'</div>';
-  }).join('');
-  // Answer boxes for independent questions
-  const answerRows=isExam?activePhases.filter(p=>['examqs'].includes(p.id)).map(phase=>{
-    const phState=S.phases[phase.id];if(!phState||!phState.content)return '';
-    const qs=phState.content.split('\n\n').filter(Boolean);
-    return '<div style="margin-top:32px;"><div style="font-family:Sora,sans-serif;font-size:14px;font-weight:700;color:'+t.primaryDark+';margin-bottom:12px;border-bottom:2px solid '+t.primary+';padding-bottom:6px;">Working space</div>'
-      +qs.map(()=>'<div style="border:1px solid #d1d5db;border-radius:6px;height:80px;margin-bottom:10px;"></div>').join('')+'</div>';
-  }).join(''):'';
-
+  const questionPhases=isExam?['warmup','examqs','drillqs']:['prior','newknow','independent'];
+  const topicTitle=S.topic||'Worksheet';
   const meta=[S.subject,S.year?'Year '+S.year:'',new Date().toLocaleDateString('en-GB'),S.examBoard].filter(Boolean).join(' | ');
-  const html='<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">'
-    +'<title>'+( S.topic||'Worksheet')+'</title>'
-    +'<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet">'
-    +'<style>body{font-family:Inter,sans-serif;margin:0;padding:2.5cm;color:#1a1a2e;}'
-    +'.header{border-bottom:3px solid '+t.primary+';padding-bottom:12px;margin-bottom:24px;}'
-    +'.title{font-family:Sora,sans-serif;font-size:22px;font-weight:800;color:'+t.primaryDark+';}'
-    +'.meta{font-size:11px;color:#6b7280;margin-top:4px;}'
-    +'.name-box{display:flex;gap:32px;margin:16px 0 28px;}'
-    +'.name-field{flex:1;border-bottom:1.5px solid #d1d5db;padding-bottom:4px;font-size:12px;color:#9ca3af;}'
-    +'@media print{body{padding:1.5cm;}}</style></head><body>'
-    +'<div class="header">'
-    +'<div class="title">'+(S.topic||'Worksheet')+'</div>'
-    +'<div class="meta">'+meta+'</div></div>'
-    +'<div class="name-box">'
-    +'<div class="name-field">Name: ___________________________</div>'
-    +'<div class="name-field">Class: ________________</div>'
-    +'<div class="name-field">Date: ________________</div>'
-    +'</div>'
-    +rows+answerRows
-    +'</body></html>';
-  const blob=new Blob([html],{type:'text/html'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-  a.download=(S.topic||'worksheet').replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_-]/g,'')+'_worksheet.html';
-  a.click();
-  showToast('Worksheet downloaded -- open and print','success');
+
+  // Collect content phases
+  const phasesToInclude=activePhases.filter(function(p){
+    return questionPhases.includes(p.id)&&S.phases[p.id]&&S.phases[p.id].content;
+  });
+
+  if(format==='print'){
+    // Open a clean print window
+    const printWin=window.open('','_blank','width=800,height=900');
+    if(!printWin){showToast('Pop-up blocked -- allow pop-ups for this site','error');return;}
+    const rows=phasesToInclude.map(function(phase){
+      const clean=S.phases[phase.id].content.split('\n')
+        .filter(function(l){return!l.trim().startsWith('Answer:')&&!l.trim().startsWith('Solution:')&&!l.trim().startsWith('Final answer:');})
+        .join('\n');
+      return '<div style="margin-bottom:24px;page-break-inside:avoid;">'
+        +'<div style="padding:8px 14px;background:'+phase.bg+';border-radius:6px 6px 0 0;border:1.5px solid '+phase.col+'44;">'
+        +'<span style="font-size:13px;font-weight:700;color:'+phase.col+';">'+phase.icon+' '+phase.label+'</span></div>'
+        +'<div style="padding:14px 16px;border:1.5px solid '+phase.col+'22;border-top:none;border-radius:0 0 6px 6px;font-size:13px;line-height:1.9;white-space:pre-wrap;">'+clean+'</div></div>';
+    }).join('');
+    const workingBoxes=isExam?'<div style="margin-top:28px"><div style="font-weight:700;font-size:14px;border-bottom:2px solid '+t.primary+';padding-bottom:6px;margin-bottom:12px;">Working space</div>'
+      +'<div style="border:1px solid #d1d5db;border-radius:6px;height:90px;margin-bottom:10px;"></div>'.repeat(4)+'</div>':'';
+    printWin.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>'+topicTitle+'</title>'
+      +'<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet">'
+      +'<style>*{box-sizing:border-box}body{font-family:Inter,sans-serif;margin:0;padding:2cm;color:#1a1a2e;}'
+      +'.hdr{border-bottom:3px solid '+t.primary+';padding-bottom:12px;margin-bottom:20px;}'
+      +'.title{font-family:Sora,sans-serif;font-size:22px;font-weight:800;color:'+t.primaryDark+';}'
+      +'.meta{font-size:11px;color:#6b7280;margin-top:4px;}'
+      +'.fields{display:flex;gap:24px;margin:14px 0 24px;}'
+      +'.field{flex:1;border-bottom:1.5px solid #d1d5db;padding-bottom:4px;font-size:12px;color:#9ca3af;}'
+      +'@media print{.no-print{display:none}button{display:none}}'
+      +'</style></head><body>'
+      +'<div class="no-print" style="background:#f3f4f6;padding:12px 16px;margin-bottom:16px;border-radius:8px;display:flex;gap:10px;align-items:center;">'
+      +'<span style="font-size:13px;font-weight:600;">Ready to print or save as PDF</span>'
+      +'<button onclick="window.print()" style="background:#92278F;color:#fff;border:none;padding:8px 16px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;margin-left:auto;">Print / Save as PDF</button>'
+      +'</div>'
+      +'<div class="hdr"><div class="title">'+topicTitle+'</div><div class="meta">'+meta+'</div></div>'
+      +'<div class="fields"><div class="field">Name: _______________________</div><div class="field">Class: ___________</div><div class="field">Date: ___________</div></div>'
+      +rows+workingBoxes
+      +'</body></html>');
+    printWin.document.close();
+    return;
+  }
+
+  // DOCX format — use docx.js via CDN
+  if(!window.docx){
+    const s=document.createElement('script');
+    s.src='https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.js';
+    s.onload=function(){downloadWorksheet('docx');};
+    s.onerror=function(){showToast('Could not load Word library -- try Print instead','error');};
+    document.head.appendChild(s);
+    showToast('Loading Word library...','success');
+    return;
+  }
+
+  try{
+    const {Document,Packer,Paragraph,TextRun,HeadingLevel,BorderStyle,AlignmentType,
+           ShadingType,TableRow,TableCell,Table,WidthType,VerticalAlign}=window.docx;
+
+    // Helper: hex to docx color (strip #)
+    function dc(hex){return(hex||'000000').replace('#','');}
+
+    const children=[];
+
+    // Title paragraph
+    children.push(new Paragraph({
+      children:[new TextRun({text:topicTitle,bold:true,size:44,color:dc(t.primaryDark),font:'Sora'})],
+      spacing:{after:80},
+      border:{bottom:{style:BorderStyle.SINGLE,size:12,color:dc(t.primary),space:4}}
+    }));
+
+    // Meta line
+    children.push(new Paragraph({
+      children:[new TextRun({text:meta,size:18,color:'6B7280'})],
+      spacing:{after:200}
+    }));
+
+    // Name / Class / Date fields
+    children.push(new Paragraph({
+      children:[
+        new TextRun({text:'Name: ',bold:true,size:22}),
+        new TextRun({text:'_________________________________   ',size:22}),
+        new TextRun({text:'Class: ',bold:true,size:22}),
+        new TextRun({text:'______________   ',size:22}),
+        new TextRun({text:'Date: ',bold:true,size:22}),
+        new TextRun({text:'______________',size:22}),
+      ],
+      spacing:{after:320}
+    }));
+
+    // Phase sections
+    phasesToInclude.forEach(function(phase){
+      const raw=S.phases[phase.id].content;
+      const lines=raw.split('\n').filter(function(l){
+        return!l.trim().startsWith('Answer:')&&!l.trim().startsWith('Solution:')&&!l.trim().startsWith('Final answer:');
+      });
+
+      // Phase heading with colour bar
+      children.push(new Paragraph({
+        children:[new TextRun({text:phase.icon+' '+phase.label,bold:true,size:26,color:dc(phase.col),font:'Sora'})],
+        spacing:{before:280,after:120},
+        shading:{type:ShadingType.CLEAR,fill:dc(phase.bg).replace('#','')},
+        border:{
+          bottom:{style:BorderStyle.SINGLE,size:6,color:dc(phase.col),space:2}
+        }
+      }));
+
+      // Content lines
+      lines.forEach(function(line){
+        if(!line.trim()){children.push(new Paragraph({spacing:{after:60}}));return;}
+        children.push(new Paragraph({
+          children:[new TextRun({text:line,size:22})],
+          spacing:{after:80}
+        }));
+      });
+
+      // Working box for exam questions
+      if(isExam&&(phase.id==='examqs'||phase.id==='drillqs')){
+        for(var b=0;b<3;b++){
+          children.push(new Paragraph({
+            children:[new TextRun({text:' ',size:22})],
+            spacing:{after:4},
+            border:{
+              top:{style:BorderStyle.SINGLE,size:4,color:'D1D5DB'},
+              bottom:{style:BorderStyle.SINGLE,size:4,color:'D1D5DB'},
+              left:{style:BorderStyle.SINGLE,size:4,color:'D1D5DB'},
+              right:{style:BorderStyle.SINGLE,size:4,color:'D1D5DB'}
+            }
+          }));
+          // Spacer inside box
+          for(var sp=0;sp<3;sp++){children.push(new Paragraph({spacing:{after:4},children:[new TextRun(' ')]}));}
+          children.push(new Paragraph({spacing:{after:120},children:[new TextRun(' ')]}));
+        }
+      }
+    });
+
+    const doc=new Document({
+      styles:{
+        default:{document:{run:{font:'Inter',size:22}}}
+      },
+      sections:[{
+        properties:{
+          page:{
+            size:{width:11906,height:16838},
+            margin:{top:1134,right:1134,bottom:1134,left:1134}
+          }
+        },
+        children:children
+      }]
+    });
+
+    Packer.toBlob(doc).then(function(blob){
+      const a=document.createElement('a');
+      a.href=URL.createObjectURL(blob);
+      a.download=(S.topic||'worksheet').replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_-]/g,'')+'_worksheet.docx';
+      a.click();
+      showToast('Word document downloaded!','success');
+    });
+
+  }catch(e){
+    console.error('DOCX error:',e);
+    showToast('Word export failed: '+e.message+' -- try Print instead','error');
+  }
 }
 
 // --- INIT -----------------------------------------
@@ -2300,6 +2599,8 @@ if(!hasKey){
   S.tab='build';
 }
 
+// On mobile, start with sidebar closed so content is visible
+if(window.innerWidth<=768)S.sidebarOpen=false;
 loadSharedLesson();
 render();
 </script>
