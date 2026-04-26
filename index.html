@@ -785,6 +785,17 @@ textarea{resize:vertical;line-height:1.6}
   text-decoration:underline;
 }
 
+
+/* --- NO KEY BANNER --- */
+.no-key-banner{
+  display:flex;align-items:center;gap:14px;
+  background:linear-gradient(135deg,#fffbeb,#fef9ee);
+  border:2px solid var(--a2);border-radius:var(--radius);
+  padding:14px 18px;margin-bottom:20px;font-size:14px;color:var(--gray-700);
+  line-height:1.5;
+}
+.no-key-banner strong{color:var(--gray-900)}
+
 </style>
 </head>
 <body>
@@ -1027,7 +1038,11 @@ async function generatePhase(id, isImprovement=false){
 }
 
 async function generateAll(){
-  if(!S.topic){showToast('Add a topic first','error');return}
+  if(!S.topic){showToast('Add a topic first','error');return;}
+var hasK=(LESSONCRAFT_API_KEY&&LESSONCRAFT_API_KEY.length>5)||(S.claudeKey&&S.claudeKey.length>5)||(S.aiProvider==='copilot'&&S.copilotKey);
+if(!hasK){showToast('Go to AI Setup tab first -- no key configured','error');S.tab='aisetup';render();return;}
+var hasK=(LESSONCRAFT_API_KEY&&LESSONCRAFT_API_KEY.length>5)||(S.claudeKey&&S.claudeKey.length>5)||(S.aiProvider==='copilot'&&S.copilotKey);
+if(!hasK){showToast('Set up your AI first -- click AI Setup tab','error');S.tab='aisetup';render();return;}
   S.generatingAll=true;S.genSteps=PHASES.map(p=>({id:p.id,label:p.label,status:'pending'}));
   S.tab='build';S.open={prior:false,newknow:false,ido:false,guided:false,independent:false,reflect:false};
   render();
@@ -1094,7 +1109,9 @@ async function generateExamPhase(id, isImprovement=false){
 }
 
 async function generateAllExam(){
-  if(!S.topic){showToast('Add a topic first','error');return}
+  if(!S.topic){showToast('Add a topic first','error');return;}
+var hasK=(LESSONCRAFT_API_KEY&&LESSONCRAFT_API_KEY.length>5)||(S.claudeKey&&S.claudeKey.length>5)||(S.aiProvider==='copilot'&&S.copilotKey);
+if(!hasK){showToast('Go to AI Setup tab first -- no key configured','error');S.tab='aisetup';render();return;}
   S.generatingAll=true;
   S.genSteps=EXAM_PHASES.map(p=>({id:p.id,label:p.label,status:'pending'}));
   S.tab='build';
@@ -1301,7 +1318,7 @@ function buildHeader(){
   h.appendChild(logo);
   // Nav
   const nav=el('div',{'class':'hdr-nav'});
-  const tabs=[['aisetup','⚙ AI Setup'],['theme','Theme'],['build','Build'],['keywords','Keywords'],['preview','Preview']];
+  const tabs=[['aisetup','AI Setup'],['theme','Theme'],['build','Build'],['keywords','Keywords'],['preview','Preview']];
   tabs.forEach(([id,lbl],i)=>{
     const done=id!=='theme'&&(
       (id==='build'&&PHASES.some(p=>S.phases[p.id].generated))||
@@ -1559,7 +1576,7 @@ function buildAISetupTab(){
     }
     var keyRow=el('div',{'class':'ai-key-row'});
     var keyInp=el('input',{'type':'password','placeholder':'sk-ant-api03-...','value':S.claudeKey,'class':'ai-key-input'});
-    keyInp.addEventListener('input',function(e){S.claudeKey=e.target.value.trim();saveState();});
+    keyInp.addEventListener('input',function(e){S.claudeKey=e.target.value.trim();S.aiProvider='claude';saveState();});
     var testBtn=el('button',{'class':'btn btn-primary btn-sm'});testBtn.textContent='Test';
     testBtn.addEventListener('click',async function(){
       testBtn.disabled=true;testBtn.textContent='Testing...';
@@ -1705,6 +1722,16 @@ function buildThemeTab(){
 function buildBuildTab(){
   const d=el('div',{});
   const isExam=S.mode==='exam';
+  // Show setup banner if no key configured
+  var hasK=(LESSONCRAFT_API_KEY&&LESSONCRAFT_API_KEY.length>5)||(S.claudeKey&&S.claudeKey.length>5)||(S.aiProvider==='copilot'&&S.copilotKey&&S.copilotEndpoint);
+  if(!hasK){
+    var banner=el('div',{'class':'no-key-banner'});
+    banner.innerHTML='<span style="font-size:18px;">🔑</span>'
+      +'<div><strong>AI not connected yet</strong> — Go to the <strong>AI Setup</strong> tab to add your API key. It takes 2 minutes and is free.</div>'
+      +'<button class="btn btn-primary btn-sm" style="flex-shrink:0;white-space:nowrap;">AI Setup</button>';
+    banner.querySelector('button').addEventListener('click',function(){S.tab='aisetup';render();});
+    d.appendChild(banner);
+  }
   const activePhases=isExam?EXAM_PHASES:PHASES;
   const anyDone=activePhases.some(p=>S.phases[p.id]&&S.phases[p.id].generated);
 
@@ -2263,9 +2290,15 @@ applyCSS(S.theme);
 
 // Open all phases that have content on load
 PHASES.forEach(p=>{S.open[p.id]=S.phases[p.id].generated||false});
-// Start on build tab if we have a topic
-if(S.topic)S.tab='build';
-
+// If no API key configured at all, start on AI Setup so teachers know what to do
+var hasKey=(LESSONCRAFT_API_KEY&&LESSONCRAFT_API_KEY.length>5)||(S.claudeKey&&S.claudeKey.length>5)||(S.copilotKey&&S.copilotKey.length>5);
+if(!hasKey){
+  S.tab='aisetup';
+} else if(S.topic){
+  S.tab='build';
+} else {
+  S.tab='build';
+}
 
 loadSharedLesson();
 render();
