@@ -1004,6 +1004,495 @@ textarea{resize:vertical;line-height:1.6}
 .ws-fmt-label{font-size:13px;font-weight:600;color:var(--gray-900)}
 .ws-fmt-sub{font-size:11px;color:var(--gray-400);margin-top:1px}
 
+
+/* ══════════════════════════════════════════════
+   CHANGE 1: VISUAL REFRESH — less border, more shadow
+   ══════════════════════════════════════════════ */
+/* Override heavy borders with softer shadows */
+.pcard{border:none!important;box-shadow:var(--shadow-sm)}
+.pcard:hover{box-shadow:var(--shadow-md)}
+.pcard.open{box-shadow:0 0 0 2px var(--p),var(--shadow-md)}
+.pcard.phase-active{box-shadow:0 0 0 2px var(--p),0 4px 24px rgba(146,39,143,.15)}
+.ai-setup-section{border:none;box-shadow:var(--shadow-sm)}
+.kw-table{border:none;box-shadow:var(--shadow-sm)}
+.prev-phase{border:none;box-shadow:var(--shadow-sm);margin-bottom:8px;border-radius:var(--radius-sm)}
+.section-card{border:none;box-shadow:var(--shadow-sm)}
+.gen-progress-card{border:none;box-shadow:var(--shadow-sm)}
+.ws-loaded{border-color:#fcd34d}
+/* Softer sidebar */
+.sidebar{border-right:none;box-shadow:2px 0 16px rgba(0,0,0,.06)}
+
+/* ══════════════════════════════════════════════
+   CHANGE 2: SPLIT VIEW — live preview pane
+   ══════════════════════════════════════════════ */
+.shell.split-view{display:flex}
+.shell.split-view .content{flex:1;min-width:0;overflow-y:auto}
+.split-preview-pane{
+  width:360px;min-width:360px;max-width:360px;
+  background:#fff;border-left:1px solid var(--gray-100);
+  display:flex;flex-direction:column;
+  overflow:hidden;
+  box-shadow:-2px 0 12px rgba(0,0,0,.04);
+}
+.split-pane-label{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 14px;background:var(--white);
+  border-bottom:1px solid var(--gray-100);
+  font-family:var(--fh);font-size:12px;font-weight:700;color:var(--gray-500);
+  letter-spacing:.5px;text-transform:uppercase;flex-shrink:0;
+}
+.split-close-btn{
+  background:none;border:none;cursor:pointer;color:var(--gray-400);
+  font-size:14px;padding:2px 6px;border-radius:4px;transition:all .15s;
+}
+.split-close-btn:hover{background:var(--gray-100);color:var(--gray-700)}
+.split-pane-content{flex:1;overflow-y:auto;padding:12px}
+@media(max-width:1100px){.split-preview-pane{display:none!important}}
+@media(max-width:768px){.shell.split-view .split-preview-pane{display:none!important}}
+
+/* ══════════════════════════════════════════════
+   MINI PREVIEW (inside split pane)
+   ══════════════════════════════════════════════ */
+.mini-preview{border-radius:10px;overflow:hidden;box-shadow:var(--shadow-md)}
+.mini-prev-top{padding:16px;color:#fff}
+.mini-dept{font-size:9px;font-weight:800;letter-spacing:2px;opacity:.7;margin-bottom:4px}
+.mini-title{font-family:var(--fh);font-size:15px;font-weight:800;line-height:1.2;margin-bottom:4px}
+.mini-meta{font-size:10px;opacity:.65}
+.mini-prev-body{background:var(--white);padding:10px}
+.mini-empty{text-align:center;padding:24px 12px;color:var(--gray-400)}
+.mini-phase-row{padding:8px 10px;border-radius:6px;margin-bottom:5px;background:var(--gray-50)}
+.mini-phase-row:hover{background:var(--pl)}
+.mini-phase-label{font-family:var(--fh);font-size:10px;font-weight:700;margin-bottom:3px}
+.mini-phase-preview{font-size:11px;color:var(--gray-500);line-height:1.5;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+
+/* ══════════════════════════════════════════════
+   CHANGE 3: RICHER PHASE MICRO-ACTIONS
+   ══════════════════════════════════════════════ */
+.phase-toolbar{
+  display:flex;gap:5px;flex-wrap:wrap;
+  margin-top:10px;padding:10px 0 2px;
+  border-top:1px solid var(--gray-100);
+  opacity:0;transition:opacity .2s;
+}
+.pcard.open .phase-toolbar{opacity:1}
+.pcard:hover .phase-toolbar{opacity:1}
+.phase-action-btn{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:5px 10px;border-radius:99px;font-size:11.5px;font-weight:600;
+  color:var(--gray-500);background:var(--gray-50);
+  border:1.5px solid var(--gray-200);cursor:pointer;transition:all .12s;
+  white-space:nowrap;
+}
+.phase-action-btn:hover{color:var(--p);border-color:var(--p);background:var(--pl);transform:translateY(-1px)}
+.phase-action-btn:active{transform:translateY(0)}
+
+/* Phase textarea - cleaner */
+.phase-textarea{
+  width:100%;border:1.5px solid var(--gray-200);border-radius:var(--radius-xs);
+  padding:12px;font-family:var(--fb);font-size:13px;color:var(--gray-700);
+  background:var(--white);line-height:1.8;resize:vertical;min-height:100px;
+  outline:none;transition:all .15s;
+}
+.phase-textarea:focus{border-color:var(--p);box-shadow:0 0 0 3px rgba(146,39,143,.07)}
+
+/* ══════════════════════════════════════════════
+   SPLIT VIEW TOGGLE BUTTON
+   ══════════════════════════════════════════════ */
+.build-header{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  gap:12px;margin-bottom:20px;padding-bottom:16px;
+  border-bottom:1px solid var(--gray-100);
+  flex-wrap:wrap;
+}
+
+/* ══════════════════════════════════════════════
+   STATUS PILL improvements
+   ══════════════════════════════════════════════ */
+.status-pill.ready{background:#dcfce7;color:#15803d;font-size:10px;padding:2px 7px}
+
+/* ══════════════════════════════════════════════
+   MOBILE: hide split toggle on small screens
+   ══════════════════════════════════════════════ */
+@media(max-width:1100px){
+  .split-toggle-btn{display:none}
+}
+
+
+/* footer removed */
+
+/* ════════════════════════════════════════════
+   DARK MODE TOGGLE BUTTON IN HEADER
+   ════════════════════════════════════════════ */
+.hdr-dm-btn{
+  background:rgba(255,255,255,.1);border:none;cursor:pointer;
+  width:34px;height:34px;border-radius:8px;font-size:16px;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .15s;flex-shrink:0;margin-left:auto;
+}
+.hdr-dm-btn:hover{background:rgba(255,255,255,.2)}
+
+/* ════════════════════════════════════════════
+   DARK MODE — full system
+   ════════════════════════════════════════════ */
+html.dark{
+  --gray-50:#1a1625;
+  --gray-100:#221d2e;
+  --gray-200:#2e2840;
+  --gray-300:#3d3554;
+  --gray-400:#6b6080;
+  --gray-500:#9f94b0;
+  --gray-700:#c8bfd8;
+  --gray-900:#f0edf7;
+  --white:#16121f;
+  --bg:#0f0c18;
+  --border:#2e2840;
+  --ink:#f0edf7;
+  color-scheme:dark;
+}
+html.dark body{background:var(--bg);color:var(--gray-900)}
+html.dark .sidebar{background:#1a1625;box-shadow:2px 0 16px rgba(0,0,0,.4)}
+html.dark input,html.dark textarea,html.dark select{background:#221d2e;color:var(--gray-900);border-color:var(--gray-200)}
+html.dark input:focus,html.dark textarea:focus{background:#2e2840;border-color:var(--p)}
+html.dark .pcard{background:#1a1625;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+html.dark .pcard.open{box-shadow:0 0 0 2px var(--p),0 4px 16px rgba(0,0,0,.4)}
+html.dark .phase-textarea{background:#221d2e;color:var(--gray-900);border-color:var(--gray-200)}
+html.dark .phase-action-btn{background:#221d2e;color:var(--gray-500);border-color:var(--gray-200)}
+html.dark .phase-action-btn:hover{background:#2e2840;color:var(--p);border-color:var(--p)}
+html.dark .preview-toolbar{background:#1a1625;border-color:var(--gray-200)}
+html.dark .prev-body{background:#1a1625}
+html.dark .prev-phase{background:#221d2e;box-shadow:0 1px 4px rgba(0,0,0,.3)}
+html.dark .prev-kw-grid{background:#221d2e;border-color:var(--gray-200)}
+html.dark .prev-kw-card{background:#2e2840;border-color:var(--gray-300)}
+html.dark .mini-prev-body{background:#1a1625}
+html.dark .mini-phase-row{background:#221d2e}
+html.dark .split-preview-pane{background:#1a1625;border-left-color:var(--gray-200)}
+html.dark .hdr{background:#0f0c18}
+html.dark .btm{background:rgba(22,18,31,.96)}
+html.dark 
+html.dark .gen-hero{background:linear-gradient(135deg,var(--p),var(--pd))}
+html.dark .mode-btn{background:#221d2e;border-color:var(--gray-200)}
+html.dark .mode-btn.active{background:#2e2840;border-color:var(--p)}
+html.dark .ai-status-bar{background:#221d2e;border-color:var(--gray-200)}
+html.dark .sb-adv{background:#221d2e;border-color:var(--gray-200)}
+html.dark .phase-timing-grid{background:#221d2e;border-color:var(--gray-200)}
+html.dark .ai-provider-card{background:#1a1625;border-color:var(--gray-200)}
+html.dark .ai-provider-card.selected{border-color:var(--p)}
+html.dark .ai-setup-section{background:#1a1625}
+html.dark .kw-table{background:#1a1625}
+html.dark .kw-tbody{background:#1a1625}
+html.dark .kw-row:hover{background:#221d2e}
+html.dark .toggle-slider{background:#3d3554}
+html.dark .no-key-banner{background:#221d2e;border-color:#fbbf24}
+html.dark .build-header{border-bottom-color:var(--gray-200)}
+html.dark .ws-format-picker{background:#1a1625;border-color:var(--gray-200)}
+html.dark .ws-format-row:hover{background:#221d2e}
+
+/* ════════════════════════════════════════════
+   ACCESSIBILITY — stronger focus states
+   ════════════════════════════════════════════ */
+/* Ensure 3:1 contrast ratio minimum on all focusable elements */
+input:focus-visible,textarea:focus-visible,select:focus-visible{
+  outline:3px solid var(--p);
+  outline-offset:2px;
+  box-shadow:0 0 0 5px rgba(146,39,143,.2);
+}
+button:focus-visible,.btn:focus-visible{
+  outline:3px solid var(--p);
+  outline-offset:2px;
+}
+.board-btn:focus-visible,.ability-btn:focus-visible,.mode-btn:focus-visible{
+  outline:3px solid var(--p);
+  outline-offset:2px;
+}
+/* High contrast mode support */
+@media(forced-colors:active){
+  .btn-primary,.gen-hero,.board-btn.active,.ability-btn.active{forced-color-adjust:none}
+  input:focus,textarea:focus{outline:3px solid ButtonText}
+}
+
+/* ════════════════════════════════════════════
+   MOBILE — full slide-out drawer (improved)
+   ════════════════════════════════════════════ */
+@media(max-width:768px){
+  :root{--sb:min(280px,85vw)}
+  .sidebar{
+    position:fixed;top:var(--hdr);left:0;bottom:44px;
+    width:var(--sb);z-index:250;
+    transform:translateX(0);transition:transform .28s cubic-bezier(.4,0,.2,1);
+    box-shadow:4px 0 32px rgba(0,0,0,.22);
+    overflow-y:auto;-webkit-overflow-scrolling:touch;
+  }
+  .sidebar.sidebar-closed{transform:translateX(-105%)}
+  /* Overlay when sidebar open */
+  .sidebar-overlay{
+    position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:240;
+    backdrop-filter:blur(2px);
+  }
+  .hamburger-btn{display:flex!important}
+  .hdr-nav .nav-item span:last-child{display:none}
+  .nav-item{padding:0 8px;font-size:11px}
+  /* Content full width */
+  .content{padding:1rem 1rem 90px}
+  /* Bottom bar stacked */
+  .btm{padding:8px 10px;flex-wrap:wrap;gap:6px}
+  .btm-left{display:none}
+  .btm-right{width:100%;display:flex;gap:5px}
+  .btm-right .btn{flex:1;font-size:11px;padding:7px 5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  /* Phase cards */
+  .phase-sub{display:none}
+  .quality-tag{display:none}
+  .phase-timing-badge{display:none}
+  /* Phase toolbar wraps more tightly */
+  .phase-action-btn{padding:4px 8px;font-size:11px}
+  /* Board buttons tighter */
+  .board-btn{padding:3px 6px;font-size:10px}
+  /* Empty state */
+  .empty-screen{padding:32px 16px}
+  /* Build header stacks */
+  .build-header{flex-direction:column;gap:8px}
+  .build-title{font-size:16px}
+  .export-hero-btn{width:100%;justify-content:center}
+  /* Preview */
+  .prev-topbar{padding:1.2rem}
+  .prev-title{font-size:18px}
+  .prev-body{padding:1rem}
+  /* AI setup */
+  .ai-provider-grid{grid-template-columns:1fr}
+  .ai-key-row{flex-direction:column}
+  .ai-key-row .btn{width:100%}
+}
+@media(min-width:769px){
+  .sidebar{transform:none!important;position:relative;top:auto}
+  .hamburger-btn{display:none!important}
+}
+
+
+/* ════════════════════════════════════════════
+   SKELETON SHIMMER — loading state for phases
+   ════════════════════════════════════════════ */
+.phase-skeleton{
+  padding:12px;
+  background:linear-gradient(90deg,var(--gray-100) 25%,var(--gray-50) 50%,var(--gray-100) 75%);
+  background-size:200% 100%;
+  animation:shimmer 1.4s ease infinite;
+  border-radius:var(--radius-xs);
+  height:80px;margin-top:8px;
+}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+/* Phase generating: shimmer on the textarea area */
+.pcard.phase-generating .pbody-inner::after{
+  content:'';display:block;
+  background:linear-gradient(90deg,var(--gray-100) 25%,var(--gray-50) 50%,var(--gray-100) 75%);
+  background-size:200% 100%;
+  animation:shimmer 1.4s ease infinite;
+  border-radius:var(--radius-xs);height:90px;margin-top:8px;
+}
+
+/* ════════════════════════════════════════════
+   MWB FULLSCREEN
+   ════════════════════════════════════════════ */
+.mwb-fs-btn{
+  background:transparent;border:1.5px solid var(--gray-200);
+  border-radius:5px;padding:4px 7px;cursor:pointer;
+  color:var(--gray-500);transition:all .15s;margin-left:auto;
+}
+.mwb-fs-btn:hover{border-color:var(--p);color:var(--p);background:var(--pl)}
+.mwb-fullscreen-overlay{
+  position:fixed;inset:0;z-index:9999;
+  background:#faf9fd;
+  display:flex;flex-direction:column;
+}
+html.dark .mwb-fullscreen-overlay{background:#0f0c18}
+.mwb-fs-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 20px;background:var(--pd);
+  box-shadow:0 2px 8px rgba(0,0,0,.15);flex-shrink:0;
+}
+.mwb-fs-title{font-family:var(--fh);font-size:15px;font-weight:700;color:#fff}
+.mwb-fs-close{
+  background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.2);
+  color:#fff;padding:7px 16px;border-radius:6px;cursor:pointer;
+  font-family:var(--fb);font-size:13px;font-weight:600;transition:all .15s;
+}
+.mwb-fs-close:hover{background:rgba(255,255,255,.25)}
+.mwb-fs-canvas{
+  flex:1;width:100%;height:100%;cursor:crosshair;touch-action:none;
+  background:repeating-linear-gradient(0deg,transparent,transparent 39px,#e8e4f0 40px),
+             repeating-linear-gradient(90deg,transparent,transparent 39px,#f0edf7 40px),
+             #f9f8fd;
+}
+html.dark .mwb-fs-canvas{
+  background:repeating-linear-gradient(0deg,transparent,transparent 39px,#2e2840 40px),
+             repeating-linear-gradient(90deg,transparent,transparent 39px,#221d2e 40px),
+             #1a1625;
+}
+
+/* ════════════════════════════════════════════
+   REDUCED MOTION — accessibility
+   ════════════════════════════════════════════ */
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .spinner,.gen-step-dot.active{animation:none!important}
+  .pcard.phase-generating .phead{animation:none!important}
+  .phase-skeleton,.pcard.phase-generating .pbody-inner::after{animation:none!important;background:var(--gray-100)}
+  .gen-hero:hover,.export-hero-btn:hover,.btn-primary:hover{transform:none!important}
+  .phase-action-btn:hover{transform:none!important}
+  .sidebar{transition:none!important}
+}
+
+/* ════════════════════════════════════════════
+   PRINT OPTIMISATION
+   ════════════════════════════════════════════ */
+@media print{
+  /* Hide interactive UI */
+  .hdr,.sidebar,.btm,.lc-footer,
+  .preview-toolbar,.phase-toolbar,
+  .mwb-cameo,.gen-progress-card,
+  .no-key-banner,.ai-status-bar,
+  .hdr-dm-btn,.hamburger-btn,
+  .split-preview-pane{display:none!important}
+
+  /* Full width */
+  .shell,.main{display:block!important}
+  .content{padding:0!important;overflow:visible!important}
+
+  /* Remove shadows and borders for clean print */
+  *{box-shadow:none!important}
+  .pcard,.prev-phase,.ai-setup-section{border:1px solid #999!important}
+
+  /* Force all phase cards to show content */
+  .pbody{display:block!important}
+  .pbody-inner{display:block!important}
+  .phase-textarea{display:block!important;height:auto!important;min-height:60px!important;border:none!important;resize:none!important}
+
+  /* Page breaks */
+  .prev-phase,.pcard{page-break-inside:avoid!important;break-inside:avoid!important}
+  .prev-phase-list,.phases{page-break-before:auto}
+
+  /* Colours print well */
+  .prev-topbar,.mini-prev-top{print-color-adjust:exact;-webkit-print-color-adjust:exact}
+  .phase-color-bar,.phase-icon-wrap{print-color-adjust:exact;-webkit-print-color-adjust:exact}
+
+  /* Preview shell takes full page */
+  .preview-shell{max-width:100%!important}
+  .prev-body{padding:1rem!important}
+}
+
+/* ════════════════════════════════════════════
+   CONTRAST IMPROVEMENTS — WCAG 2.1 AA
+   ════════════════════════════════════════════ */
+/* Darken mid-range grays that may fail contrast checks */
+:root{
+  --gray-400:#7a7090; /* was #9f94b0 — now darker for better contrast on white */
+  --gray-500:#5c5375; /* was #6b6080 — now darker */
+}
+.qs-desc,.prev-kw-def,.phase-sub,.build-meta,.mini-meta,.meta-str{
+  color:var(--gray-500)!important; /* ensure legible on white backgrounds */
+}
+/* Ensure small text passes contrast at 4.5:1 */
+.board-btn,.ability-btn{color:#4a4060!important}
+.board-btn.active,.ability-btn.active{color:#fff!important}
+
+
+/* ═══ IMPROVEMENT 1: Progress during parallel generation ═══ */
+.gen-step-dot.active{background:var(--p);animation:pulse 1s ease infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* ═══ IMPROVEMENT 2: Lesson History Panel ═══ */
+.hdr-hist-btn{
+  background:rgba(255,255,255,.12);border:none;cursor:pointer;
+  width:34px;height:34px;border-radius:8px;font-size:16px;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .15s;flex-shrink:0;margin-right:4px;
+}
+.hdr-hist-btn:hover{background:rgba(255,255,255,.22)}
+.history-panel{
+  width:320px;background:var(--white);
+  border:1.5px solid var(--gray-200);border-radius:var(--radius);
+  box-shadow:0 8px 32px rgba(0,0,0,.15);overflow:hidden;
+  max-height:70vh;overflow-y:auto;
+}
+html.dark .history-panel{background:var(--gray-100);border-color:var(--gray-200)}
+.history-hdr{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 14px;background:var(--pd);color:#fff;
+  position:sticky;top:0;z-index:1;
+}
+.history-close{background:none;border:none;color:#fff;cursor:pointer;font-size:16px;padding:2px 6px}
+.history-empty{padding:24px;text-align:center;color:var(--gray-400);font-size:13px}
+.history-row{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--gray-100);
+  transition:background .1s;
+}
+.history-row:hover{background:var(--pl)}
+html.dark .history-row:hover{background:rgba(146,39,143,.1)}
+.history-info{flex:1;min-width:0}
+.history-title{font-size:13px;font-weight:600;color:var(--gray-900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.history-meta{font-size:11px;color:var(--gray-400);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.history-badge{font-size:9px;font-weight:700;padding:2px 7px;border-radius:99px;background:var(--pl);color:var(--p);flex-shrink:0}
+.history-badge.exam{background:#fef2f2;color:#dc2626}
+
+/* ═══ IMPROVEMENT 4: Question formatting ═══ */
+.phase-q-display{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+.phase-q-card{
+  border-radius:var(--radius-xs);overflow:hidden;
+  border:1.5px solid var(--gray-200);
+  transition:box-shadow .15s;
+}
+.phase-q-card:hover{box-shadow:var(--shadow-sm)}
+.phase-q-hdr{
+  padding:8px 12px;background:var(--gray-50);
+  border-bottom:1px solid var(--gray-100);
+  font-size:13px;font-weight:600;color:var(--gray-900);
+  line-height:1.5;
+}
+html.dark .phase-q-hdr{background:var(--gray-200)}
+.phase-q-body{
+  padding:8px 12px;font-size:12.5px;color:var(--gray-600);
+  line-height:1.7;white-space:pre-wrap;
+}
+.phase-q-answer .phase-q-body{background:#f0fdf4;color:#15803d}
+.phase-q-answer .phase-q-hdr{background:#dcfce7;border-color:#86efac}
+.phase-q-misc{font-size:12px;color:var(--gray-500);padding:3px 2px;font-style:italic}
+.mark-badge{
+  display:inline-block;background:var(--p);color:#fff;
+  font-size:9px;font-weight:800;padding:1px 5px;border-radius:4px;
+  margin-left:4px;vertical-align:middle;letter-spacing:.3px;
+}
+.phase-textarea-compact{min-height:60px!important;height:60px!important;margin-top:8px}
+
+/* ═══ IMPROVEMENT 7: Presets ═══ */
+.presets-row{display:flex;align-items:center;gap:5px;margin-bottom:6px;flex-wrap:wrap}
+.presets-label{font-size:10px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:.4px;flex-shrink:0}
+.preset-btn{
+  padding:4px 9px;border-radius:99px;font-size:11px;font-weight:600;
+  border:1.5px solid var(--gray-200);background:var(--white);
+  color:var(--gray-600);cursor:pointer;transition:all .15s;white-space:nowrap;
+}
+.preset-btn:hover{border-color:var(--p);color:var(--p);background:var(--pl)}
+
+/* ═══ IMPROVEMENT 8: Adapt dialog ═══ */
+.adapt-dialog{
+  position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+  z-index:9999;width:320px;
+  background:var(--white);border-radius:var(--radius);
+  box-shadow:0 8px 40px rgba(0,0,0,.2);border:1.5px solid var(--gray-200);
+  overflow:hidden;
+}
+html.dark .adapt-dialog{background:var(--gray-100);border-color:var(--gray-200)}
+.adapt-title{
+  padding:14px 16px;background:var(--pd);color:#fff;
+  font-family:var(--fh);font-size:14px;font-weight:700;
+}
+.adapt-row{padding:10px 16px;border-bottom:1px solid var(--gray-100)}
+.adapt-row label{display:block;font-size:11px;font-weight:600;color:var(--gray-500);margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px}
+.adapt-row input,.adapt-row select{width:100%;padding:7px 10px;border:1.5px solid var(--gray-200);border-radius:var(--radius-xs);font-size:13px}
+.adapt-btns{display:flex;gap:8px;padding:12px 16px;justify-content:flex-end}
+
+/* ═══ IMPROVEMENT 9: Marks total ═══ */
+.build-meta{font-size:12px;color:var(--gray-500);margin-top:3px}
+
 </style>
 </head>
 <body>
@@ -1045,7 +1534,13 @@ function saveState(){
       phases:Object.fromEntries(Object.entries(S.phases).map(([k,v])=>
         [k,{content:v.content,parsed:v.parsed,generated:v.generated,generating:false}]
       )),
-      keywords:S.keywords,nextKwId:S.nextKwId
+      keywords:S.keywords,nextKwId:S.nextKwId,
+      selectedComponents:S.selectedComponents,componentCounts:S.componentCounts,
+      worksheets:S.worksheets,markSchemes:S.markSchemes,webLink:S.webLink,
+      discussionQuestions:S.discussionQuestions,subjectMode:S.subjectMode,
+      diagrams:S.diagrams,darkMode:S.darkMode,ability:S.ability,
+      examBoard:S.examBoard,aiProvider:S.aiProvider,claudeKey:S.claudeKey,
+      copilotKey:S.copilotKey,copilotEndpoint:S.copilotEndpoint
     };
     localStorage.setItem('lessoncraft_v4',JSON.stringify(snap));
   }catch(e){}
@@ -1079,7 +1574,22 @@ var S = {
   aiProvider:(_saved&&_saved.aiProvider)||'claude',  // 'claude' | 'copilot'
   claudeKey:(_saved&&_saved.claudeKey)||LESSONCRAFT_API_KEY||'',
   copilotKey:(_saved&&_saved.copilotKey)||'',
-  copilotEndpoint:(_saved&&_saved.copilotEndpoint)||''
+  copilotEndpoint:(_saved&&_saved.copilotEndpoint)||'',
+  // New fields
+  selectedComponents:(_saved&&_saved.selectedComponents&&Array.isArray(_saved.selectedComponents)&&_saved.selectedComponents.length>0?_saved.selectedComponents:['prior','newknow','ido','guided','independent','reflect']),
+  componentCounts:(_saved&&_saved.componentCounts)||{recall:5,retrieval:4},
+  worksheets:(_saved&&_saved.worksheets)||[],
+  markSchemes:(_saved&&_saved.markSchemes)||[],
+  webLink:(_saved&&_saved.webLink)||'',
+  discussionQuestions:(_saved&&_saved.discussionQuestions)||[],
+  subjectMode:(_saved&&_saved.subjectMode)||'general',
+  diagrams:(_saved&&_saved.diagrams)||{},
+  darkMode:(_saved&&_saved.darkMode===true)||false,
+  splitView:false,
+  showComponents:false,
+  showAdvancedSb:false,
+  teacherMode:true,  // teacher sees answers; student version hides them
+  ability:(_saved&&_saved.ability)||'mixed'
 };
 
 var PHASES=[
@@ -1091,14 +1601,46 @@ var PHASES=[
   {id:'reflect',label:'Reflect & Respond',sub:'Consolidate and close the lesson',icon:'🔄',col:'#0891b2',bg:'#ecfeff'}
 ];
 
+var DEFAULT_PHASE_IDS=['prior','newknow','ido','guided','independent','reflect'];
+
+// Full lesson component library
+var ALL_COMPONENTS=[
+  {id:'recall',label:'Recall',sub:'Quick-fire retrieval',icon:'⚡',col:'#f59e0b',bg:'#fffbeb',hasCount:true,defaultCount:5},
+  {id:'prior',label:'Prior Knowledge',sub:'Activate prior knowledge',icon:'🧠',col:'#7c3aed',bg:'#f5f3ff',hasCount:false},
+  {id:'retrieval',label:'Retrieval Practice',sub:'Spaced retrieval of past topics',icon:'🔁',col:'#8b5cf6',bg:'#f5f3ff',hasCount:true,defaultCount:4},
+  {id:'newknow',label:'New Knowledge',sub:'Introduce the concept or skill',icon:'💡',col:'#059669',bg:'#ecfdf5',hasCount:false},
+  {id:'process',label:'Processing Knowledge',sub:'Students make sense of new learning',icon:'⚙️',col:'#0891b2',bg:'#ecfeff',hasCount:false},
+  {id:'ido',label:'I Do',sub:'Teacher-modelled worked examples',icon:'👁️',col:'#2563eb',bg:'#eff6ff',hasCount:false},
+  {id:'wedo',label:'We Do',sub:'Teacher and students work together',icon:'🤝',col:'#d97706',bg:'#fffbeb',hasCount:false},
+  {id:'youdo',label:'You Do',sub:'Students practise independently',icon:'✏️',col:'#dc2626',bg:'#fef2f2',hasCount:false},
+  {id:'guided',label:'Guided Practice',sub:'Scaffolded questions with support',icon:'🎯',col:'#d97706',bg:'#fffbeb',hasCount:false},
+  {id:'independent',label:'Independent Practice',sub:'Unsupported student work',icon:'📝',col:'#dc2626',bg:'#fef2f2',hasCount:false},
+  {id:'reflect',label:'Reflect & Respond',sub:'Consolidate and close the lesson',icon:'🔄',col:'#0891b2',bg:'#ecfeff',hasCount:false},
+  {id:'vocab',label:'Vocabulary',sub:'Tier 2/3 words, etymology, I Say You Say',icon:'📖',col:'#be185d',bg:'#fdf2f8',hasCount:false},
+];
+
+function getActivePhases(){
+  if(typeof S==='undefined'||!S.selectedComponents||!Array.isArray(S.selectedComponents)||!S.selectedComponents.length)
+    return PHASES;  // fallback to classic 6
+  var result=ALL_COMPONENTS.filter(function(c){return S.selectedComponents.includes(c.id);});
+  result.forEach(function(c){
+    if(!S.phases[c.id])S.phases[c.id]={content:'',parsed:null,generated:false,generating:false};
+    if(S.open[c.id]===undefined)S.open[c.id]=false;
+  });
+  return result.length?result:PHASES;
+}
+
 // Exam Focus phases -- different structure for Y11 exam prep
 var EXAM_PHASES=[
-  {id:'warmup',   label:'Warm-Up',          sub:'Retrieval: quick recall of key facts',     icon:'⚡',col:'#d97706',bg:'#fffbeb'},
-  {id:'examqs',   label:'Exam Questions',   sub:'Past-paper style questions with marks',    icon:'📝',col:'#dc2626',bg:'#fef2f2'},
-  {id:'workedex', label:'Worked Solution',  sub:'Model answer -- show every mark step',      icon:'✅',col:'#2563eb',bg:'#eff6ff'},
-  {id:'marksch',  label:'Mark Scheme',      sub:'Examiner-style mark scheme & AO codes',    icon:'🎯',col:'#7c3aed',bg:'#f5f3ff'},
-  {id:'drillqs',  label:'Drill Practice',   sub:'Repeated practice -- 6 similar questions',  icon:'🔁',col:'#059669',bg:'#ecfdf5'},
-  {id:'examtips', label:'Examiner Tips',    sub:'Common mistakes & how to gain marks',      icon:'💡',col:'#0891b2',bg:'#ecfeff'}
+  {id:'warmup',       label:'Warm-Up',              sub:'Retrieval: quick recall of key facts',       icon:'⚡',col:'#d97706',bg:'#fffbeb'},
+  {id:'examretrieval',label:'Retrieval Practice',   sub:'Topics covered before -- spaced recall',     icon:'🔁',col:'#8b5cf6',bg:'#f5f3ff'},
+  {id:'examqs',       label:'Exam Questions',       sub:'Past-paper style questions with marks',      icon:'📝',col:'#dc2626',bg:'#fef2f2'},
+  {id:'workedex',     label:'Worked Solution',      sub:'Model answer -- show every mark step',       icon:'✅',col:'#2563eb',bg:'#eff6ff'},
+  {id:'marksch',      label:'Mark Scheme',          sub:'Examiner-style mark scheme & AO codes',      icon:'🎯',col:'#7c3aed',bg:'#f5f3ff'},
+  {id:'examguided',   label:'Guided Practice',      sub:'Teacher-supported exam technique practice',  icon:'🤝',col:'#d97706',bg:'#fffbeb'},
+  {id:'examindep',    label:'Independent Practice', sub:'Students attempt exam Qs unsupported',       icon:'✏️',col:'#dc2626',bg:'#fef2f2'},
+  {id:'drillqs',      label:'Drill Practice',       sub:'Repeated practice -- 6 similar questions',   icon:'🔄',col:'#059669',bg:'#ecfdf5'},
+  {id:'examtips',     label:'Examiner Tips',        sub:'Common mistakes & how to gain marks',        icon:'💡',col:'#0891b2',bg:'#ecfeff'}
 ];
 
 const EXAM_QUALITY_TAGS={
@@ -1199,103 +1741,74 @@ const QUALITY_TAGS={
 };
 
 async function generatePhase(id, isImprovement=false){
-  const ph=S.phases[id];
-  const prevContent=ph.content;
+  var comp=ALL_COMPONENTS.find(function(c){return c.id===id;})||{id:id,label:id};
+  var ph=S.phases[id];
+  if(!ph){S.phases[id]={content:'',parsed:null,generated:false,generating:false};ph=S.phases[id];}
+  var prevContent=ph.content;
   ph.generating=true;ph.generated=false;render();
-  const topic=S.topic||'this topic',subject=S.subject||'Maths',year=S.year||'secondary';
-  const ws=S.worksheetBase64?'\n\nA worksheet has been uploaded -- match its question style, difficulty and number complexity.':'';
-  const prev=isImprovement&&prevContent?`\n\nPrevious version (improve on this):\n${prevContent}`:'';
-  const abilityNote=S.ability==='lower'?'Target lower ability: simpler language, more scaffolding, concrete examples.':S.ability==='higher'?'Target higher ability: technical vocabulary, multi-step problems, stretch questions.':'Target mixed ability: accessible entry points plus stretch elements.';
-  const boardNote2={'AQA':'AQA command words and mark scheme style.','Edexcel':'Edexcel (Pearson) question style and mark scheme.','OCR':'OCR levels-based mark schemes.','WJEC':'WJEC/Eduqas band mark schemes.','CCEA':'CCEA Northern Ireland conventions.'}[S.examBoard]||'';
-  const sys=`You are an expert ${subject} teacher creating ${S.examBoard}-aligned lesson content for Year ${year} UK secondary students.\n${boardNote2}\n${abilityNote}\nTopic: ${topic}${ws}${prev}\nRespond ONLY with valid JSON. No markdown, no preamble, no explanation.`;
-  let prompt='',parse=null;
-  if(id==='prior'){
-    prompt=`Activating prior knowledge for "${topic}". JSON: {"title":"string","items":["question 1","question 2","question 3"]}. Items should probe prerequisite knowledge.`;
-    parse=d=>{ph.content=(d.items||[]).map((x,i)=>(i+1)+'. '+x).join('\n')};
-  }else if(id==='newknow'){
-    prompt=`New knowledge content for "${topic}". JSON: {"title":"string","points":["key fact 1","key fact 2","key fact 3","key fact 4"],"formula":"the key formula or rule, or empty string"}`;
-    parse=d=>{ph.content=(d.points||[]).join('\n')+(d.formula?'\n\nKey formula: '+d.formula:'')};
-  }else if(id==='ido'){
-    prompt=`2 teacher-modelled worked examples for "${topic}". JSON: {"title":"string","examples":[{"question":"concrete question with specific numbers","solution":"clear step-by-step working"},{"question":"...","solution":"..."}]}`;
-    parse=d=>{ph.content=(d.examples||[]).map((e,i)=>'Ex '+(i+1)+': '+e.question+'\nSolution: '+e.solution).join('\n\n')};
-  }else if(id==='guided'){
-    prompt=`2 guided practice questions for "${topic}" (We Do, with teacher support). JSON: {"questions":[{"question":"real-world word problem","solution":"full answer with working","image_desc":"brief diagram description or empty string"},{"question":"...","solution":"...","image_desc":""}]}`;
-    parse=d=>{ph.content=(d.questions||[]).map((q,i)=>'Q'+(i+1)+': '+q.question+'\nAnswer: '+q.solution).join('\n\n')};
-  }else if(id==='independent'){
-    prompt=`4 independent practice questions for "${topic}" (You Do, no teacher). JSON: {"questions":[{"question":"..."},{"question":"..."},{"question":"..."},{"question":"..."}]}. Mix: 2 routine, 1 applied/real-world, 1 challenging exam-style. No solutions.`;
-    parse=d=>{ph.content=(d.questions||[]).map((q,i)=>(i+1)+'. '+q.question).join('\n')};
-  }else if(id==='reflect'){
-    prompt=`Reflect & respond for "${topic}". JSON: {"prompt":"exit ticket question for students to answer","items":["reflection point 1","reflection point 2","reflection point 3","I can... success statement"]}`;
-    parse=d=>{ph.content='Exit ticket: '+d.prompt+'\n\n'+(d.items||[]).map(x=>'\u2022 '+x).join('\n')};
-  }
-  // Try up to 2 times silently
-  for(let attempt=0;attempt<2;attempt++){
-    try{
-      const raw=await callAI(sys,prompt);
-      const parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());
-      if(parse)parse(parsed);
-      ph.parsed=parsed;ph.generated=true;
-      ph.generating=false;saveState();render();return;
-    }catch(e){
-      if(attempt===1){
-        // Both attempts failed -- show friendly message, keep previous content if any
-        ph.content=prevContent||'';
-        ph.generated=!!prevContent;
-        showToast('Generation failed -- try again','error');
+
+  var topic=S.topic||'this topic';
+  var subject=S.subject||'Maths';
+  var year=S.year||'secondary';
+  var ws=getWorksheetContext();
+  var prev=isImprovement&&prevContent?'\n\nPrevious version (improve on this, keep the best parts):\n'+prevContent:'';
+  var mathsCtx=getMathsContext();
+  var abilityNote=S.ability==='lower'?'Lower ability: simpler language, more scaffolding, concrete examples, shorter steps.':S.ability==='higher'?'Higher ability: technical vocabulary, multi-step problems, stretch and challenge.':'Mixed ability: accessible entry points plus stretch elements for all learners.';
+  var boardNote={'AQA':'AQA command words and mark scheme style.','Edexcel':'Edexcel (Pearson) question style.','OCR':'OCR levels-based mark schemes.','WJEC':'WJEC/Eduqas band mark schemes.','CCEA':'CCEA Northern Ireland conventions.'}[S.examBoard]||'';
+  var objNote=S.objectives?'\nLesson objectives: '+S.objectives:'';
+  var sys='You are an expert '+subject+' teacher creating '+S.examBoard+'-aligned lesson content for Year '+year+' UK secondary students.\n'+boardNote+'\n'+abilityNote+'\n'+mathsCtx+objNote+ws+prev+'\nTopic: '+topic+'\nRespond ONLY with valid JSON. No markdown, no preamble.';
+
+  var count=S.componentCounts&&S.componentCounts[id]?S.componentCounts[id]:5;
+  var prompt='';var parse=null;
+
+  if(id==='recall'){
+    prompt='Generate '+count+' recall questions for "'+topic+'" testing previous learning (not this lesson). Short answers only. JSON: {"questions":["Q1 [1 mark]","Q2 [1 mark]",...]} — exactly '+count+' items.';
+    parse=function(d){ph.content='Recall ('+count+' questions):\n'+(d.questions||[]).map(function(q,i){return(i+1)+'. '+q;}).join('\n');};
+  } else if(id==='prior'){
+    prompt='Activating prior knowledge for "'+topic+'". JSON: {"title":"string","questions":["question 1","question 2","question 3"]} — 3 questions probing prerequisite knowledge needed for this lesson.';
+    parse=function(d){ph.content=(d.questions||[]).map(function(q,i){return(i+1)+'. '+q;}).join('\n');};
+  } else if(id==='retrieval'){
+    prompt='Spaced retrieval practice for "'+topic+'" — '+count+' questions mixing this topic with recent past topics. JSON: {"questions":["question","..."]} — exactly '+count+' items, mix of topics.';
+    parse=function(d){ph.content='Retrieval practice:\n'+(d.questions||[]).map(function(q,i){return(i+1)+'. '+q;}).join('\n');};
+  } else if(id==='newknow'){
+    var mathsExtra=S.subjectMode==='maths'?' Include: key formula, worked visual (describe a bar model or ratio table if applicable), and the concrete-pictorial-abstract progression.':'';
+    prompt='New knowledge content for "'+topic+'".'+mathsExtra+' JSON: {"title":"string","points":["key concept 1","key concept 2","key concept 3","key concept 4"],"formula":"key formula or rule (empty if not applicable)","cpa":{"concrete":"describe concrete manipulative or real-world object","pictorial":"describe a diagram, bar model or visual","abstract":"the formal symbolic rule"}}';
+    parse=function(d){
+      var lines=(d.points||[]).join('\n');
+      if(d.formula)lines+='\n\nKey formula/rule: '+d.formula;
+      if(d.cpa&&S.subjectMode==='maths'){
+        lines+='\n\nConcrete: '+d.cpa.concrete;
+        lines+='\nPictorial: '+d.cpa.pictorial;
+        lines+='\nAbstract: '+d.cpa.abstract;
       }
-    }
-  }
-  ph.generating=false;saveState();render();
-}
-
-async function generateAll(){
-  if(!S.topic){showToast('Add a topic first','error');return;}
-  var hasK=(LESSONCRAFT_API_KEY&&LESSONCRAFT_API_KEY.length>5)||(S.claudeKey&&S.claudeKey.length>5)||(S.aiProvider==='copilot'&&S.copilotKey);
-  if(!hasK){showToast('Go to AI Setup tab first','error');S.tab='aisetup';render();return;}
-  S.generatingAll=true;S.genSteps=PHASES.map(function(p){return{id:p.id,label:p.label,status:'pending'};});
-  S.tab='build';PHASES.forEach(function(p){S.open[p.id]=false;});S.activePhaseIdx=0;render();
-  for(var i=0;i<S.genSteps.length;i++){
-    S.genSteps[i].status='active';
-    PHASES.forEach(function(p,j){S.open[p.id]=(j===i);});
-    S.activePhaseIdx=i;render();
-    await generatePhase(S.genSteps[i].id);
-    S.genSteps[i].status='done';
-  }
-  S.generatingAll=false;PHASES.forEach(function(p){S.open[p.id]=p.id==='ido'||p.id==='guided';});render();
-  showToast('Lesson ready!','success');
-}
-
-// -- Generate a single exam-focus phase --
-async function generateExamPhase(id, isImprovement=false){
-  const ph=S.phases[id];
-  const prevContent=ph.content;
-  ph.generating=true;ph.generated=false;render();
-  const topic=S.topic||'this topic',subject=S.subject||'Maths',year=S.year||'11';
-  const ws=S.worksheetBase64?'\n\nRevision material has been uploaded -- base questions on this content.':'';
-  const prev=isImprovement&&prevContent?'\n\nPrevious version (improve on this):\n'+prevContent:'';
-  const boardCtx2={'AQA':'Use AQA-style structured mark scheme with specific mark points. AQA command words: state, describe, explain, evaluate, calculate, show that.','Edexcel':'Use Edexcel (Pearson) mark scheme format. Include method marks (M) and accuracy marks (A). Edexcel question stems and command words.','OCR':'Use OCR mark scheme with levels descriptors for extended writing. OCR command words and assessment objectives AO1/AO2/AO3.','WJEC':'Use WJEC/Eduqas mark scheme with band descriptors. WJEC style includes both shorter structured and extended response questions.','CCEA':'Use CCEA Northern Ireland mark scheme conventions. CCEA assessment objectives and command words for GCSE.'};
-  const boardNote2=boardCtx2[S.examBoard]||'';
-  const sys='You are an expert '+subject+' examiner preparing Year '+year+' students for their '+S.examBoard+' GCSE exams.\nTopic: '+topic+ws+prev+'\n'+boardNote2+'\nInclude mark allocations e.g. [2 marks]. Respond ONLY with valid JSON. No markdown, no preamble.';
-
-  let prompt='', parse=null;
-  if(id==='warmup'){
-    prompt='Short warm-up retrieval activity for "'+topic+'" (5 mins, Year '+year+' GCSE). JSON: {"title":"string","questions":["fact recall Q1 [1 mark]","fact recall Q2 [1 mark]","short calc Q [2 marks]","formula/definition Q [1 mark]"]}';
-    parse=function(d){ph.content=(d.questions||[]).map(function(q,i){return (i+1)+'. '+q;}).join('\n');};
-  } else if(id==='examqs'){
-    prompt='Write 3 exam-style questions on "'+topic+'" for Year '+year+' GCSE. Vary marks: 1 short (2 marks), 1 medium (4 marks), 1 extended (6 marks). JSON: {"questions":[{"question":"full question text with mark allocation [2 marks]","marks":2},{"question":"...","marks":4},{"question":"...","marks":6}]}';
-    parse=function(d){ph.content=(d.questions||[]).map(function(q,i){return 'Q'+(i+1)+' ['+q.marks+' marks]\n'+q.question;}).join('\n\n');};
-  } else if(id==='workedex'){
-    prompt='Write a fully worked model answer for an exam question on "'+topic+'" as a Year '+year+' GCSE student would write it for full marks. JSON: {"question":"the exam question [4 marks]","steps":["Step 1: ...","Step 2: ...","Step 3: ...","Step 4: ..."],"finalAnswer":"final answer clearly stated"}';
-    parse=function(d){ph.content=d.question+'\n\nModel Answer:\n'+(d.steps||[]).join('\n')+'\n\nFinal answer: '+d.finalAnswer;};
-  } else if(id==='marksch'){
-    prompt='Write an examiner-style mark scheme for a 6-mark question on "'+topic+'" (Year '+year+' GCSE). JSON: {"question":"the question [6 marks]","marks":[{"point":"mark point 1","ao":"AO1","accept":"acceptable alternatives"},{"point":"...","ao":"AO2","accept":"..."},{"point":"...","ao":"AO2","accept":"..."},{"point":"...","ao":"AO3","accept":"..."},{"point":"...","ao":"AO3","accept":"..."},{"point":"...","ao":"AO3","accept":"..."}]}';
-    parse=function(d){ph.content=d.question+'\n\nMark Scheme:\n'+(d.marks||[]).map(function(m,i){return '['+m.ao+'] '+m.point+'\n  Accept: '+m.accept;}).join('\n');};
-  } else if(id==='drillqs'){
-    prompt='Write 6 short drill questions on "'+topic+'" for Year '+year+' GCSE -- same skill, varied numbers/context. Students self-mark. JSON: {"skill":"what skill is being drilled","questions":[{"q":"question","a":"answer"},{"q":"...","a":"..."},{"q":"...","a":"..."},{"q":"...","a":"..."},{"q":"...","a":"..."},{"q":"...","a":"..."}]}';
-    parse=function(d){ph.content='Drill: '+d.skill+'\n\n'+(d.questions||[]).map(function(q,i){return (i+1)+'. '+q.q+'\n   Answer: '+q.a;}).join('\n');};
-  } else if(id==='examtips'){
-    prompt='Write examiner tips for "'+topic+'" for Year '+year+' GCSE students. JSON: {"commonErrors":["mistake 1","mistake 2","mistake 3"],"howToGainMarks":["tip 1","tip 2","tip 3"],"keyWords":["keyword 1","keyword 2","keyword 3"]}';
-    parse=function(d){ph.content='Common mistakes:\n'+(d.commonErrors||[]).map(function(e){return '- '+e;}).join('\n')+'\n\nHow to gain marks:\n'+(d.howToGainMarks||[]).map(function(t){return '- '+t;}).join('\n')+'\n\nKey words to use:\n'+(d.keyWords||[]).map(function(k){return '- '+k;}).join('\n');};
+      ph.content=lines;
+    };
+  } else if(id==='process'){
+    prompt='Processing knowledge activity for "'+topic+'" — students make sense of new learning. JSON: {"activity":"description of a sorting, matching, connecting or explanation task","questions":["processing question 1","processing question 2"]}';
+    parse=function(d){ph.content=d.activity+'\n\n'+(d.questions||[]).map(function(q,i){return(i+1)+'. '+q;}).join('\n');};
+  } else if(id==='ido'){
+    var mathsIdo=S.subjectMode==='maths'?' Use think-aloud narration. Show bar model or ratio table working where appropriate.':'';
+    prompt='2 teacher-modelled worked examples for "'+topic+'".'+mathsIdo+' JSON: {"title":"string","examples":[{"question":"concrete question with specific numbers","solution":"clear step-by-step working with each step labelled","hint":"common mistake to avoid"},{"question":"...","solution":"...","hint":"..."}]}';
+    parse=function(d){ph.content=(d.examples||[]).map(function(e,i){return'Ex '+(i+1)+': '+e.question+'\nSolution:\n'+e.solution+'\nWatch out: '+e.hint;}).join('\n\n');};
+  } else if(id==='wedo'){
+    prompt='We Do activity for "'+topic+'" — teacher and class work through together. JSON: {"task":"describe the task","steps":["Step 1: teacher does...","Step 2: ask class...","Step 3: students attempt..."],"questions":["class discussion question 1","class discussion question 2"]}';
+    parse=function(d){ph.content='Task: '+d.task+'\n\n'+(d.steps||[]).join('\n')+'\n\nDiscussion:\n'+(d.questions||[]).map(function(q){return'- '+q;}).join('\n');};
+  } else if(id==='youdo'){
+    prompt='You Do — independent practice for "'+topic+'". No teacher support. JSON: {"questions":["question 1","question 2","question 3","question 4"]} — mix of difficulty, no solutions.';
+    parse=function(d){ph.content=(d.questions||[]).map(function(q,i){return(i+1)+'. '+q;}).join('\n');};
+  } else if(id==='guided'){
+    var mathsGuided=S.subjectMode==='maths'?' Include a bar model or ratio table diagram description where appropriate.':'';
+    prompt='2 guided practice questions for "'+topic+'".'+mathsGuided+' JSON: {"questions":[{"question":"real-world word problem","solution":"full working","hint":"sentence stem or scaffold to start"},{"question":"...","solution":"...","hint":"..."}]}';
+    parse=function(d){ph.content=(d.questions||[]).map(function(q,i){return'Q'+(i+1)+': '+q.question+'\nScaffold: '+q.hint+'\nAnswer: '+q.solution;}).join('\n\n');};
+  } else if(id==='independent'){
+    prompt='4 independent practice questions for "'+topic+'". JSON: {"questions":[{"question":"...","difficulty":"routine"},{"question":"...","difficulty":"routine"},{"question":"...","difficulty":"applied"},{"question":"...","difficulty":"challenge"}]}. No solutions.';
+    parse=function(d){ph.content=(d.questions||[]).map(function(q,i){return(i+1)+'. ['+q.difficulty+'] '+q.question;}).join('\n');};
+  } else if(id==='reflect'){
+    prompt='Reflect and respond for "'+topic+'". JSON: {"exitTicket":"one short question students answer on mini-whiteboard or paper","iCan":"I can... success statement","deeperQs":["deeper discussion question 1","deeper discussion question 2"],"commonErrors":["misconception to address 1"]}';
+    parse=function(d){ph.content='Exit ticket: '+d.exitTicket+'\n\n'+d.iCan+'\n\nDeeper questions:\n'+(d.deeperQs||[]).map(function(q){return'- '+q;}).join('\n')+'\n\nAddress this misconception:\n- '+(d.commonErrors||[])[0];};
+  } else if(id==='vocab'){
+    prompt='Key vocabulary for "'+topic+'" (Tier 2 and Tier 3). JSON: {"words":[{"word":"term","tier":"2 or 3","definition":"clear student-friendly definition","etymology":"word origin (prefix/root/suffix meaning)","isay":"teacher says clearly","yousay":"students repeat","sentence":"example sentence using the word in context"},{"word":"...","tier":"...","definition":"...","etymology":"...","isay":"...","yousay":"...","sentence":"..."}]} — provide 5-6 words.';
+    parse=function(d){ph.content=(d.words||[]).map(function(w){return'[Tier '+w.tier+'] '+w.word+'\nMeaning: '+w.definition+'\nEtymology: '+w.etymology+'\nI say: '+w.isay+' | You say: '+w.yousay+'\nIn a sentence: '+w.sentence;}).join('\n\n');};
   }
 
   for(var attempt=0;attempt<2;attempt++){
@@ -1306,35 +1819,285 @@ async function generateExamPhase(id, isImprovement=false){
       ph.parsed=parsed;ph.generated=true;
       ph.generating=false;saveState();render();return;
     }catch(e){
-      if(attempt===1){
-        ph.content=prevContent||'';
-        ph.generated=!!prevContent;
-        showToast('Generation failed -- try again','error');
-      }
+      if(attempt===1){ph.content=prevContent||'';ph.generated=!!prevContent;showToast('Generation failed -- try again','error');}
     }
   }
   ph.generating=false;saveState();render();
+}
+
+async function generateAll(){
+  getActivePhases().forEach(function(p){
+    if(!S.phases[p.id])S.phases[p.id]={content:'',parsed:null,generated:false,generating:false};
+    if(S.open[p.id]===undefined)S.open[p.id]=false;
+  });
+  if(!S.topic){showToast('Add a topic first','error');return;}
+  var hasK=(LESSONCRAFT_API_KEY&&LESSONCRAFT_API_KEY.length>5)||(S.claudeKey&&S.claudeKey.length>5)||(S.aiProvider==='copilot'&&S.copilotKey);
+  if(!hasK){showToast('Go to AI Setup tab first','error');S.tab='aisetup';render();return;}
+  var activeP=getActivePhases();
+  S.generatingAll=true;
+  S.genSteps=activeP.map(function(p){return{id:p.id,label:p.label,status:'pending'};});
+  S.tab='build';
+  activeP.forEach(function(p){S.open[p.id]=false;});
+  S.activePhaseIdx=0;render();
+  // Generate ALL phases in parallel for speed
+  var promises=activeP.map(function(p,i){
+    S.genSteps[i].status='active';
+    return generatePhase(p.id,false).then(function(){
+      S.genSteps[i].status='done';render();
+    });
+  });
+  render();
+  await Promise.all(promises);
+  S.generatingAll=false;
+  activeP.forEach(function(p){S.open[p.id]=true;});
+  // Save to lesson history
+  saveLessonHistory();
+  render();
+  showToast('Lesson ready!','success');
 }
 
 async function generateAllExam(){
   if(!S.topic){showToast('Add a topic first','error');return;}
   var hasK=(LESSONCRAFT_API_KEY&&LESSONCRAFT_API_KEY.length>5)||(S.claudeKey&&S.claudeKey.length>5)||(S.aiProvider==='copilot'&&S.copilotKey);
   if(!hasK){showToast('Go to AI Setup tab first','error');S.tab='aisetup';render();return;}
-  S.generatingAll=true;S.genSteps=EXAM_PHASES.map(function(p){return{id:p.id,label:p.label,status:'pending'};});
-  S.tab='build';EXAM_PHASES.forEach(function(p){S.phases[p.id]={content:'',parsed:null,generated:false,generating:false};S.open[p.id]=false;});
+  S.generatingAll=true;
+  S.genSteps=EXAM_PHASES.map(function(p){return{id:p.id,label:p.label,status:'pending'};});
+  S.tab='build';
+  EXAM_PHASES.forEach(function(p){
+    S.phases[p.id]={content:'',parsed:null,generated:false,generating:false};
+    S.open[p.id]=false;
+  });
   S.activePhaseIdx=0;render();
-  for(var i=0;i<S.genSteps.length;i++){
+  var promises=EXAM_PHASES.map(function(p,i){
     S.genSteps[i].status='active';
-    EXAM_PHASES.forEach(function(p,j){S.open[p.id]=(j===i);});
-    S.activePhaseIdx=i;render();
-    await generateExamPhase(S.genSteps[i].id);
-    S.genSteps[i].status='done';
-  }
-  S.generatingAll=false;EXAM_PHASES.forEach(function(p){S.open[p.id]=p.id==='examqs'||p.id==='workedex';});render();
+    return generateExamPhase(p.id,false).then(function(){
+      S.genSteps[i].status='done';render();
+    });
+  });
+  render();
+  await Promise.all(promises);
+  S.generatingAll=false;
+  EXAM_PHASES.forEach(function(p){S.open[p.id]=true;});
+  saveLessonHistory();
+  render();
   showToast('Exam pack ready!','success');
 }
 
 // Toast notification
+async function generateDiagram(phaseId){
+  var ph=S.phases[phaseId];
+  if(!ph||!ph.content){showToast('Generate the phase content first','error');return;}
+  if(!S.diagrams)S.diagrams={};
+  S.diagrams[phaseId]={generating:true,svg:''};render();
+
+  var topic=S.topic||'this topic';
+  var subject=S.subject||'Maths';
+  var sys='You are an expert at creating educational SVG diagrams. Respond ONLY with raw SVG code — no markdown, no explanation, no backticks. The SVG must be self-contained, use viewBox="0 0 500 300", have a white or transparent background, use clean sans-serif fonts, and clearly label all parts.';
+  var prompt='Create a clear, labelled educational SVG diagram to accompany this '+subject+' content about "'+topic+'". The diagram should visually illustrate the key concept, show working where relevant, or provide a visual scaffold for students.\n\nContent:\n'+ph.content.slice(0,400)+'\n\nRequirements:\n- viewBox="0 0 500 300"\n- Clean, simple visual\n- All text labels in English\n- No external images or fonts\n- Suitable for '+( S.ability||'mixed')+' ability Year '+(S.year||'secondary')+' students\n- If maths: use bar models, ratio tables, number lines or geometric diagrams as appropriate\n- Output ONLY the SVG element, starting with <svg';
+
+  try{
+    var raw=await callAI(sys,prompt);
+    // Extract SVG from response
+    var svgMatch=raw.match(/<svg[\s\S]*<\/svg>/i);
+    var svg=svgMatch?svgMatch[0]:raw.trim();
+    if(!svg.startsWith('<svg')){throw new Error('No valid SVG returned');}
+    // Sanitise: remove any script tags
+    svg=svg.replace(/<script[\s\S]*?<\/script>/gi,'');
+    S.diagrams[phaseId]={generating:false,svg:svg};
+    saveState();render();
+    showToast('Diagram generated!','success');
+  }catch(e){
+    S.diagrams[phaseId]={generating:false,svg:''};
+    render();
+    showToast('Diagram failed: '+e.message,'error');
+  }
+}
+
+async function downloadExamPPTX(){
+  if(!window.PptxGenJS){
+    const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js';
+    document.head.appendChild(s);await new Promise(function(r){s.onload=r;});
+  }
+  var t=S.theme;var pres=new PptxGenJS();pres.layout='LAYOUT_16x9';
+  var P=t.primary.replace('#',''),PD=t.primaryDark.replace('#',''),A2=t.accent2.replace('#','');
+
+  function addBg(sl){
+    sl.background={color:'FFFFFF'};
+    sl.addShape(pres.ShapeType.rect,{x:0,y:0,w:10,h:.45,fill:{color:PD},line:{color:PD,width:0}});
+    sl.addShape(pres.ShapeType.rect,{x:0,y:5.18,w:10,h:.45,fill:{color:PD},line:{color:PD,width:0}});
+    sl.addShape(pres.ShapeType.rect,{x:0,y:.45,w:.07,h:4.73,fill:{color:P},line:{color:P,width:0}});
+    sl.addShape(pres.ShapeType.ellipse,{x:8.2,y:3.3,w:2.8,h:2.8,fill:{color:P,transparency:88},line:{color:P,transparency:80}});
+  }
+  function tag(sl,lbl,col){
+    sl.addShape(pres.ShapeType.rect,{x:.12,y:.5,w:2.4,h:.3,fill:{color:col.replace('#','')},line:{color:col.replace('#',''),width:0}});
+    sl.addText(lbl,{x:.12,y:.5,w:2.4,h:.3,fontSize:8,bold:true,color:'FFFFFF',align:'center',valign:'middle',margin:0});
+  }
+
+  // Title slide
+  {var sl=pres.addSlide();sl.background={color:PD};
+    sl.addShape(pres.ShapeType.ellipse,{x:7,y:-.5,w:4,h:4,fill:{color:P,transparency:65},line:{color:P,transparency:60}});
+    sl.addShape(pres.ShapeType.ellipse,{x:-.8,y:3,w:3,h:3,fill:{color:P,transparency:72},line:{color:P,transparency:68}});
+    if(S.subject||S.year)sl.addText(([S.subject,S.year?'Year '+S.year:'']).filter(Boolean).join(' | '),{x:.4,y:.7,w:9,h:.35,fontSize:11,color:A2,bold:true});
+    sl.addText('🎯 Exam Focus',{x:.4,y:1.1,w:9,h:.35,fontSize:11,color:'FFFFFF',italic:true,opacity:.7});
+    sl.addText(S.topic||'Exam Preparation',{x:.4,y:1.5,w:8.2,h:1.8,fontSize:22,color:'FFFFFF',bold:true,wrap:true,valign:'top',fontFace:'Sora'});
+    sl.addText(S.examBoard+' | '+new Date().toLocaleDateString('en-GB'),{x:.4,y:4.85,w:9,h:.3,fontSize:10,color:'FFFFFF',opacity:.6});
+  }
+
+  // One slide per exam phase
+  EXAM_PHASES.forEach(function(phase){
+    var ph=S.phases[phase.id];if(!ph||!ph.content)return;
+    var sl=pres.addSlide();addBg(sl);
+    tag(sl,phase.label,phase.col);
+    sl.addText(phase.icon+' '+phase.label,{x:.2,y:.88,w:9.4,h:.42,fontSize:15,bold:true,color:PD,fontFace:'Sora'});
+    var lines=ph.content.split('\n');var y=1.4;
+    lines.forEach(function(line){
+      if(!line.trim())return;
+      var isAnswer=line.trim().startsWith('Answer:')||line.trim().startsWith('Solution:')||line.trim().startsWith('Mark Scheme');
+      sl.addText(line,{x:.2,y:y,w:9.3,h:.35,fontSize:isAnswer?10.5:12,color:isAnswer?'d97706':'333333',bold:isAnswer,wrap:true,valign:'top'});
+      y+=line.length>80?.6:.38;if(y>4.6)return;
+    });
+  });
+
+  // Vocab slide if keywords exist
+  var fkw=S.keywords.filter(function(k){return k.word&&k.word.trim();});
+  if(fkw.length){
+    var sl2=pres.addSlide();addBg(sl2);tag(sl2,'Key Vocabulary','be185d');
+    sl2.addText('📖 Key Vocabulary',{x:.2,y:.88,w:9.4,h:.42,fontSize:15,bold:true,color:PD,fontFace:'Sora'});
+    var kx=.2,ky=1.4,kw=2.9;
+    fkw.slice(0,9).forEach(function(k,i){
+      if(i>0&&i%3===0){ky+=1.4;kx=.2;}
+      sl2.addShape(pres.ShapeType.rect,{x:kx,y:ky,w:kw,h:1.2,fill:{color:'F5F3FF'},line:{color:P,width:1}});
+      sl2.addText([{text:'Tier '+(k.tier||'2')+'\n',options:{fontSize:8,color:P,bold:true}},{text:k.word+'\n',options:{fontSize:13,color:PD,bold:true,fontFace:'Sora'}},{text:k.def||'',options:{fontSize:10,color:'555555'}}],{x:kx+.1,y:ky+.08,w:kw-.2,h:1.05,valign:'top',wrap:true});
+      kx+=kw+.1;
+    });
+  }
+
+  var fname=(S.topic||'exam').replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_-]/g,'')+'_exam_pack.pptx';
+  await pres.writeFile({fileName:fname});
+  showToast('Exam PPTX downloaded!','success');
+}
+
+function getWorksheetContext(){
+  var parts=[];
+  if(S.worksheets&&S.worksheets.length){
+    parts.push('IMPORTANT: '+S.worksheets.length+' reference worksheet(s) uploaded. You MUST:\n'
+      +'- Exactly match the question style, format, command words and mark allocation style from these worksheets\n'
+      +'- Use multi-part questions (a)(b)(c) where worksheets do so\n'
+      +'- If worksheets contain diagrams (population pyramids, choropleth maps, graphs), generate questions that reference similar diagrams\n'
+      +'- Match difficulty level precisely\n'
+      +'- Use '+S.examBoard+' command words and conventions throughout');
+  }
+  if(S.markSchemes&&S.markSchemes.length){
+    parts.push('Mark scheme(s) uploaded ('+S.markSchemes.length+'): Use these mark scheme conventions exactly. Match AO coding, mark point format, and acceptable answers style.');
+  }
+  if(S.webLink&&S.webLink.trim()){
+    parts.push('Reference resource link: '+S.webLink+'\nBase content, examples and context on this resource where relevant.');
+  }
+  return parts.length?'\n\n'+parts.join('\n\n'):'';
+}
+
+function getWorksheetContext(){
+  if(!S.worksheets||!S.worksheets.length)return '';
+  return '\n\nIMPORTANT: '+S.worksheets.length+' reference worksheet(s) have been uploaded by the teacher. You MUST:\n'
+    +'- Exactly match the question style, format and command words from these worksheets\n'
+    +'- Use the same mark allocation style (e.g. [2 marks] or (2))\n'
+    +'- Match the difficulty level and vocabulary level precisely\n'
+    +'- Use similar contexts and real-world examples to those in the worksheets\n'
+    +'- If the worksheets contain diagrams (population pyramids, choropleth maps, graphs, tables), generate questions that reference similar diagrams and describe them in the question text\n'
+    +'- Match the exam board style exactly ('+S.examBoard+' command words and conventions)\n'
+    +'- Include multi-part questions (a)(b)(c) where the worksheets do so\n'
+    +'The teacher has uploaded these worksheets to set the quality bar — match or exceed it.';
+}
+
+function getMathsContext(){
+  if(S.subjectMode==='maths'||( S.subject&&(S.subject.toLowerCase().includes('math')||S.subject.toLowerCase().includes('numer')))){
+    return '\n\nMaths pedagogy: Use White Rose Maths / Maths Hub mastery style. Include bar models and ratio tables where appropriate. Use Concrete-Pictorial-Abstract (CPA) approach. Vary question types: fluency, reasoning, problem solving. Include at least one diagram or visual model description per activity.';
+  }
+  if(S.subjectMode==='science'||( S.subject&&(S.subject.toLowerCase().includes('science')||S.subject.toLowerCase().includes('biology')||S.subject.toLowerCase().includes('chemistry')||S.subject.toLowerCase().includes('physics')))){
+    return '\n\nScience pedagogy: Include labelled diagram descriptions where relevant. Use SI units. Reference required practicals where applicable. Include command words: describe, explain, evaluate, calculate, predict.';
+  }
+  return '';
+}
+
+function getMathsContext(){
+  return S.subjectMode==='maths'?
+    'Use White Rose Maths / Maths Hub style. Incorporate bar models and ratio tables where appropriate. Focus on teaching for understanding. Use concrete-pictorial-abstract (CPA) approach. Include variation theory where relevant. Mastery-style questions with procedural fluency and conceptual understanding.':'';
+}
+
+// ── LESSON HISTORY (localStorage, last 10) ──
+function saveLessonHistory(){
+  if(!S.topic)return;
+  try{
+    var hist=JSON.parse(localStorage.getItem('lc_history')||'[]');
+    var snap={
+      id:Date.now(),
+      topic:S.topic,subject:S.subject,year:S.year,
+      mode:S.mode,examBoard:S.examBoard,ability:S.ability,
+      date:new Date().toLocaleDateString('en-GB'),
+      phases:Object.fromEntries(Object.entries(S.phases).map(function(e){
+        return[e[0],{content:e[1].content,generated:e[1].generated}];
+      })),
+      keywords:S.keywords,selectedComponents:S.selectedComponents
+    };
+    hist=hist.filter(function(h){return h.topic!==S.topic||h.mode!==S.mode;});
+    hist.unshift(snap);
+    hist=hist.slice(0,10);
+    localStorage.setItem('lc_history',JSON.stringify(hist));
+  }catch(e){console.log('History save failed:',e);}
+}
+
+function loadLessonFromHistory(snap){
+  S.topic=snap.topic||'';S.subject=snap.subject||'';S.year=snap.year||'';
+  S.mode=snap.mode||'lesson';S.examBoard=snap.examBoard||'AQA';S.ability=snap.ability||'mixed';
+  if(snap.selectedComponents)S.selectedComponents=snap.selectedComponents;
+  if(snap.phases){
+    Object.entries(snap.phases).forEach(function(e){
+      var id=e[0],ph=e[1];
+      S.phases[id]={content:ph.content||'',parsed:null,generated:ph.generated||false,generating:false};
+      S.open[id]=ph.generated||false;
+    });
+  }
+  if(snap.keywords)S.keywords=snap.keywords;
+  S.tab='build';render();
+  showToast('Lesson loaded: '+snap.topic,'success');
+}
+
+function buildHistoryPanel(){
+  var hist=[];
+  try{hist=JSON.parse(localStorage.getItem('lc_history')||'[]');}catch(e){}
+  var panel=el('div',{'class':'history-panel','id':'history-panel'});
+  var hdr=el('div',{'class':'history-hdr'});
+  hdr.innerHTML='<span style="font-weight:700;font-size:13px;">📚 Recent Lessons</span>';
+  var cls=el('button',{'class':'history-close'});cls.textContent='✕';
+  cls.addEventListener('click',function(){panel.remove();});
+  hdr.appendChild(cls);panel.appendChild(hdr);
+  if(!hist.length){
+    var empty=el('div',{'class':'history-empty'});
+    empty.textContent='No lessons saved yet. Generate your first lesson!';
+    panel.appendChild(empty);
+  } else {
+    hist.forEach(function(snap){
+      var row=el('div',{'class':'history-row'});
+      var info=el('div',{'class':'history-info'});
+      info.appendChild(el('div',{'class':'history-title'},snap.topic));
+      info.appendChild(el('div',{'class':'history-meta'},
+        [snap.subject,snap.year?'Year '+snap.year:'',snap.examBoard,snap.date].filter(Boolean).join(' · ')
+      ));
+      var badge=el('span',{'class':'history-badge'+(snap.mode==='exam'?' exam':'')},snap.mode==='exam'?'Exam':'Lesson');
+      row.appendChild(info);row.appendChild(badge);
+      row.addEventListener('click',function(){panel.remove();loadLessonFromHistory(snap);});
+      panel.appendChild(row);
+    });
+    var clrBtn=el('button',{'class':'btn btn-ghost btn-sm','style':'margin:8px 12px;width:calc(100% - 24px);'});
+    clrBtn.textContent='Clear history';
+    clrBtn.addEventListener('click',function(){
+      if(confirm('Clear all saved lessons?')){localStorage.removeItem('lc_history');panel.remove();}
+    });
+    panel.appendChild(clrBtn);
+  }
+  return panel;
+}
+
 function showToast(msg,type){
   var t=document.createElement('div');
   t.style.cssText='position:fixed;bottom:80px;right:20px;z-index:9999;padding:10px 16px;border-radius:8px;font-size:13px;font-weight:600;font-family:Inter,sans-serif;box-shadow:0 4px 16px rgba(0,0,0,.15);animation:fadeIn .2s ease;'+(type==='success'?'background:#dcfce7;color:#15803d;border:1.5px solid #86efac':'background:#fef2f2;color:#dc2626;border:1.5px solid #fca5a5');
@@ -1348,112 +2111,138 @@ function showToast(msg,type){
 async function buildAndDownloadPPTX(){
   if(!window.PptxGenJS){
     const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js';
-    document.head.appendChild(s);await new Promise(r=>{s.onload=r});
+    document.head.appendChild(s);await new Promise(r=>{s.onload=r;});
   }
   const t=S.theme,pres=new PptxGenJS();
   pres.layout='LAYOUT_16x9';
   const P=t.primary.replace('#',''),PD=t.primaryDark.replace('#',''),A2=t.accent2.replace('#','');
-  function bg(sl){
+
+  var slideNum=0;
+  function addBg(sl){
+    slideNum++;
     sl.background={color:'FFFFFF'};
-    sl.addShape(pres.ShapeType.rect,{x:0,y:0,w:10,h:.45,fill:{color:PD},line:{color:PD,width:0}});
-    sl.addShape(pres.ShapeType.rect,{x:0,y:5.18,w:10,h:.45,fill:{color:PD},line:{color:PD,width:0}});
-    sl.addShape(pres.ShapeType.rect,{x:0,y:.45,w:.07,h:4.73,fill:{color:P},line:{color:P,width:0}});
-    sl.addShape(pres.ShapeType.ellipse,{x:8.2,y:3.3,w:2.8,h:2.8,fill:{color:P,transparency:88},line:{color:P,transparency:80}});
+    sl.addShape(pres.ShapeType.rect,{x:0,y:0,w:10,h:.42,fill:{color:PD},line:{color:PD,width:0}});
+    sl.addShape(pres.ShapeType.rect,{x:0,y:5.21,w:10,h:.42,fill:{color:PD},line:{color:PD,width:0}});
+    sl.addShape(pres.ShapeType.rect,{x:0,y:.42,w:.06,h:4.79,fill:{color:P},line:{color:P,width:0}});
+    sl.addShape(pres.ShapeType.ellipse,{x:8.4,y:3.4,w:2.6,h:2.6,fill:{color:P,transparency:90},line:{color:P,transparency:85,width:1}});
+    // Footer with school name + slide number
+    var schoolName=S.theme&&S.theme.filename?S.theme.filename.replace(/\.pptx$/i,''):'LessonCraft AI';
+    sl.addText(schoolName+' | '+new Date().toLocaleDateString('en-GB'),{x:0.1,y:5.22,w:7,h:.3,fontSize:8,color:'AAAAAA',valign:'middle'});
+    sl.addText(''+slideNum,{x:9.5,y:5.22,w:.4,h:.3,fontSize:8,color:'AAAAAA',align:'right',valign:'middle'});
   }
-  function tag(sl,lbl,col){
-    sl.addShape(pres.ShapeType.rect,{x:.12,y:.5,w:2.2,h:.3,fill:{color:col.replace('#','')},line:{color:col.replace('#',''),width:0}});
-    sl.addText(lbl,{x:.12,y:.5,w:2.2,h:.3,fontSize:8,bold:true,color:'FFFFFF',align:'center',valign:'middle',margin:0});
+  function addTag(sl,lbl,col){
+    var c=(col||P).replace('#','');
+    sl.addShape(pres.ShapeType.rect,{x:.12,y:.48,w:2.4,h:.28,fill:{color:c},line:{color:c,width:0}});
+    sl.addText(lbl,{x:.12,y:.48,w:2.4,h:.28,fontSize:8,bold:true,color:'FFFFFF',align:'center',valign:'middle',margin:0});
   }
-  // Slide 1 -- Title (matches school template)
-  {
-    const sl=pres.addSlide();
-    sl.background={color:'FFFFFF'};
-    // Diagonal geometric strips -- bottom-right, matching uploaded template
-    // Lightest lavender (outermost left of group)
-    sl.addShape(pres.ShapeType.rect,{x:4.8,y:1.8,w:1.2,h:5.5,fill:{color:'EDD9F0',transparency:40},line:{color:'EDD9F0',transparency:40},rotate:20});
-    // Light purple strip
-    sl.addShape(pres.ShapeType.rect,{x:5.7,y:1.2,w:1.3,h:5.5,fill:{color:'C49FCC',transparency:25},line:{color:'C49FCC',transparency:25},rotate:20});
-    // Primary purple strip
+  function wrapText(text,maxLen){
+    // Split long content into lines for slides
+    return text?String(text).slice(0,maxLen):'';
+  }
+
+  // -- TITLE SLIDE --
+  {var sl=pres.addSlide();
+    sl.background={color:PD};
+    sl.addShape(pres.ShapeType.rect,{x:4.8,y:1.8,w:1.2,h:5.5,fill:{color:'EDD9F0',transparency:40},line:{color:'EDD9F0',width:0},rotate:20});
+    sl.addShape(pres.ShapeType.rect,{x:5.7,y:1.2,w:1.3,h:5.5,fill:{color:'C49FCC',transparency:25},line:{color:'C49FCC',width:0},rotate:20});
     sl.addShape(pres.ShapeType.rect,{x:6.8,y:0.4,w:1.5,h:5.8,fill:{color:P},line:{color:P,width:0},rotate:20});
-    // Dark purple strip (rightmost, hard edge)
     sl.addShape(pres.ShapeType.rect,{x:7.95,y:-0.3,w:2.5,h:6.5,fill:{color:PD},line:{color:PD,width:0},rotate:20});
-    // Date -- top left, bold primary purple
-    sl.addText("Today's date: "+new Date().toLocaleDateString('en-GB'),{x:0.3,y:0.2,w:5.5,h:0.4,fontSize:13,bold:true,color:P,fontFace:'Calibri',valign:'middle'});
-    // "Inquiry question" -- centred, italic, dark purple
-    sl.addText('Inquiry question',{x:0,y:1.55,w:7.5,h:0.4,fontSize:14,bold:true,italic:true,color:PD,align:'center',valign:'middle',fontFace:'Calibri'});
-    // Main question -- bottom-left, large, underlined, dark purple
-    const qText=S.inquiry||(S.topic?'How do I '+S.topic.toLowerCase()+'?':'What is the inquiry question?');
-    sl.addText(qText,{x:0.3,y:2.6,w:6.6,h:2.2,fontSize:28,underline:true,color:PD,fontFace:'Calibri',wrap:true,valign:'bottom'});
+    sl.addText("Today's date: "+new Date().toLocaleDateString('en-GB'),{x:0.3,y:0.2,w:5.5,h:0.4,fontSize:13,bold:true,color:A2});
+    if(S.examBoard)sl.addText(S.examBoard+' Aligned',{x:0.3,y:0.62,w:4,h:0.3,fontSize:10,color:'FFFFFF',italic:true,opacity:.7});
+    var qText=S.inquiry||(S.topic?'How do I '+S.topic.toLowerCase()+'?':'Inquiry question');
+    sl.addText('Inquiry question',{x:0,y:1.55,w:7.5,h:0.4,fontSize:14,bold:true,italic:true,color:'FFFFFF',align:'center',opacity:.7});
+    sl.addText(qText,{x:0.3,y:2.6,w:6.6,h:2.2,fontSize:28,underline:true,color:'FFFFFF',fontFace:'Calibri',wrap:true,valign:'top'});
+    var metaParts=[S.subject,S.year?'Year '+S.year:'',S.ability?S.ability+' ability':'',S.duration?S.duration+' min':''].filter(Boolean);
+    sl.addText(metaParts.join(' | '),{x:0.3,y:4.9,w:6,h:0.35,fontSize:11,color:'FFFFFF',opacity:.65});
   }
-  // Slides 2-7 from parsed data
-  const pp=S.phases.prior.parsed;
-  if(pp){const sl=pres.addSlide();bg(sl);tag(sl,'Prior Knowledge','555555');
-    sl.addText(pp.title||'Prior Knowledge',{x:.2,y:.88,w:9.4,h:.42,fontSize:15,bold:true,color:PD,fontFace:'Sora'});
-    let py=1.38;(pp.items||[]).slice(0,5).forEach((it,i)=>{
-      sl.addShape(pres.ShapeType.rect,{x:.2,y:py,w:9.3,h:.42,fill:{color:i%2?'FFFFFF':'F9F5FF'},line:{color:'E8E0F0',width:.5}});
-      sl.addText([{text:(i+1)+'.  ',options:{bold:true,color:P}},{text:String(it).replace(/^\d+\.\s*/,''),options:{color:'333333'}}],{x:.28,y:py+.04,w:9.1,h:.34,fontSize:11.5,valign:'middle',wrap:true});
-      py+=.46;});
-  }
-  const np=S.phases.newknow.parsed;
-  if(np){const sl=pres.addSlide();bg(sl);tag(sl,'New Knowledge','059669');
-    sl.addText(np.title||'New Knowledge',{x:.2,y:.88,w:9.4,h:.42,fontSize:15,bold:true,color:PD,fontFace:'Sora'});
-    let py=1.38;(np.points||[]).slice(0,5).forEach(pt=>{
-      sl.addShape(pres.ShapeType.ellipse,{x:.22,y:py+.1,w:.16,h:.16,fill:{color:P},line:{color:P,width:0}});
-      sl.addText(String(pt),{x:.48,y:py,w:9,h:.38,fontSize:12,color:'333333',wrap:true,valign:'middle'});
-      py+=.44;});
-    if(np.formula){
-      sl.addShape(pres.ShapeType.rect,{x:.2,y:py+.12,w:9.3,h:.55,fill:{color:P,transparency:88},line:{color:P,width:1.5}});
-      sl.addText(np.formula,{x:.3,y:py+.14,w:9.1,h:.5,fontSize:14,bold:true,color:PD,align:'center',valign:'middle',wrap:true,fontFace:'Sora'});
+
+  // -- OBJECTIVES SLIDE (if set) --
+  if(S.objectives){
+    var sl2=pres.addSlide();addBg(sl2);addTag(sl2,'Learning Objectives',P);
+    sl2.addText('🎯 Learning Objectives',{x:.2,y:.88,w:9.4,h:.42,fontSize:16,bold:true,color:PD,fontFace:'Sora'});
+    sl2.addText(S.objectives,{x:.2,y:1.4,w:9.3,h:2,fontSize:13,color:'333333',wrap:true,valign:'top'});
+    // Discussion questions
+    if(S.discussionQuestions&&S.discussionQuestions.length){
+      sl2.addText('Discussion Questions',{x:.2,y:3.5,w:9,h:.3,fontSize:12,bold:true,color:P});
+      var dy=3.85;
+      S.discussionQuestions.slice(0,3).forEach(function(q,i){
+        sl2.addText((i+1)+'. '+q,{x:.3,y:dy,w:9,h:.36,fontSize:11,color:'444444',wrap:true,valign:'top'});
+        dy+=.4;
+      });
     }
   }
-  const ip=S.phases.ido.parsed;
-  if(ip){const sl=pres.addSlide();bg(sl);tag(sl,'I Do -- Worked Examples','2563eb');
-    sl.addText(ip.title||'Worked Examples',{x:.2,y:.88,w:9.4,h:.38,fontSize:14,bold:true,color:PD,fontFace:'Sora'});
-    (ip.examples||[]).slice(0,2).forEach((ex,i)=>{
-      const x=i===0?.12:5.02,cw=4.6;
-      sl.addShape(pres.ShapeType.rect,{x,y:1.36,w:cw,h:3.55,fill:{color:'EEF4FF'},line:{color:'2563eb',width:1.5}});
-      sl.addShape(pres.ShapeType.rect,{x,y:1.36,w:.5,h:.32,fill:{color:'2563eb'},line:{color:'2563eb',width:0}});
-      sl.addText('Ex '+(i+1),{x,y:1.36,w:.5,h:.32,fontSize:8,bold:true,color:'FFFFFF',align:'center',margin:0});
-      sl.addText(ex.question,{x:x+.1,y:1.72,w:cw-.2,h:1.6,fontSize:11.5,color:'333333',wrap:true,valign:'top'});
-      sl.addShape(pres.ShapeType.rect,{x,y:3.2,w:cw,h:1.71,fill:{color:A2,transparency:40},line:{color:A2,width:1}});
-      sl.addText('Solution',{x:x+.1,y:3.22,w:1.5,h:.22,fontSize:8,bold:true,color:PD});
-      sl.addText(ex.solution,{x:x+.1,y:3.46,w:cw-.2,h:1.4,fontSize:11,color:'333333',bold:true,wrap:true,valign:'top'});
-    });
-  }
-  const gp=S.phases.guided.parsed;
-  if(gp){(gp.questions||[]).slice(0,2).forEach((q,qi)=>{
-    const sl=pres.addSlide();bg(sl);tag(sl,'Guided Practice','d97706');
-    sl.addText('Q'+(qi+1),{x:.2,y:.88,w:.5,h:.4,fontSize:18,bold:true,color:P,fontFace:'Sora'});
-    sl.addText(q.question,{x:.72,y:.88,w:8.8,h:.9,fontSize:13,color:'333333',wrap:true,valign:'top'});
-    if(q.image_desc&&q.image_desc.length>2){
-      sl.addShape(pres.ShapeType.rect,{x:6.4,y:1.85,w:3.1,h:2.55,fill:{color:'F0E8F0'},line:{color:P,width:1}});
-      sl.addText('[Diagram: '+q.image_desc+']',{x:6.45,y:1.9,w:3,h:2.45,fontSize:9.5,color:P,italic:true,align:'center',valign:'middle',wrap:true});
+
+  // -- DYNAMIC PHASE SLIDES (all active phases) --
+  var activeP=getActivePhases();
+  activeP.forEach(function(phase){
+    var ph=S.phases[phase.id];
+    if(!ph||!ph.content)return;
+    var col=phase.col.replace('#','');
+    var lines2=ph.content.split('\n').filter(function(l){return l.trim();});
+    // Auto-split: max 9 lines per slide
+    var chunks=[];
+    for(var ci=0;ci<lines2.length;ci+=9){chunks.push(lines2.slice(ci,ci+9));}
+    if(chunks.length===0)chunks=[[]];
+    var diag=S.diagrams&&S.diagrams[phase.id]&&S.diagrams[phase.id].svg;
+
+    if(diag){
+      var sl3=pres.addSlide();addBg(sl3);addTag(sl3,phase.label,phase.col);
+      sl3.addText(phase.icon+' '+phase.label,{x:.2,y:.88,w:5.5,h:.38,fontSize:13,bold:true,color:PD,fontFace:'Sora'});
+      var cy=1.35;
+      lines2.slice(0,10).forEach(function(line){
+        if(cy>4.7)return;
+        var isQ=line.match(/^Q?\d+[.:)]/);
+        sl3.addText(line,{x:.2,y:cy,w:5.4,h:.38,fontSize:isQ?12:11,color:isQ?'1a1a2e':'444444',bold:!!isQ,wrap:true,valign:'top'});
+        cy+=line.length>70?.52:.38;
+      });
+      // Diagram placeholder box (SVG can't go into PPTX directly — show styled box)
+      sl3.addShape(pres.ShapeType.rect,{x:5.7,y:1.3,w:4,h:3.5,fill:{color:'EEF4FF'},line:{color:col,width:2}});
+      sl3.addText(phase.icon+'\n\nDiagram: '+phase.label+'\n\nSee on-screen for\nfull diagram',{x:5.75,y:1.35,w:3.9,h:3.4,fontSize:11,color:col,align:'center',valign:'middle',italic:true,wrap:true});
+    } else {
+      // Full-width content slide
+      var sl4=pres.addSlide();addBg(sl4);addTag(sl4,phase.label,phase.col);
+      sl4.addText(phase.icon+' '+phase.label,{x:.2,y:.88,w:9.4,h:.38,fontSize:14,bold:true,color:PD,fontFace:'Sora'});
+      sl4.addText(phase.sub,{x:2.7,y:.88,w:7,h:.38,fontSize:10,color:'888888',italic:true,valign:'middle'});
+      var fy=1.35;
+      lines2.slice(0,12).forEach(function(line){
+        if(fy>4.7)return;
+        var isQ=line.match(/^Q?\d+[.:)]/)||line.match(/^\d+\./);
+        var isAns=line.toLowerCase().startsWith('answer:')||line.toLowerCase().startsWith('solution:');
+        var isBold=isQ||line.startsWith('Model Answer')||line.startsWith('Mark Scheme')||line.startsWith('Drill:')||line.startsWith('Exit ticket');
+        var fColor=isAns?'059669':isQ?'1a1a2e':'444444';
+        var bgFill=isAns?{color:'DCFCE7'}:isQ?{color:phase.bg.replace('#',''),transparency:20}:null;
+        if(bgFill)sl4.addShape(pres.ShapeType.rect,{x:.18,y:fy,w:9.35,h:.36,fill:bgFill,line:{color:'E5E7EB',width:0}});
+        sl4.addText(line,{x:.22,y:fy,w:9.3,h:.38,fontSize:isQ?12.5:11.5,color:fColor,bold:isBold,wrap:true,valign:'top'});
+        fy+=line.length>90?.52:.38;
+      });
+      // Timing badge
+      if(S.timings&&S.timings[phase.id]){
+        sl4.addText(S.timings[phase.id]+' min',{x:9.2,y:.55,w:.65,h:.25,fontSize:8,bold:true,color:'888888',align:'right'});
+      }
     }
-    sl.addShape(pres.ShapeType.rect,{x:.2,y:4.5,w:5.5,h:.45,fill:{color:A2,transparency:30},line:{color:A2,width:1}});
-    sl.addText(q.solution||'See solution',{x:.3,y:4.5,w:5.3,h:.45,fontSize:11,bold:true,color:PD,valign:'middle',wrap:true});
-  });}
-  const indp=S.phases.independent.parsed;
-  if(indp){const sl=pres.addSlide();bg(sl);tag(sl,'Independent Practice','dc2626');
-    sl.addText('Independent Practice',{x:.2,y:.88,w:9.4,h:.38,fontSize:14,bold:true,color:PD,fontFace:'Sora'});
-    const qs=indp.questions||[];const half=Math.ceil(qs.length/2);
-    qs.slice(0,6).forEach((q,i)=>{
-      const col=i<half?0:1,row=i%half,x=col?5.02:.12,y=1.36+row*1.35,cw=4.6,h=1.22;
-      sl.addShape(pres.ShapeType.rect,{x,y,w:cw,h,fill:{color:'FFF5F5'},line:{color:'dc2626',width:1}});
-      sl.addShape(pres.ShapeType.rect,{x,y,w:.28,h,fill:{color:'dc2626'},line:{color:'dc2626',width:0}});
-      sl.addText(String(i+1),{x,y:y+.04,w:.28,h:h-.08,fontSize:11,bold:true,color:'FFFFFF',align:'center',valign:'top',margin:0});
-      sl.addText(String(q.question).replace(/^\d+\.\s*/,''),{x:x+.35,y:y+.08,w:cw-.45,h:h-.16,fontSize:11,color:'333333',wrap:true,valign:'top'});
+  });
+
+  // -- VOCABULARY SLIDE --
+  var fkw=S.keywords.filter(function(k){return k.word&&k.word.trim();});
+  if(fkw.length){
+    var slv=pres.addSlide();addBg(slv);addTag(slv,'Key Vocabulary','be185d');
+    slv.addText('📖 Key Vocabulary — I Say / You Say',{x:.2,y:.88,w:9.4,h:.38,fontSize:13,bold:true,color:PD,fontFace:'Sora'});
+    var kx=.15,ky=1.35,kw=3.05;
+    fkw.slice(0,9).forEach(function(k,i){
+      if(i>0&&i%3===0){ky+=1.42;kx=.15;}
+      slv.addShape(pres.ShapeType.rect,{x:kx,y:ky,w:kw,h:1.28,fill:{color:'F5F3FF'},line:{color:'9D4EDD',width:1}});
+      slv.addShape(pres.ShapeType.rect,{x:kx,y:ky,w:kw,h:.22,fill:{color:P},line:{color:P,width:0}});
+      slv.addText('Tier '+(k.tier||'2'),{x:kx+.06,y:ky+.02,w:kw-.12,h:.18,fontSize:7,bold:true,color:'FFFFFF'});
+      slv.addText(k.word,{x:kx+.08,y:ky+.25,w:kw-.16,h:.32,fontSize:13,bold:true,color:PD,fontFace:'Sora'});
+      slv.addText(k.def||'',{x:kx+.08,y:ky+.58,w:kw-.16,h:.4,fontSize:9.5,color:'444444',wrap:true,valign:'top'});
+      if(k.etymology)slv.addText(k.etymology,{x:kx+.08,y:ky+1.0,w:kw-.16,h:.22,fontSize:8,color:'888888',italic:true});
+      kx+=kw+.1;
     });
   }
-  const rp=S.phases.reflect.parsed;
-  if(rp){const sl=pres.addSlide();bg(sl);tag(sl,'Reflect & Respond','0891b2');
-    sl.addText(rp.prompt||'Reflect on your learning',{x:.2,y:.88,w:9.4,h:.42,fontSize:14,bold:true,color:PD,fontFace:'Sora'});
-    let py=1.42;(rp.items||[]).slice(0,5).forEach((it,i)=>{
-      sl.addShape(pres.ShapeType.rect,{x:.2,y:py,w:9.3,h:.48,fill:{color:i%2?'FFFFFF':'E8F8FC'},line:{color:'0891b2',width:.5}});
-      sl.addText([{text:'\u2022 ',options:{bold:true,color:'0891b2'}},{text:String(it),options:{color:'333333'}}],{x:.3,y:py+.05,w:9.1,h:.38,fontSize:12,valign:'middle',wrap:true});
-      py+=.52;});
-  }
-  const fname=(S.topic||'lesson').replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_-]/g,'')+'_lesson.pptx';
+
+  var fname=(S.topic||'lesson').replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_-]/g,'')+'_lesson.pptx';
   await pres.writeFile({fileName:fname});
+  showToast('PowerPoint downloaded!','success');
 }
 
 // ===================================================
@@ -1486,10 +2275,13 @@ function applyCSS(t){
 // ===================================================
 function render(){
   applyCSS(S.theme);
+  // Apply dark mode to html element
+  document.documentElement.classList.toggle('dark',S.darkMode);
   const root=document.getElementById('root');
   root.innerHTML='';
   root.appendChild(buildHeader());
-  const shell=el('div',{'class':'shell'});
+  const isSplit=S.splitView&&S.tab==='build'&&window.innerWidth>1024;
+  const shell=el('div',{'class':'shell'+(isSplit?' split-view':'')});
   shell.appendChild(buildSidebar());
   // Mobile overlay to close sidebar on tap
   if(!S.sidebarOpen){
@@ -1502,11 +2294,24 @@ function render(){
   }
   const content=el('div',{'class':'content'});
   if(S.tab==='aisetup')content.appendChild(buildAISetupTab());
+  else if(S.tab==='branding')content.appendChild(buildBrandingTab());
   else if(S.tab==='theme')content.appendChild(buildThemeTab());
   else if(S.tab==='build')content.appendChild(buildBuildTab());
   else if(S.tab==='keywords')content.appendChild(buildKwTab());
   else content.appendChild(buildPreviewTab());
   shell.appendChild(content);
+  // Split-view live preview pane
+  if(isSplit){
+    const previewPane=el('div',{'class':'split-preview-pane'});
+    const pvLabel=el('div',{'class':'split-pane-label'});
+    pvLabel.innerHTML='<span>Live Preview</span><button class="split-close-btn" id="split-close">✕</button>';
+    previewPane.appendChild(pvLabel);
+    const pvContent=el('div',{'class':'split-pane-content'});
+    pvContent.appendChild(buildMiniPreview());
+    previewPane.appendChild(pvContent);
+    shell.appendChild(previewPane);
+    setTimeout(function(){var b=document.getElementById('split-close');if(b)b.onclick=function(){S.splitView=false;render();};},0);
+  }
   root.appendChild(shell);
   root.appendChild(buildBottomBar());
   saveState();
@@ -1523,7 +2328,7 @@ function buildHeader(){
   h.appendChild(logo);
   // Nav
   const nav=el('div',{'class':'hdr-nav'});
-  const tabs=[['aisetup','AI Setup'],['theme','Theme'],['build','Build'],['keywords','Keywords'],['preview','Preview']];
+  const tabs=[['aisetup','AI Setup'],['build','Build'],['keywords','Keywords'],['preview','Preview'],['branding','Branding']];
   tabs.forEach(([id,lbl],i)=>{
     const done=id!=='theme'&&(
       (id==='build'&&PHASES.some(p=>S.phases[p.id].generated))||
@@ -1544,6 +2349,28 @@ function buildHeader(){
   hamburger.innerHTML='<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 5h14M3 10h14M3 15h14" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg>';
   hamburger.addEventListener('click',()=>{S.sidebarOpen=!S.sidebarOpen;render();});
   h.appendChild(hamburger);
+
+  // Dark mode toggle — always in header
+  // History button
+  var histBtn=el('button',{'class':'hdr-hist-btn','title':'Recent lessons'});
+  histBtn.innerHTML='📚';
+  histBtn.addEventListener('click',function(e){
+    e.stopPropagation();
+    var existing=document.getElementById('history-panel');
+    if(existing){existing.remove();return;}
+    var panel=buildHistoryPanel();
+    panel.style.cssText='position:fixed;top:var(--hdr);right:0;z-index:500;';
+    document.body.appendChild(panel);
+    setTimeout(function(){document.addEventListener('click',function _hc(ev){
+      if(!panel.contains(ev.target)&&ev.target!==histBtn){panel.remove();document.removeEventListener('click',_hc);}
+    });},0);
+  });
+  h.appendChild(histBtn);
+
+  const dmBtn=el('button',{'class':'hdr-dm-btn','title':S.darkMode?'Switch to light mode':'Switch to dark mode'});
+  dmBtn.innerHTML=S.darkMode?'☀️':'🌙';
+  dmBtn.addEventListener('click',function(){S.darkMode=!S.darkMode;saveState();render();});
+  h.appendChild(dmBtn);
 
   if(S.theme.loaded||S.topic){
     const right=el('div',{'class':'hdr-right'});
@@ -1604,14 +2431,16 @@ function buildSidebar(){
   });
   scroll.appendChild(mSw);
 
-  // Exam board
-  var bRow=el('div',{'class':'sb-board-row'});
-  bRow.appendChild(el('span',{'class':'sb-label','style':'margin:0;'},'Board:'));
+
+  // Exam board -- always visible, aligns all AI output
+  var bWrap=el('div',{'class':'sb-board-section'});
+  var bLbl=el('div',{'class':'sb-board-label'});bLbl.innerHTML='Exam Board <span class="sb-board-note">aligns all AI output</span>';bWrap.appendChild(bLbl);
+  var bRowB=el('div',{'class':'sb-board-row','style':'margin-bottom:0;'});
   ['AQA','Edexcel','OCR','WJEC','CCEA'].forEach(function(board){
     var b=el('button',{'class':'board-btn'+(S.examBoard===board?' active':'')});b.textContent=board;
-    b.addEventListener('click',function(){S.examBoard=board;saveState();render();});bRow.appendChild(b);
+    b.addEventListener('click',function(){S.examBoard=board;saveState();render();});bRowB.appendChild(b);
   });
-  scroll.appendChild(bRow);
+  bWrap.appendChild(bRowB);scroll.appendChild(bWrap);
 
   // AI status
   var aiBar=el('div',{'class':'ai-status-bar'});
@@ -1620,6 +2449,31 @@ function buildSidebar(){
   setTimeout(function(){var b=document.getElementById('ai-cfg-btn');if(b)b.onclick=function(){S.tab='aisetup';render();};},0);
 
   // GENERATE BUTTON
+  // ── IMPROVEMENT 7: Lesson Presets ──
+  if(S.mode==='lesson'){
+    var presetsWrap=el('div',{'class':'presets-row'});
+    var prsLabel=el('div',{'class':'presets-label'});prsLabel.textContent='Quick structure:';
+    presetsWrap.appendChild(prsLabel);
+    var presetDefs=[
+      {name:'Rosenshine',icon:'🏆',ids:['recall','prior','ido','guided','independent','reflect']},
+      {name:'Full',icon:'📖',ids:['prior','newknow','ido','wedo','independent','reflect']},
+      {name:'Revision',icon:'🔁',ids:['recall','retrieval','prior','independent']},
+    ];
+    presetDefs.forEach(function(pr){
+      var pb=el('button',{'class':'preset-btn'});pb.innerHTML=pr.icon+' '+pr.name;
+      pb.addEventListener('click',function(){
+        S.selectedComponents=pr.ids.slice();
+        pr.ids.forEach(function(id){
+          if(!S.phases[id])S.phases[id]={content:'',parsed:null,generated:false,generating:false};
+          if(S.open[id]===undefined)S.open[id]=false;
+        });
+        saveState();render();showToast(pr.name+' structure applied','success');
+      });
+      presetsWrap.appendChild(pb);
+    });
+    scroll.appendChild(presetsWrap);
+  }
+
   var genBtn=el('button',{'class':'gen-hero'+(S.mode==='exam'?' gen-hero-exam':'')});
   var genLabel=anyDoneMode?'Regenerate All':(S.mode==='exam'?'Generate Exam Pack':'Quick Start Lesson');
   var genSub=anyDoneMode?'Rebuild all phases with AI':(S.mode==='exam'?'6 exam activities, ~30 sec':'Full lesson in ~30 seconds');
@@ -1673,15 +2527,75 @@ function buildSidebar(){
     // Objectives
     var obF=el('div',{'class':'sb-field'});obF.appendChild(el('label',{},'Objectives'));
     var obI=el('textarea',{'placeholder':'Students will be able to...','rows':'2'});obI.value=S.objectives;obI.addEventListener('input',function(e){S.objectives=e.target.value;saveState();});obF.appendChild(obI);l2.appendChild(obF);
-    // Worksheet
-    l2.appendChild(el('div',{'class':'sb-label','style':'margin-top:8px;'},'Reference Worksheet'));
-    if(S.worksheetName){
-      var wl=el('div',{'class':'ws-loaded'});wl.appendChild(el('div',{'class':'ws-loaded-icon'},'📄'));
-      var wi=el('div',{});wi.appendChild(el('div',{'class':'ws-loaded-name'},S.worksheetName.replace(/\.pptx|\.pdf/,'')));wi.appendChild(el('div',{'class':'ws-loaded-sub'},'AI matches question style'));wl.appendChild(wi);l2.appendChild(wl);
-      var rm=el('button',{'class':'btn btn-ghost btn-sm btn-full','style':'margin-top:6px;'});rm.textContent='Remove';rm.addEventListener('click',function(){S.worksheetName='';S.worksheetBase64='';render();});l2.appendChild(rm);
-    } else {
-      var wz=el('div',{'class':'ws-zone'});wz.innerHTML='<div style="font-size:18px;margin-bottom:3px">📋</div><div style="font-size:12px;font-weight:600;color:var(--gray-700)">Upload worksheet</div><div style="font-size:10px;color:var(--gray-400);margin-top:1px">AI matches question style</div>';
-      var fi=el('input',{'type':'file','accept':'.pptx,.pdf'});fi.addEventListener('change',function(e){var f=e.target.files[0];if(!f)return;S.worksheetName=f.name;var r=new FileReader();r.onload=function(ev){S.worksheetBase64=ev.target.result.split(',')[1];render();};r.readAsDataURL(f);});wz.appendChild(fi);l2.appendChild(wz);
+    // ── Web link ──
+    var wlF=el('div',{'class':'sb-field'});
+    var wlRow=el('div',{'style':'display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;'});
+    wlRow.appendChild(el('label',{'style':'margin:0;'},'Resource Link (optional)'));
+    wlF.appendChild(wlRow);
+    var wlI=el('input',{'type':'url','placeholder':'https://... paste a webpage, BBC Bitesize, etc','value':S.webLink||''});
+    wlI.addEventListener('input',function(e){S.webLink=e.target.value.trim();saveState();});
+    wlF.appendChild(wlI);
+    var wlNote=el('div',{'style':'font-size:10px;color:var(--gray-400);margin-top:2px;'});
+    wlNote.textContent='AI will use this page to inform content quality';
+    wlF.appendChild(wlNote);l2.appendChild(wlF);
+
+    // ── Multiple Worksheets ──
+    var wsHdr=el('div',{'class':'sb-label','style':'margin-top:10px;display:flex;align-items:center;justify-content:space-between;'});
+    wsHdr.appendChild(el('span',{},'Reference Worksheets ('+(S.worksheets?S.worksheets.length:0)+'/3)'));
+    l2.appendChild(wsHdr);
+    if(S.worksheets&&S.worksheets.length){
+      S.worksheets.forEach(function(ws,i){
+        var wr=el('div',{'class':'ws-loaded','style':'margin-bottom:4px;'});
+        wr.appendChild(el('div',{'class':'ws-loaded-icon'},'📄'));
+        var wi2=el('div',{'style':'flex:1;min-width:0;'});
+        wi2.appendChild(el('div',{'class':'ws-loaded-name'},ws.name.replace(/\.pptx|\.pdf/,'')));
+        wi2.appendChild(el('div',{'class':'ws-loaded-sub'},'Worksheet '+(i+1)));
+        wr.appendChild(wi2);
+        var rm2=el('button',{'class':'btn-icon'});rm2.textContent='✕';
+        rm2.addEventListener('click',function(){S.worksheets.splice(i,1);saveState();render();});
+        wr.appendChild(rm2);l2.appendChild(wr);
+      });
+    }
+    if(!S.worksheets||S.worksheets.length<3){
+      var wz=el('div',{'class':'ws-zone','style':'margin-top:4px;'});
+      wz.innerHTML='<div style="font-size:14px;margin-bottom:2px">📋</div><div style="font-size:11px;font-weight:600;color:var(--gray-700)">Add worksheet</div><div style="font-size:10px;color:var(--gray-400)">PDF or PPTX — up to 3</div>';
+      var fi=el('input',{'type':'file','accept':'.pptx,.pdf'});
+      fi.addEventListener('change',function(e){
+        var f=e.target.files[0];if(!f)return;
+        if(!S.worksheets)S.worksheets=[];
+        if(S.worksheets.length>=3){showToast('Maximum 3 worksheets','error');return;}
+        var r=new FileReader();r.onload=function(ev){S.worksheets.push({name:f.name,b64:ev.target.result.split(',')[1]});saveState();render();};r.readAsDataURL(f);
+      });
+      wz.appendChild(fi);l2.appendChild(wz);
+    }
+
+    // ── Mark Scheme Upload ──
+    var msHdr=el('div',{'class':'sb-label','style':'margin-top:10px;display:flex;align-items:center;justify-content:space-between;'});
+    msHdr.appendChild(el('span',{},'Mark Schemes ('+(S.markSchemes?S.markSchemes.length:0)+'/2)'));
+    l2.appendChild(msHdr);
+    if(S.markSchemes&&S.markSchemes.length){
+      S.markSchemes.forEach(function(ms,i){
+        var mr=el('div',{'class':'ws-loaded','style':'margin-bottom:4px;background:#f0fdf4;border-color:#86efac;'});
+        mr.appendChild(el('div',{'class':'ws-loaded-icon'},'✅'));
+        var mi=el('div',{'style':'flex:1;min-width:0;'});
+        mi.appendChild(el('div',{'class':'ws-loaded-name'},ms.name.replace(/\.pptx|\.pdf/,'')));
+        mi.appendChild(el('div',{'class':'ws-loaded-sub'},'Mark Scheme '+(i+1)));
+        mr.appendChild(mi);
+        var rmm=el('button',{'class':'btn-icon'});rmm.textContent='✕';
+        rmm.addEventListener('click',function(){S.markSchemes.splice(i,1);saveState();render();});
+        mr.appendChild(rmm);l2.appendChild(mr);
+      });
+    }
+    if(!S.markSchemes||S.markSchemes.length<2){
+      var mz=el('div',{'class':'ws-zone','style':'margin-top:4px;border-color:#86efac;'});
+      mz.innerHTML='<div style="font-size:14px;margin-bottom:2px">✅</div><div style="font-size:11px;font-weight:600;color:var(--gray-700)">Add mark scheme</div><div style="font-size:10px;color:var(--gray-400)">PDF or PPTX — AI matches format</div>';
+      var mfi=el('input',{'type':'file','accept':'.pptx,.pdf'});
+      mfi.addEventListener('change',function(e){
+        var f=e.target.files[0];if(!f)return;
+        if(!S.markSchemes)S.markSchemes=[];
+        var r=new FileReader();r.onload=function(ev){S.markSchemes.push({name:f.name,b64:ev.target.result.split(',')[1]});saveState();render();};r.readAsDataURL(f);
+      });
+      mz.appendChild(mfi);l2.appendChild(mz);
     }
     scroll.appendChild(l2);
   }
@@ -1808,6 +2722,78 @@ function buildAISetupTab(){
   return d;
 }
 
+// --- BRANDING & VOCABULARY TAB ------------------
+function buildBrandingTab(){
+  var d=el('div',{});
+  d.appendChild(el('div',{'class':'page-hero'},
+    el('h1',{},'Branding & Vocabulary'),
+    el('p',{},'Upload your school template to apply your colour scheme, and manage key vocabulary for EAL and all learners.')
+  ));
+  var sec1=el('div',{'class':'section-card','style':'margin-bottom:20px;'});
+  sec1.appendChild(el('h3',{},'School Template'));
+  sec1.appendChild(el('div',{'class':'desc'},'Upload any .pptx from your school or department.'));
+  if(S.theme&&S.theme.loaded){
+    var ld=el('div',{'class':'theme-loaded-card'});
+    ld.innerHTML='<div style="font-size:22px;flex-shrink:0">✅</div>';
+    var li=el('div',{'style':'flex:1;'});
+    li.appendChild(el('div',{'style':'font-weight:700;font-size:13px;color:#065f46;margin-bottom:6px;'},'Theme loaded: '+S.theme.filename));
+    var pal=el('div',{'class':'palette-display'});
+    [{c:S.theme.primary,l:'Primary'},{c:S.theme.primaryDark,l:'Dark'},{c:S.theme.primaryLight,l:'Light'},{c:S.theme.accent,l:'Accent'},{c:S.theme.accent2,l:'Highlight'}].forEach(function(p){
+      var chip=el('div',{'class':'pal-chip'});chip.appendChild(el('div',{'class':'pal-chip-color','style':'background:'+p.c}));chip.appendChild(el('div',{'class':'pal-chip-name'},p.l));pal.appendChild(chip);
+    });
+    li.appendChild(pal);ld.appendChild(li);sec1.appendChild(ld);
+    var chg=el('button',{'class':'btn btn-ghost btn-sm','style':'margin-top:10px;'});chg.textContent='Upload different template';
+    chg.addEventListener('click',function(){S.tab='theme';render();});sec1.appendChild(chg);
+  } else {
+    var zone=el('div',{'class':'theme-upload-card'});
+    zone.innerHTML='<span class="tuc-icon">📂</span><div class="tuc-title">Drop your .pptx template here</div><div class="tuc-sub">Colours extracted automatically</div>';
+    var fi2=el('input',{'type':'file','accept':'.pptx'});fi2.style.cssText='position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;';
+    fi2.addEventListener('change',async function(e){var f=e.target.files[0];if(!f)return;var t=await extractTheme(f);if(t){S.theme=t;applyCSS(t);}render();});
+    zone.appendChild(fi2);sec1.appendChild(zone);
+  }
+  d.appendChild(sec1);
+  d.appendChild(el('div',{'class':'section-card'},el('h3',{},'Key Vocabulary'),el('div',{'class':'desc'},'Tier 2 and 3 words with etymology and I Say / You Say for EAL students.')));
+  // EAL banner
+  var banner=el('div',{'class':'eal-banner-mini'});banner.innerHTML='🌍 <div><strong>I Say / You Say:</strong> Teacher says the word clearly, students repeat. Then say the definition, students repeat.</div>';d.appendChild(banner);
+  // AI generate
+  var aiRow=el('div',{'style':'display:flex;gap:8px;margin-bottom:12px;'});
+  var aiKw=el('button',{'class':'btn btn-primary btn-sm'});aiKw.innerHTML='✨ AI Generate Vocabulary';
+  aiKw.addEventListener('click',async function(){
+    if(!S.topic){showToast('Add a topic first','error');return;}
+    aiKw.disabled=true;aiKw.textContent='Generating...';
+    try{
+      var raw=await callAI('You are an expert '+(S.subject||'teacher')+'. Respond ONLY with valid JSON.','Generate 6 key vocabulary words (Tier 2 and Tier 3) for "'+S.topic+'". JSON: {"keywords":[{"word":"...","tier":"2","definition":"...","etymology":"word origin","isay":"...","yousay":"..."}]}');
+      var parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());
+      if(parsed.keywords){S.keywords=(parsed.keywords||[]).map(function(k){return{id:S.nextKwId++,word:k.word,def:k.definition||k.def||'',tier:k.tier||'2',etymology:k.etymology||'',isay:k.isay||k.word,yousay:k.yousay||k.definition||k.def||''};});saveState();render();showToast('Vocabulary generated!','success');}
+    }catch(e){showToast('Error: '+e.message,'error');}
+    aiKw.disabled=false;aiKw.textContent='✨ AI Generate Vocabulary';
+  });
+  aiRow.appendChild(aiKw);d.appendChild(aiRow);
+  // Keyword rows
+  var thead=el('div',{'class':'kw-thead'});['Word','Definition','Tier',''].forEach(function(h){thead.appendChild(el('div',{'class':'kw-thead-cell'},h));});d.appendChild(thead);
+  var tbody=el('div',{'class':'kw-rows'});
+  S.keywords.forEach(function(kw,i){
+    var row=el('div',{'class':'kw-row'});
+    var w=el('input',{'type':'text','placeholder':'Key word','value':kw.word||''});w.addEventListener('input',function(e){S.keywords[i].word=e.target.value;saveState();});
+    var def=el('input',{'type':'text','placeholder':'Definition','value':kw.def||''});def.addEventListener('input',function(e){S.keywords[i].def=e.target.value;saveState();});
+    var ts=el('select',{'class':'kw-tier-select'});['2','3'].forEach(function(t){var o=el('option',{'value':t},'Tier '+t);if((kw.tier||'2')===t)o.setAttribute('selected','');ts.appendChild(o);});ts.addEventListener('change',function(e){S.keywords[i].tier=e.target.value;saveState();});
+    var del=el('button',{'class':'kw-del'});del.textContent='x';del.addEventListener('click',function(){S.keywords.splice(i,1);if(!S.keywords.length)S.keywords.push({id:S.nextKwId++,word:'',def:'',tier:'2',etymology:'',isay:'',yousay:''});render();});
+    row.appendChild(w);row.appendChild(def);row.appendChild(ts);row.appendChild(del);tbody.appendChild(row);
+    if(kw.etymology){var er=el('div',{'class':'kw-etym-row'});er.innerHTML='<span style="color:var(--gray-400);font-size:10px;">Etymology: </span>'+kw.etymology;tbody.appendChild(er);}
+  });
+  d.appendChild(tbody);
+  var addBtn=el('button',{'class':'btn btn-ghost btn-sm','style':'margin-top:8px;'});addBtn.textContent='+ Add word';
+  addBtn.addEventListener('click',function(){S.keywords.push({id:S.nextKwId++,word:'',def:'',tier:'2',etymology:'',isay:'',yousay:''});render();});d.appendChild(addBtn);
+  var fkw=S.keywords.filter(function(k){return k.word&&k.word.trim();});
+  if(fkw.length){
+    var preview=el('div',{'class':'isay-preview'});preview.appendChild(el('div',{'class':'isay-title'},'📣 I Say / You Say'));
+    var grid=el('div',{'class':'isay-grid'});
+    fkw.forEach(function(kw){var card=el('div',{'class':'isay-card'});card.appendChild(el('div',{'class':'isay-word'},kw.word));card.appendChild(el('div',{'class':'isay-def'},kw.def||''));card.appendChild(el('div',{'class':'isay-tier','style':(kw.tier||'2')==='3'?'background:var(--p);color:#fff;':''},'Tier '+(kw.tier||'2')));if(kw.etymology)card.appendChild(el('div',{'class':'isay-etym'},'Etymology: '+kw.etymology));grid.appendChild(card);});
+    preview.appendChild(grid);d.appendChild(preview);
+  }
+  return d;
+}
+
 // --- THEME TAB -----------------------------------
 function buildThemeTab(){
   const d=el('div',{});
@@ -1880,91 +2866,132 @@ function buildThemeTab(){
 function buildBuildTab(){
   const d=el('div',{});
   const isExam=S.mode==='exam';
-  // Show setup banner if no key configured
-  var hasK=(LESSONCRAFT_API_KEY&&LESSONCRAFT_API_KEY.length>5)||(S.claudeKey&&S.claudeKey.length>5)||(S.aiProvider==='copilot'&&S.copilotKey&&S.copilotEndpoint);
-  if(!hasK){
+  const activePhases=isExam?EXAM_PHASES:PHASES;
+  const anyDone=activePhases.some(function(p){return S.phases[p.id]&&S.phases[p.id].generated;});
+  const hasKey=(LESSONCRAFT_API_KEY&&LESSONCRAFT_API_KEY.length>5)||(S.claudeKey&&S.claudeKey.length>5)||(S.aiProvider==='copilot'&&S.copilotKey&&S.copilotEndpoint);
+
+  // ── No key banner ──
+  if(!hasKey){
     var banner=el('div',{'class':'no-key-banner'});
-    banner.innerHTML='<span style="font-size:18px;">🔑</span>'
-      +'<div><strong>AI not connected yet</strong> — Go to the <strong>AI Setup</strong> tab to add your API key. It takes 2 minutes and is free.</div>'
-      +'<button class="btn btn-primary btn-sm" style="flex-shrink:0;white-space:nowrap;">AI Setup</button>';
+    banner.innerHTML='<span style="font-size:18px;">🔑</span><div><strong>AI not connected yet</strong> — Go to <strong>AI Setup</strong> to add your key. Free and takes 2 minutes.</div><button class="btn btn-primary btn-sm" style="flex-shrink:0;">AI Setup</button>';
     banner.querySelector('button').addEventListener('click',function(){S.tab='aisetup';render();});
     d.appendChild(banner);
   }
-  const activePhases=isExam?EXAM_PHASES:PHASES;
-  const anyDone=activePhases.some(p=>S.phases[p.id]&&S.phases[p.id].generated);
 
-  // Empty state
+  // ── Empty state ──
   if(!anyDone&&!S.generatingAll){
-    const empty=el('div',{'class':'empty-screen'});
+    var empty=el('div',{'class':'empty-screen'});
     if(isExam){
-      empty.innerHTML='<div class="exam-empty-badge">🎯 EXAM FOCUS</div>'+
-        '<div class="empty-icon" style="margin-top:10px">📝</div>'+
-        '<h2 class="empty-title">'+(S.topic||'Year 11 Exam Prep')+'</h2>'+
-        '<p class="empty-sub">'+(S.topic?'Click <strong>Generate Exam Pack</strong> to build a full exam-style practice set instantly.':'Enter a topic, then click <strong>Generate Exam Pack</strong>. Optionally upload revision notes.')+'</p>'+
-        '<div class="exam-feature-list">'+
-        EXAM_PHASES.map(p=>'<div class="exam-feature-item" style="border-left:3px solid '+p.col+'"><span>'+p.icon+'</span><div><div style="font-weight:700;font-size:12px;color:'+p.col+'">'+p.label+'</div><div style="font-size:11px;color:var(--gray-400)">'+p.sub+'</div></div></div>').join('')+
-        '</div>';
+      empty.innerHTML='<div class="exam-empty-badge">🎯 EXAM FOCUS</div><div class="empty-icon" style="margin-top:10px">📝</div>'
+        +'<h2 class="empty-title">'+(S.topic||'Year 11 Exam Prep')+'</h2>'
+        +'<p class="empty-sub">'+(S.topic?'Click <strong>Generate Exam Pack</strong> in the sidebar.':'Enter a topic, then click <strong>Generate Exam Pack</strong>.')+'</p>'
+        +'<div class="exam-feature-list">'+EXAM_PHASES.map(function(p){return'<div class="exam-feature-item" style="border-left:3px solid '+p.col+'"><span>'+p.icon+'</span><div><div style="font-weight:700;font-size:12px;color:'+p.col+'">'+p.label+'</div><div style="font-size:11px;color:var(--gray-400)">'+p.sub+'</div></div></div>';}).join('')+'</div>';
     } else {
-      empty.innerHTML='<div class="empty-icon">✨</div>'+
-        '<h2 class="empty-title">'+(S.topic||'Ready to build')+'</h2>'+
-        '<p class="empty-sub">'+(S.topic?'Click <strong>Quick Start Lesson</strong> in the sidebar to generate your lesson instantly.':'Enter a topic in the sidebar, then click <strong>Quick Start Lesson</strong>.')+'</p>'+
-        '<div class="empty-phases">'+
-        PHASES.map(p=>'<div class="empty-phase-chip" style="border-color:'+p.col+'20;background:'+p.bg+'"><span>'+p.icon+'</span><span style="font-size:11px;color:'+p.col+';font-weight:600;">'+p.label+'</span></div>').join('')+
-        '</div>';
+      empty.innerHTML='<div class="empty-icon">✨</div>'
+        +'<h2 class="empty-title">'+(S.topic||'Ready to build')+'</h2>'
+        +'<p class="empty-sub">'+(S.topic?'Click <strong>Quick Start Lesson</strong> in the sidebar.':'Enter a topic in the sidebar, then click <strong>Quick Start Lesson</strong>.')+'</p>'
+        +'<div class="empty-phases">'+PHASES.map(function(p){return'<div class="empty-phase-chip" style="border-color:'+p.col+'20;background:'+p.bg+'"><span>'+p.icon+'</span><span style="font-size:11px;color:'+p.col+';font-weight:600;">'+p.label+'</span></div>';}).join('')+'</div>';
     }
     d.appendChild(empty);
     return d;
   }
 
-  // Header
+  // ── Build header ──
   if(S.topic){
-    const hdr=el('div',{'class':'build-header'+(isExam?' build-header-exam':'')});
-    const htxt=el('div',{});
-    const titleRow=el('div',{'style':'display:flex;align-items:center;gap:10px;'});
+    var hdr=el('div',{'class':'build-header'+(isExam?' build-header-exam':'')});
+    var htxt=el('div',{});
+    var titleRow=el('div',{'style':'display:flex;align-items:center;gap:10px;flex-wrap:wrap;'});
     if(isExam)titleRow.appendChild(el('span',{'class':'exam-mode-badge'},'🎯 EXAM FOCUS'));
     titleRow.appendChild(el('h1',{'class':'build-title'},S.topic));
     htxt.appendChild(titleRow);
-    if(S.subject||S.year){
-      htxt.appendChild(el('div',{'class':'build-meta'},([S.subject,S.year?'Year '+S.year:'',isExam?'GCSE Exam Prep':'',S.duration?S.duration+' min':'']).filter(Boolean).join(' | ')));
-    }
-    hdr.appendChild(htxt);
-    const expBtn=el('button',{'class':'export-hero-btn'+(isExam?' export-hero-btn-exam':'')});
-    expBtn.innerHTML=`<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1v9M5 7l3 3 3-3M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg> ${isExam?'Download Exam Pack':'Download PPTX'}`;
-    expBtn.addEventListener('click',async()=>{
-      expBtn.disabled=true;expBtn.textContent='Building...';
-      try{await buildAndDownloadPPTX();showToast('Downloaded v','success')}
-      catch(e){showToast('Error: '+e.message,'error')}
-      expBtn.disabled=false;expBtn.innerHTML=`<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1v9M5 7l3 3 3-3M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg> ${isExam?'Download Exam Pack':'Download PPTX'}`;
+    var metaParts=[S.subject,S.year?'Year '+S.year:'',S.ability?S.ability+' ability':'',isExam?S.examBoard+' Exam':'',S.duration?S.duration+' min':''].filter(Boolean);
+    // Count total marks from all generated phases
+    var totalMarks=0;
+    activePhases.forEach(function(p){
+      var ph2=S.phases[p.id];
+      if(ph2&&ph2.content){
+        var mm=ph2.content.match(/\[(\d+)\s*marks?\]/gi)||[];
+        mm.forEach(function(m){totalMarks+=parseInt(m.match(/\d+/)[0]);});
+      }
     });
-    hdr.appendChild(expBtn);
+    var metaStr=metaParts.join(' · ')+(totalMarks>0?' · '+totalMarks+' marks total':'');
+    htxt.appendChild(el('div',{'class':'build-meta'},metaStr));
+    hdr.appendChild(htxt);
+    // Action buttons
+    var hdrBtns=el('div',{'style':'display:flex;gap:8px;align-items:center;flex-wrap:wrap;flex-shrink:0;'});
+    // Split view toggle
+    var splitBtn=el('button',{'class':'btn btn-ghost btn-sm'});
+    splitBtn.innerHTML=S.splitView?'⊟ Single':'⊞ Split';
+    splitBtn.title=S.splitView?'Close preview pane':'Show live preview alongside';
+    splitBtn.addEventListener('click',function(){S.splitView=!S.splitView;render();});
+    hdrBtns.appendChild(splitBtn);
+    var expBtn=el('button',{'class':'export-hero-btn'+(isExam?' export-hero-btn-exam':'')});
+    expBtn.innerHTML='<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1v9M5 7l3 3 3-3M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg> '+( isExam?'Export Pack':'Download PPTX');
+    expBtn.addEventListener('click',async function(){expBtn.disabled=true;expBtn.textContent='Building...';try{await buildAndDownloadPPTX();showToast('Downloaded!','success');}catch(e){showToast('Error: '+e.message,'error');}expBtn.disabled=false;expBtn.innerHTML='<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1v9M5 7l3 3 3-3M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg> '+(isExam?'Export Pack':'Download PPTX');});
+    // Adapt lesson button
+    var adaptBtn=el('button',{'class':'btn btn-ghost btn-sm'});
+    adaptBtn.innerHTML='🔀 Adapt';
+    adaptBtn.title='Change year/ability and refresh content';
+    adaptBtn.addEventListener('click',function(){
+      var dlg=el('div',{'class':'adapt-dialog','id':'adapt-dlg'});
+      dlg.innerHTML='<div class="adapt-title">Adapt this lesson</div>'
+        +'<div class="adapt-row"><label>Year group</label><input id="adapt-yr" type="text" value="'+S.year+'" placeholder="e.g. 10"></div>'
+        +'<div class="adapt-row"><label>Ability</label><select id="adapt-ab"><option value="lower"'+(S.ability==='lower'?' selected':'')+'>Lower</option><option value="mixed"'+(S.ability==='mixed'?' selected':'')+'>Mixed</option><option value="higher"'+(S.ability==='higher'?' selected':'')+'>Higher</option></select></div>'
+        +'<div class="adapt-row"><label>Exam Board</label><select id="adapt-eb">'
+        +['AQA','Edexcel','OCR','WJEC','CCEA'].map(function(b){return'<option value="'+b+'"'+(S.examBoard===b?' selected':'')+'>'+b+'</option>';}).join('')
+        +'</select></div>'
+        +'<div class="adapt-btns"><button class="btn btn-ghost btn-sm" id="adapt-cancel">Cancel</button><button class="btn btn-primary btn-sm" id="adapt-go">Regenerate</button></div>';
+      document.body.appendChild(dlg);
+      document.getElementById('adapt-cancel').onclick=function(){dlg.remove();};
+      document.getElementById('adapt-go').onclick=function(){
+        S.year=document.getElementById('adapt-yr').value;
+        S.ability=document.getElementById('adapt-ab').value;
+        S.examBoard=document.getElementById('adapt-eb').value;
+        dlg.remove();
+        // Reset generated content and regenerate
+        getActivePhases().forEach(function(p){S.phases[p.id]={content:'',parsed:null,generated:false,generating:false};S.open[p.id]=false;});
+        saveState();
+        S.mode==='exam'?generateAllExam():generateAll();
+      };
+    });
+    hdrBtns.appendChild(adaptBtn);
+
+    // Expand/Collapse all
+    var expAllBtn=el('button',{'class':'btn btn-ghost btn-sm'});
+    var allOpen=activePhases.every(function(p){return S.open[p.id];});
+    expAllBtn.textContent=allOpen?'⊟ Collapse All':'⊞ Expand All';
+    expAllBtn.addEventListener('click',function(){
+      var target=!allOpen;
+      activePhases.forEach(function(p){S.open[p.id]=target;});
+      render();
+    });
+    hdrBtns.appendChild(expAllBtn);
+    hdrBtns.appendChild(expBtn);
+    hdr.appendChild(hdrBtns);
     d.appendChild(hdr);
   }
 
-  // Generation progress
+  // ── Generation progress ──
   if(S.generatingAll&&S.genSteps.length){
-    const gp=el('div',{'class':'gen-progress-card'+(isExam?' gen-progress-exam':'')});
-    const gtitle=el('div',{'class':'gen-progress-title'});
-    gtitle.innerHTML=`<span class="spinner" style="width:16px;height:16px;"></span> ${isExam?'Building exam pack...':'Building your lesson...'}`;
+    var gp=el('div',{'class':'gen-progress-card'+(isExam?' gen-progress-exam':'')});
+    var gtitle=el('div',{'class':'gen-progress-title'});
+    gtitle.innerHTML='<span class="spinner" style="width:16px;height:16px;"></span> '+(isExam?'Building exam pack...':'Building lesson...');
     gp.appendChild(gtitle);
-    const steps=el('div',{'class':'gen-steps'});
-    S.genSteps.forEach(s=>{
-      const phase=activePhases.find(p=>p.id===s.id);if(!phase)return;
-      const step=el('div',{'class':'gen-step '+s.status});
-      const dot=el('div',{'class':'gen-step-dot '+s.status});
-      dot.textContent=s.status==='done'?'v':s.status==='active'?'...':'·';
-      step.appendChild(dot);
-      step.appendChild(el('div',{'class':'gen-step-label'},phase.icon+' '+s.label));
-      if(s.status==='done'){
-        const tags=isExam?EXAM_QUALITY_TAGS:QUALITY_TAGS;
-        step.appendChild(el('span',{'class':'gen-step-tag'},(tags[s.id]&&tags[s.id][0])||''));
-      }
+    var steps=el('div',{'class':'gen-steps'});
+    S.genSteps.forEach(function(s){
+      var phase=activePhases.find(function(p){return p.id===s.id;});if(!phase)return;
+      var step=el('div',{'class':'gen-step '+s.status});
+      var dot=el('div',{'class':'gen-step-dot '+s.status});dot.textContent=s.status==='done'?'v':s.status==='active'?'...':'.';
+      step.appendChild(dot);step.appendChild(el('div',{'class':'gen-step-label'},phase.icon+' '+s.label));
+      if(s.status==='done'){var tags=isExam?EXAM_QUALITY_TAGS:QUALITY_TAGS;step.appendChild(el('span',{'class':'gen-step-tag'},(tags[s.id]&&tags[s.id][0])||''));}
       steps.appendChild(step);
     });
     gp.appendChild(steps);d.appendChild(gp);
   }
 
-  const phases=el('div',{'class':'phases'});
-  activePhases.forEach(p=>phases.appendChild(buildPhaseCard(p,isExam)));
+  // ── Phase cards ──
+  var phases=el('div',{'class':'phases'});
+  activePhases.forEach(function(p){phases.appendChild(buildPhaseCard(p,isExam));});
   d.appendChild(phases);
   return d;
 }
@@ -1974,39 +3001,28 @@ function buildPhaseCard(phase, isExam=false){
   const isOpen=S.open[phase.id];
   var phaseIdx=(isExam?EXAM_PHASES:PHASES).findIndex(function(p){return p.id===phase.id;});
   var isActive=phaseIdx===S.activePhaseIdx&&S.generatingAll;
-  const card=el('div',{'class':'pcard'+(isOpen?' open':'')+(ph.generated&&!isOpen?' generated':'')+(isActive?' phase-active':'')+(ph.generating?' phase-generating':'')});
+  const card=el('div',{'class':'pcard'+(isOpen?' open':'')+(isActive?' phase-active':'')+(ph.generating?' phase-generating':'')});
 
-  // Head -- click to collapse only (content shown by default)
+  // ── Head ──
   const head=el('div',{'class':'phead'});
   head.appendChild(el('div',{'class':'phase-color-bar','style':'background:'+phase.col}));
-  const iconWrap=el('div',{'class':'phase-icon-wrap','style':'background:'+phase.bg});
-  iconWrap.textContent=phase.icon;
+  const iconWrap=el('div',{'class':'phase-icon-wrap','style':'background:'+phase.bg});iconWrap.textContent=phase.icon;
   head.appendChild(iconWrap);
   const txt=el('div',{'class':'phase-text'});
   txt.appendChild(el('div',{'class':'phase-label'},phase.label));
   txt.appendChild(el('div',{'class':'phase-sub'},phase.sub));
   head.appendChild(txt);
-
   const meta=el('div',{'class':'phase-meta'});
-  // Quality tags
-  if(ph.generated&&!ph.generating){
-    const tagSet=isExam?EXAM_QUALITY_TAGS:QUALITY_TAGS;
-    const tags=(tagSet[phase.id]||[]);
-    tags.slice(0,2).forEach(tag=>{
-      meta.appendChild(el('span',{'class':'quality-tag'},tag));
-    });
-  }
-  // Timing badge
+  var tagSet=isExam?EXAM_QUALITY_TAGS:QUALITY_TAGS;
+  var tags=(tagSet[phase.id]||[]);
+  tags.slice(0,1).forEach(function(tag){meta.appendChild(el('span',{'class':'quality-tag'},tag));});
   var tMin=S.timings&&S.timings[phase.id];
   if(tMin)meta.appendChild(el('div',{'class':'phase-timing-badge'},tMin+' min'));
-  if(ph.generating){
-    const pill=el('div',{'class':'status-pill generating'});
-    pill.innerHTML='<span class="spinner" style="width:10px;height:10px;border-width:1.5px;"></span>';
-    meta.appendChild(pill);
-  }
-  meta.appendChild(el('div',{'class':'chev'+(isOpen?' open':'')},'⌄'));
+  if(ph.generating){var pill=el('div',{'class':'status-pill generating'});pill.innerHTML='<span class="spinner" style="width:10px;height:10px;border-width:1.5px;"></span>';meta.appendChild(pill);}
+  else if(ph.generated){meta.appendChild(el('div',{'class':'status-pill ready'},'Ready'));}
+  meta.appendChild(el('div',{'class':'chev'+(isOpen?' open':'')},'v'));
   head.appendChild(meta);
-  head.addEventListener('click',()=>{S.open[phase.id]=!S.open[phase.id];render()});
+  head.addEventListener('click',function(){S.open[phase.id]=!S.open[phase.id];render();});
   card.appendChild(head);
 
   if(isOpen){
@@ -2014,82 +3030,142 @@ function buildPhaseCard(phase, isExam=false){
     const inner=el('div',{'class':'pbody-inner'});
 
     if(ph.generating){
-      const ag=el('div',{'class':'ai-generating'});
-      ag.innerHTML=`<div class="spinner"></div><div><div style="font-size:13px;font-weight:600;color:var(--p);">Writing ${phase.label}...</div><div style="font-size:11px;color:var(--gray-400);margin-top:2px;">Takes a few seconds</div></div>`;
+      var ag=el('div',{'class':'ai-generating'});
+      ag.innerHTML='<div class="spinner"></div><div><div style="font-size:13px;font-weight:600;color:var(--p);">Writing '+phase.label+'...</div><div style="font-size:11px;color:var(--gray-400);margin-top:2px;">Takes a few seconds</div></div>';
       inner.appendChild(ag);
     } else if(ph.generated){
-      // Content display -- prominent
-      const contentWrap=el('div',{'class':'phase-content-wrap'});
-      const ta=el('textarea',{'class':'phase-textarea','rows':'6'});
+      // ── Improvement 4: Formatted question display ──
+      var phLines=( ph.content||'').split('\n');
+      var hasQFmt=phLines.some(function(l){return/^Q?\d+[.:)[\]]/.test(l.trim());});
+      if(hasQFmt){
+        var qDisp=el('div',{'class':'phase-q-display'});
+        var curQ=null;var curLines=[];
+        function flushCurQ(){
+          if(!curQ)return;
+          var qc=el('div',{'class':'phase-q-card'});
+          var qh=el('div',{'class':'phase-q-hdr'});
+          qh.innerHTML=curQ.replace(/\[(\d+)\s*marks?\]/gi,function(m,n){return '<span class="mark-badge">'+n+'m</span>';});
+          qc.appendChild(qh);
+          if(curLines.length){
+            var qb=el('div',{'class':'phase-q-body'});
+            var bt=curLines.join('\n');
+            if(/^(answer|solution|model answer):/i.test(bt.trim()))qc.classList.add('phase-q-answer');
+            qb.textContent=bt;qc.appendChild(qb);
+          }
+          qDisp.appendChild(qc);curQ=null;curLines=[];
+        }
+        phLines.forEach(function(ln){
+          if(/^Q?\d+[.:)[\]]/.test(ln.trim())){flushCurQ();curQ=ln;}
+          else if(curQ)curLines.push(ln);
+          else if(ln.trim()){var misc=el('div',{'class':'phase-q-misc'});misc.textContent=ln;qDisp.appendChild(misc);}
+        });
+        flushCurQ();
+        inner.appendChild(qDisp);
+      }
+      // Content textarea (always shown for editing)
+      var ta=el('textarea',{'class':'phase-textarea'+(hasQFmt?' phase-textarea-compact':''),'rows':hasQFmt?3:6});
       ta.value=ph.content||'';
-      ta.addEventListener('input',e=>{S.phases[phase.id].content=e.target.value;saveState()});
-      contentWrap.appendChild(ta);
-      inner.appendChild(contentWrap);
-
-      // Micro-actions toolbar
-      const toolbar=el('div',{'class':'phase-toolbar'});
-      const genFn=isExam?generateExamPhase:generatePhase;
-      const regenBtn=el('button',{'class':'phase-action-btn'});
-      regenBtn.innerHTML='🔄 Regenerate';
-      regenBtn.addEventListener('click',e=>{e.stopPropagation();genFn(phase.id,false)});
-      const improveBtn=el('button',{'class':'phase-action-btn'});
-      improveBtn.innerHTML='✨ Improve this';
-      improveBtn.addEventListener('click',e=>{e.stopPropagation();genFn(phase.id,true)});
-      toolbar.appendChild(regenBtn);
-      toolbar.appendChild(improveBtn);
-      // Harder for question phases
-      const hardPhases=isExam?['examqs','drillqs']:['guided','independent','ido'];
-      if(hardPhases.includes(phase.id)){
-        const hardBtn=el('button',{'class':'phase-action-btn'});
-        hardBtn.innerHTML='📈 Make harder';
-        hardBtn.addEventListener('click',e=>{
-          e.stopPropagation();
-          S.phases[phase.id].content+='\n\n[Request: make questions harder]';
-          genFn(phase.id,true);
-        });
-        toolbar.appendChild(hardBtn);
-      }
-      // Extra exam-only action: add more questions
-      if(isExam&&['examqs','drillqs'].includes(phase.id)){
-        const moreBtn=el('button',{'class':'phase-action-btn'});
-        moreBtn.innerHTML='➕ More questions';
-        moreBtn.addEventListener('click',e=>{
-          e.stopPropagation();
-          S.phases[phase.id].content+='\n\n[Request: add 3 more similar questions]';
-          genFn(phase.id,true);
-        });
-        toolbar.appendChild(moreBtn);
-      }
-      inner.appendChild(toolbar);
-
-      // MWB cameo for I Do and Guided Practice
-      if(phase.id==='ido'||phase.id==='guided'){
-        inner.appendChild(buildMWB(phase.id));
-      }
-    } else {
-      // Not yet generated
-      inner.appendChild(el('div',{'class':'phase-hint'},phase.hint));
-      const genBtn=el('button',{'class':'btn btn-primary btn-sm'});
-      genBtn.innerHTML='✨ Generate this phase';
-      genBtn.addEventListener('click',e=>{e.stopPropagation();if(!S.topic){showToast('Add a topic first','error');return}isExam?generateExamPhase(phase.id,false):generatePhase(phase.id,false)});
-      inner.appendChild(genBtn);
-      const ta=el('textarea',{'placeholder':'Or write manually...','rows':'3','style':'margin-top:10px;'});
-      ta.value='';
-      ta.addEventListener('input',e=>{S.phases[phase.id].content=e.target.value;S.phases[phase.id].generated=!!e.target.value;saveState()});
+      ta.addEventListener('input',function(e){S.phases[phase.id].content=e.target.value;saveState();});
       inner.appendChild(ta);
-    }
 
+      // ── Rich micro-action toolbar ──
+      var toolbar=el('div',{'class':'phase-toolbar'});
+      var genFn=isExam?generateExamPhase:generatePhase;
+
+      var actions=[
+        {icon:'🔄',label:'Regenerate',fn:function(){genFn(phase.id,false);}},
+        {icon:'✨',label:'Improve',fn:function(){genFn(phase.id,true);}},
+        {icon:'📈',label:'Harder',fn:function(){S.phases[phase.id].content+=' [Make harder]';genFn(phase.id,true);}},
+        {icon:'📉',label:'Easier',fn:function(){S.phases[phase.id].content+=' [Simplify for lower ability]';genFn(phase.id,true);}},
+        {icon:'❓',label:'Add questions',fn:function(){S.phases[phase.id].content+=' [Add 2 more questions]';genFn(phase.id,true);}},
+        {icon:'⚠️',label:'Misconceptions',fn:function(){S.phases[phase.id].content+=' [Add common misconceptions students have about this]';genFn(phase.id,true);}},
+      ];
+
+      // Exam-specific actions
+      if(isExam){
+        if(phase.id==='examqs'||phase.id==='drillqs')actions.push({icon:'➕',label:'More Qs',fn:function(){S.phases[phase.id].content+=' [Add 3 more similar questions]';genFn(phase.id,true);}});
+        if(phase.id==='workedex'||phase.id==='marksch')actions.push({icon:'🎯',label:'Mark steps',fn:function(){S.phases[phase.id].content+=' [Show each mark point clearly numbered]';genFn(phase.id,true);}});
+      } else {
+        if(phase.id==='independent')actions.push({icon:'🌍',label:'Real-world',fn:function(){S.phases[phase.id].content+=' [Add a real-world context question]';genFn(phase.id,true);}});
+        if(phase.id==='reflect')actions.push({icon:'📋',label:'Exit ticket',fn:function(){S.phases[phase.id].content+=' [Generate a concise 3-question exit ticket]';genFn(phase.id,true);}});
+        if(phase.id==='newknow')actions.push({icon:'💬',label:'Teacher script',fn:function(){S.phases[phase.id].content+=' [Add what the teacher should say during this phase, step by step]';genFn(phase.id,true);}});
+      }
+
+      actions.forEach(function(a){
+        var btn=el('button',{'class':'phase-action-btn'});
+        btn.innerHTML=a.icon+' '+a.label;
+        btn.addEventListener('click',function(e){e.stopPropagation();if(!S.topic){showToast('Add a topic first','error');return;}a.fn();});
+        toolbar.appendChild(btn);
+      });
+      // Diagram button
+      var diagramBtn=el('button',{'class':'phase-action-btn phase-diagram-btn'});
+      var diag=S.diagrams&&S.diagrams[phase.id];
+      diagramBtn.innerHTML=diag&&diag.generating?'Drawing...':'🖼 Generate Diagram';
+      diagramBtn.addEventListener('click',function(e){e.stopPropagation();generateDiagram(phase.id);});
+      toolbar.appendChild(diagramBtn);
+      inner.appendChild(toolbar);
+      if(S.diagrams&&S.diagrams[phase.id]&&S.diagrams[phase.id].svg){
+        var diagWrap=el('div',{'class':'phase-diagram-wrap'});
+        var diagHdr=el('div',{'class':'phase-diagram-hdr'});diagHdr.innerHTML='<span style="font-size:11px;font-weight:700;color:var(--gray-600);">🖼 Diagram</span>';
+        var remDiag=el('button',{'class':'btn-icon','style':'margin-left:auto;'});remDiag.textContent='✕';
+        remDiag.addEventListener('click',function(e){e.stopPropagation();if(!S.diagrams)S.diagrams={};S.diagrams[phase.id]={svg:'',generating:false};saveState();render();});
+        diagHdr.appendChild(remDiag);diagWrap.appendChild(diagHdr);
+        var diagSvg=el('div',{'class':'phase-diagram-svg'});diagSvg.innerHTML=S.diagrams[phase.id].svg;diagWrap.appendChild(diagSvg);inner.appendChild(diagWrap);
+      }
+      // MWB for I Do and Guided
+      if(phase.id==='ido'||phase.id==='guided'){inner.appendChild(buildMWB(phase.id));}
+
+    } else {
+      // Not generated yet
+      inner.appendChild(el('div',{'class':'phase-hint'},phase.hint));
+      var genBtn2=el('button',{'class':'btn btn-primary btn-sm'});genBtn2.innerHTML='✨ Generate';
+      genBtn2.addEventListener('click',function(e){e.stopPropagation();if(!S.topic){showToast('Add a topic first','error');return;}isExam?generateExamPhase(phase.id,false):generatePhase(phase.id,false);});
+      inner.appendChild(genBtn2);
+      var ta2=el('textarea',{'placeholder':'Or write manually...','rows':'3','style':'margin-top:10px;'});
+      ta2.value='';ta2.addEventListener('input',function(e){S.phases[phase.id].content=e.target.value;S.phases[phase.id].generated=!!e.target.value;saveState();});
+      inner.appendChild(ta2);
+    }
     body.appendChild(inner);card.appendChild(body);
   }
   return card;
 }
 
-// -- MWB builder (extracted for reuse) --
 function buildMWB(phaseId){
   const mwbKey='mwb_'+phaseId;
   const mwb=el('div',{'class':'mwb-cameo'});
   const mwbTop=el('div',{'class':'mwb-top'});
-  mwbTop.innerHTML=`<div class="mwb-label"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="flex-shrink:0"><rect x="1" y="1" width="12" height="9" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M4 13h6M7 10v3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg> MWB Working Space</div><div class="mwb-hint">Show working on the board here</div>`;
+  mwbTop.innerHTML='<div class="mwb-label"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="flex-shrink:0"><rect x="1" y="1" width="12" height="9" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M4 13h6M7 10v3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg> MWB Working Space</div><div class="mwb-hint">Teacher whiteboard</div>';
+  // Fullscreen button
+  var fsBtn=el('button',{'class':'mwb-fs-btn','title':'Fullscreen whiteboard'});
+  fsBtn.innerHTML='<svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M1 4.5V1h3.5M8.5 1H12v3.5M12 8.5V12H8.5M4.5 12H1V8.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  fsBtn.addEventListener('click',function(e){
+    e.stopPropagation();
+    var overlay=document.getElementById('mwb-fullscreen-'+mwbKey);
+    if(overlay){overlay.remove();return;}
+    var ov=document.createElement('div');ov.id='mwb-fullscreen-'+mwbKey;ov.className='mwb-fullscreen-overlay';
+    var closeBtn=document.createElement('button');closeBtn.className='mwb-fs-close';closeBtn.textContent='✕ Close';
+    closeBtn.onclick=function(){ov.remove();};
+    var title=document.createElement('div');title.className='mwb-fs-title';title.textContent=phase.label+' — Working Space';
+    var header=document.createElement('div');header.className='mwb-fs-header';header.appendChild(title);header.appendChild(closeBtn);
+    ov.appendChild(header);
+    // Clone canvas content
+    var bigCanvas=document.createElement('canvas');bigCanvas.width=1400;bigCanvas.height=700;bigCanvas.className='mwb-fs-canvas';bigCanvas.style.cursor='crosshair';bigCanvas.style.touchAction='none';
+    var srcCvs=document.getElementById('cvs-'+mwbKey);
+    if(srcCvs){var ctx2=bigCanvas.getContext('2d');ctx2.drawImage(srcCvs,0,0,bigCanvas.width,bigCanvas.height);}
+    ov.appendChild(bigCanvas);
+    // Drawing on fullscreen canvas
+    var drawing2=false,lx2=0,ly2=0;
+    function gp2(e2){var r=bigCanvas.getBoundingClientRect(),sx=bigCanvas.width/r.width,sy=bigCanvas.height/r.height;var src=e2.touches?e2.touches[0]:e2;return{x:(src.clientX-r.left)*sx,y:(src.clientY-r.top)*sy};}
+    bigCanvas.addEventListener('mousedown',function(e2){drawing2=true;var p=gp2(e2);lx2=p.x;ly2=p.y;});
+    bigCanvas.addEventListener('mousemove',function(e2){if(!drawing2)return;var ctx2=bigCanvas.getContext('2d');var p=gp2(e2);var er=S.mwb&&S.mwb[mwbKey+'_erase'];ctx2.globalCompositeOperation=er?'destination-out':'source-over';ctx2.strokeStyle=(S.mwb&&S.mwb[mwbKey+'_col'])||'#1e1b2e';ctx2.lineWidth=((S.mwb&&S.mwb[mwbKey+'_sz'])||4)*(er?5:1)*2;ctx2.lineCap='round';ctx2.lineJoin='round';ctx2.beginPath();ctx2.moveTo(lx2,ly2);ctx2.lineTo(p.x,p.y);ctx2.stroke();lx2=p.x;ly2=p.y;});
+    bigCanvas.addEventListener('mouseup',function(){drawing2=false;bigCanvas.getContext('2d').globalCompositeOperation='source-over';});
+    bigCanvas.addEventListener('touchstart',function(e2){e2.preventDefault();drawing2=true;var p=gp2(e2);lx2=p.x;ly2=p.y;},{passive:false});
+    bigCanvas.addEventListener('touchmove',function(e2){e2.preventDefault();if(!drawing2)return;var ctx2=bigCanvas.getContext('2d');var p=gp2(e2);ctx2.strokeStyle=(S.mwb&&S.mwb[mwbKey+'_col'])||'#1e1b2e';ctx2.lineWidth=((S.mwb&&S.mwb[mwbKey+'_sz'])||4)*3;ctx2.lineCap='round';ctx2.lineJoin='round';ctx2.beginPath();ctx2.moveTo(lx2,ly2);ctx2.lineTo(p.x,p.y);ctx2.stroke();lx2=p.x;ly2=p.y;},{passive:false});
+    bigCanvas.addEventListener('touchend',function(){drawing2=false;});
+    document.body.appendChild(ov);
+    ov.addEventListener('keydown',function(e2){if(e2.key==='Escape')ov.remove();});
+  });
+  mwbTop.appendChild(fsBtn);
   const mwbClear=el('button',{'class':'mwb-clear-btn'});mwbClear.textContent='Clear';
   mwbClear.addEventListener('click',e=>{e.stopPropagation();S.mwb=S.mwb||{};S.mwb[mwbKey]='';const cvs=document.getElementById('cvs-'+mwbKey);if(cvs){const ctx=cvs.getContext('2d');ctx.clearRect(0,0,cvs.width,cvs.height);}});
   mwbTop.appendChild(mwbClear);mwb.appendChild(mwbTop);
@@ -2217,20 +3293,22 @@ function buildPreviewTab(){
   // Student Worksheet — single button with format picker popover
   const wsWrap=el('div',{'class':'ws-btn-wrap'});
   const wsBtn=el('button',{'class':'btn btn-ghost btn-sm ws-main-btn'});
-  wsBtn.innerHTML='📄 Student Worksheet ▾';
+  wsBtn.innerHTML='📄 Worksheet ▾';
   wsBtn.addEventListener('click',function(e){
     e.stopPropagation();
     var existing=document.getElementById('ws-format-picker');
     if(existing){existing.remove();return;}
     var picker=el('div',{'class':'ws-format-picker','id':'ws-format-picker'});
     var opts=[
-      {icon:'📝',label:'Word Document',sub:'Opens in Word / Google Docs',fmt:'docx'},
-      {icon:'🖨',label:'Print / Save as PDF',sub:'Opens print dialog',fmt:'print'},
+      {icon:'👨‍🏫',label:'Teacher Version',sub:'With answers & mark scheme',isTeacher:true,fmt:'print'},
+      {icon:'👩‍🎓',label:'Student Version',sub:'Questions only, no answers',isTeacher:false,fmt:'print'},
+      {icon:'📝',label:'Teacher — Word (.docx)',sub:'With answers',isTeacher:true,fmt:'docx'},
+      {icon:'📝',label:'Student — Word (.docx)',sub:'Questions only',isTeacher:false,fmt:'docx'},
     ];
     opts.forEach(function(o){
       var row=el('div',{'class':'ws-format-row'});
       row.innerHTML='<div class="ws-fmt-icon">'+o.icon+'</div><div><div class="ws-fmt-label">'+o.label+'</div><div class="ws-fmt-sub">'+o.sub+'</div></div>';
-      row.addEventListener('click',function(e2){e2.stopPropagation();picker.remove();downloadWorksheet(o.fmt);});
+      row.addEventListener('click',function(e2){e2.stopPropagation();picker.remove();downloadWorksheet(o.fmt,o.isTeacher);});
       picker.appendChild(row);
     });
     wsWrap.appendChild(picker);
@@ -2317,6 +3395,44 @@ function buildPreviewTab(){
 
 
 // --- BOTTOM BAR ----------------------------------
+function buildMiniPreview(){
+  const t=S.theme;
+  const isExam=S.mode==='exam';
+  const activePhases=isExam?EXAM_PHASES:PHASES;
+  const wrap=el('div',{'class':'mini-preview'});
+
+  // Mini title slide
+  var top=el('div',{'class':'mini-prev-top','style':'background:'+t.primaryDark});
+  if(S.subject)top.appendChild(el('div',{'class':'mini-dept','style':'color:'+t.accent2},S.subject.toUpperCase()));
+  top.appendChild(el('div',{'class':'mini-title'},S.topic||'Your lesson will appear here'));
+  var metaStr=[S.year?'Year '+S.year:'',S.duration?S.duration+' min':''].filter(Boolean).join(' · ');
+  if(metaStr)top.appendChild(el('div',{'class':'mini-meta'},metaStr));
+  wrap.appendChild(top);
+  wrap.appendChild(el('div',{'style':'height:3px;background:'+t.primary}));
+
+  // Phase summaries
+  var body=el('div',{'class':'mini-prev-body'});
+  var generated=activePhases.filter(function(p){return S.phases[p.id]&&S.phases[p.id].content;});
+
+  if(!generated.length){
+    var emp=el('div',{'class':'mini-empty'});
+    emp.innerHTML='<div style="font-size:24px;margin-bottom:8px;">📝</div><div style="font-size:12px;color:var(--gray-400);">Generate a lesson to see the preview here</div>';
+    body.appendChild(emp);
+  } else {
+    generated.forEach(function(phase){
+      var row=el('div',{'class':'mini-phase-row'});
+      var lbl=el('div',{'class':'mini-phase-label','style':'color:'+phase.col});lbl.textContent=phase.icon+' '+phase.label;
+      var preview=el('div',{'class':'mini-phase-preview'});
+      var text=S.phases[phase.id].content;
+      preview.textContent=text.slice(0,120)+(text.length>120?'...':'');
+      row.appendChild(lbl);row.appendChild(preview);
+      body.appendChild(row);
+    });
+  }
+  wrap.appendChild(body);
+  return wrap;
+}
+
 function buildBottomBar(){
   const bar=el('div',{'class':'btm'});
   const left=el('div',{'class':'btm-left'});
@@ -2410,6 +3526,110 @@ function loadSharedLesson(){
 // ===================================================
 // FEATURE: STUDENT WORKSHEET DOWNLOAD
 // ===================================================
+function downloadWorksheet(format,isTeacher){
+  format=format||'print';
+  isTeacher=(isTeacher===undefined)?true:isTeacher;
+  var t=S.theme;
+  var isExam=S.mode==='exam';
+  var activePhases=isExam?EXAM_PHASES:getActivePhases();
+  var topicTitle=S.topic||'Worksheet';
+  var meta=[S.subject,S.year?'Year '+S.year:'',new Date().toLocaleDateString('en-GB'),S.examBoard].filter(Boolean).join(' | ');
+
+  // Which phases to include - questions only for student, everything for teacher
+  var studentPhaseIds=isExam?['warmup','examretrieval','examqs','examguided','examindep','drillqs']:['prior','retrieval','recall','youdo','independent'];
+  var teacherOnlyIds=isExam?['workedex','marksch','examtips']:['reflect'];
+  
+  var phasesToShow=activePhases.filter(function(p){
+    var ph=S.phases[p.id];
+    if(!ph||!ph.content)return false;
+    if(isTeacher)return true;
+    return studentPhaseIds.includes(p.id)||!teacherOnlyIds.includes(p.id);
+  });
+
+  var rows=phasesToShow.map(function(phase){
+    var ph=S.phases[phase.id];
+    var content2=ph.content;
+    // Student version: strip answers
+    if(!isTeacher){
+      content2=content2.split('\n').filter(function(l){
+        var t=l.trim().toLowerCase();
+        return!t.startsWith('answer:')||!t.startsWith('solution:')||!t.startsWith('model answer')||!t.startsWith('final answer:');
+      }).join('\n');
+    }
+    // Diagram
+    var diagHtml='';
+    if(S.diagrams&&S.diagrams[phase.id]&&S.diagrams[phase.id].svg){
+      diagHtml='<div style="margin:10px 0;text-align:center;">'+S.diagrams[phase.id].svg+'</div>';
+    }
+    return '<div style="margin-bottom:24px;page-break-inside:avoid;">'
+      +'<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:'+phase.bg+';border-radius:6px 6px 0 0;border:1.5px solid '+phase.col+'44;">'
+      +'<span>'+phase.icon+'</span><span style="font-family:Sora,sans-serif;font-size:13px;font-weight:700;color:'+phase.col+';">'+phase.label+'</span>'
+      +(isTeacher?'<span style="font-size:10px;color:#9ca3af;margin-left:auto;">'+( teacherOnlyIds.includes(phase.id)?'TEACHER ONLY':'')+'</span>':'')
+      +'</div>'
+      +diagHtml
+      +'<div style="padding:14px 16px;border:1.5px solid '+phase.col+'22;border-top:none;border-radius:0 0 6px 6px;font-size:13px;line-height:1.9;white-space:pre-wrap;">'+content2+'</div>'
+      +((!isTeacher&&(phase.id==='examqs'||phase.id==='independent'||phase.id==='youdo'||phase.id==='drillqs'))?
+        (function(){
+          // Generate answer lines proportional to marks found in content
+          var markMatches=ph.content.match(/\[(\d+)\s*marks?\]/gi)||[];
+          var totalMarks=markMatches.reduce(function(acc,m){return acc+parseInt(m.match(/\d+/)[0]);},0)||4;
+          var lineCount=Math.min(Math.max(totalMarks*2,4),20);
+          var lines2='';for(var li=0;li<lineCount;li++){lines2+='<div style="border-bottom:1px solid #d1d5db;height:22px;margin:2px 0;"></div>';}
+          return '<div style="padding:8px 16px 12px;border:1.5px solid #e5e7eb;border-top:none;border-radius:0 0 6px 6px;background:#fafafa;">'+lines2+'</div>';
+        })()
+        :'')
+      +'</div>';
+  }).join('');
+
+  var fkw=S.keywords?S.keywords.filter(function(k){return k.word&&k.word.trim();}):[];
+  var kwHtml='';
+  if(fkw.length&&isTeacher){
+    kwHtml='<div style="margin-top:20px;border-radius:8px;overflow:hidden;border:1.5px solid #e9d5ff;">'
+      +'<div style="padding:10px 14px;background:'+t.primary+';color:#fff;font-size:13px;font-weight:700;">🌍 Key Vocabulary</div>'
+      +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;padding:12px;">'
+      +fkw.map(function(k){return'<div style="background:#fdf9ff;border-radius:6px;padding:8px;border:1px solid #e9d5ff;">'
+        +'<div style="font-size:9px;font-weight:700;color:#7c3aed;">Tier '+(k.tier||'2')+'</div>'
+        +'<div style="font-weight:700;font-size:13px;color:'+t.primaryDark+';">'+k.word+'</div>'
+        +'<div style="font-size:11px;color:#555;">'+(k.def||'')+'</div>'
+        +(k.etymology?'<div style="font-size:9px;color:#9ca3af;font-style:italic;">'+k.etymology+'</div>':'')
+        +'</div>';}).join('')
+      +'</div></div>';
+  }
+
+  var html='<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>'+(isTeacher?'[TEACHER] ':'')+topicTitle+'</title>'
+    +'<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet">'
+    +'<style>*{box-sizing:border-box}body{font-family:Inter,sans-serif;margin:0;padding:2cm;color:#1a1a2e;}'
+    +(isTeacher?'.teacher-badge{display:inline-block;background:#7c3aed;color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;margin-left:8px;}':'')
+    +'.hdr{border-bottom:3px solid '+t.primary+';padding-bottom:12px;margin-bottom:20px;}'
+    +'.title{font-family:Sora,sans-serif;font-size:22px;font-weight:800;color:'+t.primaryDark+';display:flex;align-items:center;gap:8px;}'
+    +'.meta{font-size:11px;color:#6b7280;margin-top:4px;}'
+    +'.fields{display:flex;gap:24px;margin:14px 0 24px;}'
+    +'.field{flex:1;border-bottom:1.5px solid #d1d5db;padding-bottom:4px;font-size:12px;color:#9ca3af;}'
+    +'@media print{body{padding:1.5cm;}}</style></head><body>'
+    +'<div class="hdr"><div class="title">'+topicTitle+(isTeacher?'<span class="teacher-badge">TEACHER VERSION</span>':'')+'</div><div class="meta">'+meta+'</div></div>'
+    +(isTeacher?'':('<div class="fields"><div class="field">Name: _______________________</div><div class="field">Class: ___________</div><div class="field">Date: ___________</div></div>'))
+    +rows+kwHtml
+    +(isTeacher?'<div style="margin-top:20px;padding:10px;background:#fef3c7;border:1px solid #f59e0b;border-radius:6px;font-size:11px;color:#92400e;">📋 TEACHER VERSION — Contains answers and mark scheme. Do not distribute to students.</div>':'')
+    +'</body></html>';
+
+  if(format==='docx'){
+    if(!window.docx){
+      var s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.js';
+      s.onload=function(){downloadWorksheet('docx',isTeacher);};
+      document.head.appendChild(s);showToast('Loading Word library...','success');return;
+    }
+    // Use blob for docx
+    var blob=new Blob([html],{type:'text/html'});
+    var a=document.createElement('a');a.href=URL.createObjectURL(blob);
+    a.download=(S.topic||'worksheet').replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_-]/g,'')+(isTeacher?'_TEACHER':'_student')+'_worksheet.html';a.click();
+  } else {
+    var pw=window.open('','_blank','width=900,height=1000');
+    if(!pw){showToast('Pop-up blocked -- allow pop-ups for this site','error');return;}
+    pw.document.write(html);pw.document.close();
+    showToast((isTeacher?'Teacher':'Student')+' worksheet ready -- print or save as PDF','success');
+  }
+}
+
 function downloadWorksheet(format){
   // format: 'docx' | 'print'
   format = format || 'docx';
