@@ -1493,6 +1493,434 @@ html.dark .adapt-dialog{background:var(--gray-100);border-color:var(--gray-200)}
 /* ═══ IMPROVEMENT 9: Marks total ═══ */
 .build-meta{font-size:12px;color:var(--gray-500);margin-top:3px}
 
+
+/* ════════════════════════════════════════════════════
+   🚀 TEACH MODE — Fullscreen Classroom Delivery
+   ════════════════════════════════════════════════════ */
+
+/* Header button */
+.hdr-teach-btn{
+  background:linear-gradient(135deg,var(--a2) 0%,#f59e0b 100%);
+  color:var(--pd);border:none;cursor:pointer;
+  padding:7px 16px;border-radius:8px;
+  font-family:var(--fh);font-size:12px;font-weight:800;
+  letter-spacing:.2px;transition:all .15s;white-space:nowrap;
+  box-shadow:0 2px 8px rgba(255,193,7,.35);flex-shrink:0;
+}
+.hdr-teach-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(255,193,7,.45)}
+.hdr-teach-btn:active{transform:translateY(0)}
+
+/* Overlay */
+.teach-overlay{
+  position:fixed;inset:0;z-index:99999;
+  background:#0f0c18;
+  display:flex;flex-direction:column;
+  outline:none;
+  font-family:'Sora',sans-serif;
+  user-select:none;
+  overflow:hidden;
+}
+
+/* Slide area */
+.teach-slide{
+  flex:1;display:flex;flex-direction:column;
+  overflow:hidden;position:relative;
+  background:#fff;
+}
+
+/* Title slide */
+.teach-title-slide{
+  justify-content:center;align-items:flex-start;
+  padding:6vh 8vw;
+  position:relative;overflow:hidden;
+}
+.teach-shape-1{position:absolute;right:-4vw;top:-8vh;width:45vw;height:45vw;border-radius:50%;opacity:.08;background:white;}
+.teach-shape-2{position:absolute;right:8vw;bottom:-10vh;width:30vw;height:30vw;border-radius:50%;opacity:.12;background:white;}
+.teach-shape-3{position:absolute;right:20vw;top:10vh;width:18vw;height:18vw;border-radius:50%;opacity:.15;background:white;}
+.teach-title-content{position:relative;z-index:1;color:#fff;max-width:75vw;}
+.teach-subject{font-size:clamp(12px,1.5vw,18px);font-weight:800;letter-spacing:3px;opacity:.65;margin-bottom:.8vh}
+.teach-board-tag{display:inline-block;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:99px;padding:3px 12px;font-size:clamp(10px,1.2vw,14px);font-weight:600;margin-bottom:1.5vh}
+.teach-topic{font-size:clamp(28px,5.5vw,72px);font-weight:800;line-height:1.1;margin:0 0 2vh;text-underline-offset:6px;text-decoration:underline;text-decoration-color:rgba(255,255,255,.3)}
+.teach-inquiry{font-size:clamp(14px,2vw,26px);font-style:italic;opacity:.8;margin-bottom:2vh;line-height:1.4}
+.teach-meta{font-size:clamp(12px,1.4vw,18px);opacity:.55;margin-bottom:1.5vh}
+.teach-obj{font-size:clamp(12px,1.4vw,18px);background:rgba(255,255,255,.12);border-radius:8px;padding:10px 16px;margin-bottom:1.5vh;line-height:1.5}
+.teach-date{font-size:clamp(11px,1.2vw,16px);opacity:.45;margin-top:2vh}
+
+/* Phase slide */
+.teach-phase-bar{height:6px;flex-shrink:0}
+.teach-phase-label{
+  display:flex;align-items:center;gap:12px;
+  padding:clamp(8px,1.5vh,16px) clamp(16px,3vw,40px);
+  background:#fafafa;border-bottom:1px solid #e5e7eb;flex-shrink:0;
+}
+.teach-phase-icon{font-size:clamp(18px,2.5vw,32px)}
+.teach-phase-name{font-family:'Sora',sans-serif;font-size:clamp(14px,2vw,26px);font-weight:800;color:#1a1a2e}
+.teach-chunk-badge{font-size:clamp(10px,1.2vw,14px);background:#e5e7eb;color:#6b7080;border-radius:99px;padding:2px 10px;font-weight:600}
+.teach-timing{margin-left:auto;font-size:clamp(12px,1.4vw,18px);color:#9ca3af;font-weight:600}
+
+/* Content area */
+.teach-content{
+  flex:1;display:flex;overflow:hidden;
+  padding:clamp(16px,3vh,40px) clamp(20px,4vw,60px);
+  gap:40px;
+}
+.teach-content-split .teach-text-col{flex:1.2}
+.teach-text-col{flex:1;display:flex;flex-direction:column;gap:clamp(6px,1vh,14px);overflow-y:auto}
+.teach-diagram-col{flex:1;display:flex;align-items:center;justify-content:center;background:#f8faff;border-radius:12px;padding:16px;border:1.5px solid #e0e7ff}
+.teach-diagram-col svg{max-width:100%;max-height:100%;height:auto}
+
+/* Lines */
+.teach-line{
+  font-size:clamp(14px,2vw,28px);
+  line-height:1.5;color:#1a1a2e;
+  padding:clamp(6px,1vh,12px) clamp(10px,1.5vw,20px);
+  border-radius:8px;transition:background .15s;
+}
+.teach-line-q{
+  background:#f5f3ff;border-left:4px solid var(--p);
+  font-weight:700;color:#1a1a2e;
+}
+.teach-line-ans{background:#f0fdf4;color:#15803d;font-weight:600}
+.teach-line-hidden{
+  background:#f3f4f6;color:transparent;border-radius:8px;
+  cursor:pointer;position:relative;filter:blur(6px);
+  transition:filter .3s;border:2px dashed #d1d5db;
+}
+.teach-line-hidden:hover{filter:blur(3px)}
+.teach-reveal-hint{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  color:#9ca3af;font-size:clamp(12px,1.5vw,18px);font-weight:600;filter:none;
+}
+.teach-mark-badge{
+  display:inline-block;background:var(--p);color:#fff;
+  font-size:.7em;font-weight:800;padding:1px 6px;border-radius:4px;
+  margin-left:4px;vertical-align:middle;
+}
+
+/* Vocab slide */
+.teach-vocab-slide{background:#fdf9ff}
+.teach-vocab-hdr{
+  padding:clamp(12px,2vh,24px) clamp(20px,4vw,50px);
+  color:#fff;font-size:clamp(16px,2.5vw,32px);font-weight:800;flex-shrink:0;
+}
+.teach-vocab-grid{
+  flex:1;display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(clamp(180px,20vw,280px),1fr));
+  gap:clamp(8px,1.5vw,20px);
+  padding:clamp(12px,2vh,24px) clamp(20px,4vw,50px);
+  overflow-y:auto;align-content:start;
+}
+.teach-vocab-card{background:#fff;border-radius:12px;padding:16px;border:1.5px solid #e9d5ff;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.teach-vocab-tier{display:inline-block;color:#fff;font-size:10px;font-weight:800;padding:2px 8px;border-radius:99px;margin-bottom:6px}
+.teach-vocab-word{font-size:clamp(16px,2.2vw,28px);font-weight:800;color:#4c1d95;margin-bottom:4px}
+.teach-vocab-def{font-size:clamp(12px,1.4vw,16px);color:#374151;line-height:1.5;margin-bottom:6px}
+.teach-vocab-etym{font-size:clamp(10px,1.2vw,13px);color:#9ca3af;font-style:italic;margin-bottom:4px}
+.teach-vocab-isay{font-size:clamp(11px,1.3vw,14px);color:#6d28d9;font-weight:600}
+
+/* Navigation bar */
+.teach-nav{
+  height:52px;background:#0f0c18;border-top:1px solid rgba(255,255,255,.08);
+  display:flex;align-items:center;padding:0 16px;gap:12px;flex-shrink:0;
+}
+.teach-nav-left{display:flex;align-items:center;gap:10px;flex:1}
+.teach-counter{font-size:12px;font-weight:700;color:rgba(255,255,255,.5);font-family:'Sora',sans-serif;white-space:nowrap}
+.teach-dots{display:flex;gap:4px;align-items:center}
+.teach-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.2);transition:all .2s}
+.teach-dot.active{background:var(--a2);width:20px;border-radius:3px}
+.teach-nav-center{flex:1;text-align:center;font-size:13px;font-weight:700;color:rgba(255,255,255,.7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.teach-nav-right{display:flex;align-items:center;gap:6px}
+.teach-tool-btn{
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);
+  color:#fff;cursor:pointer;padding:5px 10px;border-radius:6px;
+  font-size:12px;font-weight:600;transition:all .15s;white-space:nowrap;
+}
+.teach-tool-btn:hover{background:rgba(255,255,255,.2)}
+.teach-tool-btn.active{background:var(--p);border-color:var(--p)}
+.teach-exit-btn{background:rgba(220,38,38,.2);border-color:rgba(220,38,38,.3)}
+.teach-exit-btn:hover{background:rgba(220,38,38,.4)}
+
+/* Nav arrows */
+.teach-arrow{
+  position:absolute;top:50%;transform:translateY(-50%);
+  width:52px;height:52px;border-radius:50%;
+  background:rgba(0,0,0,.35);border:none;color:#fff;
+  font-size:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:all .15s;z-index:10;
+}
+.teach-arrow:hover{background:rgba(0,0,0,.6);transform:translateY(-50%) scale(1.1)}
+.teach-prev{left:12px}
+.teach-next{right:12px}
+
+/* Annotation canvas */
+.teach-canvas{
+  position:absolute;inset:0;z-index:5;cursor:crosshair;
+  background:transparent;
+}
+
+/* Timer */
+.teach-timer{
+  position:absolute;top:60px;right:16px;
+  background:rgba(0,0,0,.7);color:#fff;
+  font-size:clamp(20px,3vw,40px);font-weight:800;font-family:'Sora',sans-serif;
+  padding:8px 18px;border-radius:10px;cursor:pointer;
+  letter-spacing:2px;z-index:20;
+}
+.teach-timer-warn{color:#f59e0b;animation:pulse 1s ease infinite}
+
+/* Dark mode compat */
+html.dark .teach-slide{background:#1a1625}
+html.dark .teach-phase-label{background:#1a1625;border-color:#2e2840}
+html.dark .teach-phase-name{color:#f0edf7}
+html.dark .teach-line{color:#e0daf0}
+html.dark .teach-line-q{background:#2e2840}
+html.dark .teach-line-ans{background:#064e3b;color:#6ee7b7}
+html.dark .teach-vocab-card{background:#221d2e;border-color:#3d3554}
+
+/* Mobile teach */
+@media(max-width:768px){
+  .teach-arrow{display:none}
+  .teach-content{padding:12px 16px}
+  .teach-nav-center{display:none}
+  .teach-dots{display:none}
+}
+
+
+/* ═══ Preset button active state ═══ */
+.preset-btn-active{
+  background:var(--p)!important;
+  border-color:var(--p)!important;
+  color:#fff!important;
+  box-shadow:0 2px 8px rgba(146,39,143,.3)!important;
+}
+.preset-btn-active:hover{
+  background:var(--pd)!important;
+}
+
+/* ═══ Teach Mode: MWB Cameo ═══ */
+.teach-mwb-cameo{
+  position:absolute;bottom:12px;right:12px;z-index:20;
+}
+.teach-mwb-toggle{
+  background:rgba(0,0,0,.7);color:#fff;border:1.5px solid rgba(255,255,255,.2);
+  border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;
+  cursor:pointer;transition:all .15s;backdrop-filter:blur(4px);
+}
+.teach-mwb-toggle:hover{background:rgba(0,0,0,.85);border-color:rgba(255,255,255,.4)}
+.teach-mwb-panel{
+  position:absolute;bottom:38px;right:0;
+  background:#fff;border:1.5px solid #e5e7eb;
+  border-radius:10px;overflow:hidden;
+  box-shadow:0 8px 24px rgba(0,0,0,.2);
+  width:360px;
+}
+.teach-mwb-tools{
+  display:flex;gap:4px;padding:6px 8px;background:#f9fafb;
+  border-bottom:1px solid #e5e7eb;align-items:center;
+}
+.teach-mwb-btn{
+  padding:4px 8px;border-radius:5px;border:1px solid #e5e7eb;
+  background:#fff;cursor:pointer;font-size:12px;
+  transition:background .1s;
+}
+.teach-mwb-btn:hover{background:#f3f4f6}
+.teach-mwb-canvas{
+  display:block;width:100%;height:240px;
+  cursor:crosshair;touch-action:none;
+}
+
+/* ═══ Teach Mode: Fullscreen MWB ═══ */
+.teach-mwb-fullscreen{
+  position:absolute;inset:0;z-index:30;
+  background:#fff;display:flex;flex-direction:column;
+}
+.teach-mwb-fs-tools{
+  display:flex;gap:6px;padding:8px 12px;
+  background:#1a1a2e;align-items:center;flex-shrink:0;
+}
+.teach-mwb-fs-tools .teach-mwb-btn{
+  background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);color:#fff;
+}
+
+/* ═══ Teach Mode: Editable elements ═══ */
+.teach-editable{
+  cursor:text;
+  border-radius:4px;
+  outline:none;
+  transition:background .15s;
+  min-width:20px;
+}
+.teach-editable:hover{background:rgba(146,39,143,.06)!important}
+.teach-editable:focus{
+  background:rgba(146,39,143,.08)!important;
+  box-shadow:0 0 0 2px rgba(146,39,143,.2);
+  outline:none;
+}
+.teach-editable::after{
+  content:'✏';font-size:.6em;opacity:0;
+  margin-left:4px;transition:opacity .15s;vertical-align:middle;
+}
+.teach-editable:hover::after{opacity:.4}
+
+/* ═══ Teach Mode: Revealed answer style ═══ */
+.teach-line-revealed{
+  animation:revealFade .4s ease;
+  background:#f0fdf4!important;
+  border-left:4px solid #22c55e;
+}
+@keyframes revealFade{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+
+/* ═══ Preset pills display improvement ═══ */
+.presets-label{
+  font-size:10px;font-weight:700;color:var(--gray-400);
+  text-transform:uppercase;letter-spacing:.5px;
+  white-space:nowrap;
+}
+
+
+/* ═══ RAPID EDIT VIEW ═══ */
+.rapid-edit-wrap{display:flex;flex-direction:column;height:100%}
+.rapid-edit-hdr{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 20px;background:var(--pd);color:#fff;flex-shrink:0;
+}
+.rapid-edit-title{font-family:var(--fh);font-size:15px;font-weight:700}
+.rapid-section{
+  border:1px solid var(--gray-200);border-radius:var(--radius);
+  overflow:hidden;margin-bottom:12px;
+}
+html.dark .rapid-section{border-color:var(--gray-200)}
+.rapid-sec-hdr{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 14px;background:var(--gray-50);
+  border-bottom:1px solid var(--gray-100);
+}
+html.dark .rapid-sec-hdr{background:var(--gray-200);border-color:var(--gray-300)}
+.rapid-icon{font-size:18px}
+.rapid-label{font-family:var(--fh);font-size:13px;font-weight:700}
+.rapid-revert-btn{
+  margin-left:auto;font-size:11px;font-weight:600;
+  background:var(--white);border:1.5px solid var(--gray-200);
+  color:var(--gray-500);padding:3px 9px;border-radius:6px;cursor:pointer;
+  transition:all .15s;
+}
+.rapid-revert-btn:hover{border-color:var(--p);color:var(--p)}
+.rapid-textarea{
+  width:100%;border:none;border-top:none;outline:none;
+  padding:12px 14px;font-family:var(--fb);font-size:13px;
+  color:var(--gray-700);line-height:1.8;resize:none;
+  background:var(--white);min-height:80px;
+  transition:background .15s;
+}
+.rapid-textarea:focus{background:var(--gray-50)}
+html.dark .rapid-textarea{background:var(--gray-100);color:var(--gray-700)}
+
+/* ═══ REVERT BUTTON in phase toolbar ═══ */
+.phase-revert-btn{
+  background:linear-gradient(135deg,#fffbeb,#fefce8)!important;
+  border-color:#fcd34d!important;color:#92400e!important;
+}
+.phase-revert-btn:hover{background:linear-gradient(135deg,#fef3c7,#fef9c3)!important}
+
+/* ═══ RAPID EDIT active button ═══ */
+.btn.active{background:var(--p)!important;color:#fff!important;border-color:var(--p)!important}
+
+/* ═══ TEACH MODE: Camera panel ═══ */
+.teach-cam-btn{background:rgba(37,99,235,.7)!important;border-color:rgba(37,99,235,.5)!important}
+.teach-cam-panel{
+  position:absolute;bottom:60px;right:80px;
+  width:280px;background:#000;border-radius:10px;
+  overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.4);
+  border:2px solid rgba(37,99,235,.4);
+  cursor:move;z-index:30;
+}
+.teach-cam-video{width:100%;height:auto;display:block;background:#111}
+.teach-cam-ctrls{
+  display:flex;justify-content:flex-end;gap:4px;padding:4px 6px;
+  background:#111;border-bottom:1px solid #333;
+}
+
+/* ═══ TEACH MODE: Tool panels ═══ */
+.teach-tool-panel{
+  position:absolute;bottom:60px;right:16px;
+  width:260px;background:#1a1625;border:1.5px solid rgba(255,255,255,.12);
+  border-radius:10px;padding:14px;z-index:30;
+  box-shadow:0 8px 24px rgba(0,0,0,.4);cursor:move;
+}
+.name-display{
+  text-align:center;padding:12px;min-height:44px;
+  font-family:var(--fh);font-size:28px;font-weight:800;
+  color:#fff;border-radius:8px;background:rgba(255,255,255,.05);
+  margin-bottom:8px;word-break:break-word;line-height:1.2;
+}
+.teach-names-input{
+  width:100%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);
+  color:#fff;border-radius:6px;padding:8px;font-size:12px;height:80px;
+  resize:none;outline:none;margin-top:4px;
+}
+
+/* ═══ TEACH MODE: Dark classroom mode ═══ */
+.teach-overlay.teach-dark .teach-slide{background:#0f0c18!important}
+.teach-overlay.teach-dark .teach-phase-label{background:#0f0c18;border-color:#2e2840}
+.teach-overlay.teach-dark .teach-phase-name{color:#f0edf7}
+.teach-overlay.teach-dark .teach-line{color:#ddd6f0;background:transparent}
+.teach-overlay.teach-dark .teach-line-q{background:#1e1635;border-color:rgba(146,39,143,.5)}
+.teach-overlay.teach-dark .teach-vocab-card{background:#1a1625;border-color:#3d3554}
+.teach-overlay.teach-dark .teach-title-slide{/* already dark */}
+.teach-overlay.teach-dark .teach-content{background:#0f0c18}
+.teach-overlay.teach-dark .teach-diagram-col{background:#1a1625;border-color:#2e2840}
+
+/* ═══ Rapid edit container scroll ═══ */
+.rapid-edit-container{overflow-y:auto;flex:1;padding:16px 20px}
+
+
+/* ═══ SPOTLIGHT TOOL ═══ */
+.teach-spotlight-overlay{
+  position:absolute;inset:0;z-index:50;cursor:none;
+  background:rgba(0,0,0,.85);
+  -webkit-mask:radial-gradient(circle 140px at var(--sx,50%) var(--sy,50%),transparent 100%,black 100%);
+  mask:radial-gradient(circle 140px at var(--sx,50%) var(--sy,50%),transparent 100%,black 100%);
+  pointer-events:all;
+}
+
+/* ═══ FREEZE SCREEN ═══ */
+.teach-freeze-screen{
+  position:absolute;inset:0;z-index:60;
+  background:linear-gradient(135deg,#0f0c18 0%,#1a1625 100%);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;
+}
+.teach-freeze-content{text-align:center;color:#fff;user-select:none}
+
+/* ═══ MWB RESIZE HANDLE ═══ */
+.mwb-resize-handle{
+  position:absolute;top:0;left:0;width:12px;height:100%;
+  cursor:ew-resize;background:linear-gradient(to right,rgba(146,39,143,.3),transparent);
+  border-radius:0 0 0 8px;
+}
+.mwb-resize-handle:hover{background:linear-gradient(to right,rgba(146,39,143,.6),transparent)}
+
+/* ═══ DRAGGABLE MWB CAMEO ═══ */
+.teach-mwb-cameo{cursor:move}
+.teach-mwb-panel{position:relative;min-width:240px}
+
+/* ═══ TEACH MODE TOOL BTN TOOLTIPS ═══ */
+.teach-tool-btn[title]:hover::after{
+  content:attr(title);
+  position:absolute;bottom:44px;right:0;
+  background:rgba(0,0,0,.85);color:#fff;
+  font-size:11px;padding:4px 8px;border-radius:5px;
+  white-space:nowrap;pointer-events:none;z-index:100;
+}
+.teach-nav-right{position:relative}
+
+/* ═══ TIME-TO-TEACH in build header ═══ */
+.build-meta{font-size:12px;color:var(--gray-500);margin-top:2px;line-height:1.4}
+
+/* ═══ RAPID EDIT scroll container ═══ */
+.rapid-edit-wrap{display:flex;flex-direction:column;max-height:calc(100vh - 180px);overflow-y:auto}
+.rapid-section{margin-bottom:12px;border-radius:var(--radius);overflow:hidden;border:1.5px solid var(--gray-200)}
+html.dark .rapid-section{border-color:var(--gray-300)}
+
 </style>
 </head>
 <body>
@@ -1539,7 +1967,7 @@ function saveState(){
       worksheets:S.worksheets,markSchemes:S.markSchemes,webLink:S.webLink,
       discussionQuestions:S.discussionQuestions,subjectMode:S.subjectMode,
       diagrams:S.diagrams,darkMode:S.darkMode,ability:S.ability,
-      examBoard:S.examBoard,aiProvider:S.aiProvider,claudeKey:S.claudeKey,
+      examBoard:S.examBoard,activePreset:S.activePreset,aiOriginals:S.aiOriginals,classNames:S.classNames,aiProvider:S.aiProvider,claudeKey:S.claudeKey,
       copilotKey:S.copilotKey,copilotEndpoint:S.copilotEndpoint
     };
     localStorage.setItem('lessoncraft_v4',JSON.stringify(snap));
@@ -1589,7 +2017,16 @@ var S = {
   showComponents:false,
   showAdvancedSb:false,
   teacherMode:true,  // teacher sees answers; student version hides them
-  ability:(_saved&&_saved.ability)||'mixed'
+  ability:(_saved&&_saved.ability)||'mixed',
+  teachMode:false,       // fullscreen teach mode active
+  teachSlide:0,          // current slide index
+  teachReveal:{},        // {slideId: true} revealed answers
+  teachAnnotating:false, // annotation layer active
+  activePreset:(_saved&&_saved.activePreset)||null,
+  aiOriginals:{},     // {phaseId: originalContent} saved before first manual edit
+  rapidEdit:false,    // bulk edit mode
+  teachDark:false,    // dark classroom mode in teach
+  classNames:(_saved&&_saved.classNames)||[]  // random name picker list
 };
 
 var PHASES=[
@@ -2098,6 +2535,596 @@ function buildHistoryPanel(){
   return panel;
 }
 
+// ════════════════════════════════════════════
+// TEACH MODE — fullscreen classroom delivery
+// ════════════════════════════════════════════
+
+function getTeachSlides(){
+  var slides=[];
+  var t=S.theme;
+  var isExam=S.mode==='exam';
+  var activeP=isExam?EXAM_PHASES:getActivePhases();
+
+  // Title slide
+  slides.push({
+    type:'title',
+    topic:S.topic||'Lesson',
+    subject:S.subject,year:S.year,
+    inquiry:S.inquiry,
+    board:S.examBoard,
+    meta:[S.subject,S.year?'Year '+S.year:'',S.duration?S.duration+' min':'',S.examBoard].filter(Boolean).join(' · '),
+    objectives:S.objectives
+  });
+
+  // One slide per generated phase — long phases split
+  activeP.forEach(function(phase){
+    var ph=S.phases[phase.id];
+    if(!ph||!ph.content)return;
+    var lines=ph.content.split('\n').filter(function(l){return l.trim();});
+    // Split at 8 lines
+    var chunks=[];
+    for(var i=0;i<lines.length;i+=8){chunks.push(lines.slice(i,i+8));}
+    if(!chunks.length)chunks=[[]];
+    chunks.forEach(function(chunk,ci){
+      slides.push({
+        type:'phase',
+        phase:phase,
+        chunk:chunk,
+        chunkIdx:ci,
+        totalChunks:chunks.length,
+        hasAnswers:chunk.some(function(l){return/^(answer|solution|model answer):/i.test(l.trim());}),
+        hasDiagram:ci===0&&S.diagrams&&S.diagrams[phase.id]&&S.diagrams[phase.id].svg,
+        diagram:ci===0&&S.diagrams&&S.diagrams[phase.id]?S.diagrams[phase.id].svg:null,
+        timing:S.timings&&S.timings[phase.id]
+      });
+    });
+  });
+
+  // Vocab slide if keywords exist
+  var fkw=(S.keywords||[]).filter(function(k){return k.word&&k.word.trim();});
+  if(fkw.length){
+    slides.push({type:'vocab',keywords:fkw});
+  }
+
+  return slides;
+}
+
+function launchTeachMode(){
+  var slides=getTeachSlides();
+  if(slides.length<=1){showToast('Generate a lesson first','error');return;}
+  S.teachMode=true;S.teachSlide=0;S.teachReveal={};S.teachAnnotating=false;
+  renderTeachMode(slides);
+}
+
+function renderTeachMode(slides){
+  // Remove existing teach overlay
+  var old=document.getElementById('teach-overlay');if(old)old.remove();
+
+  var t=S.theme;
+  var overlay=document.createElement('div');
+  overlay.id='teach-overlay';
+  overlay.className='teach-overlay';
+  overlay.tabIndex=0; // focusable for keyboard events
+
+  var slide=slides[S.teachSlide];
+  var revealed=S.teachReveal[S.teachSlide]||false;
+
+  // ── SLIDE CONTENT ──
+  var slideEl=document.createElement('div');
+  slideEl.className='teach-slide';
+
+  if(slide.type==='title'){
+    slideEl.className+=' teach-title-slide';
+    slideEl.style.background=t.primaryDark;
+    // Decorative shapes
+    ['teach-shape-1','teach-shape-2','teach-shape-3'].forEach(function(cls,i){
+      var sh=document.createElement('div');sh.className=cls;
+      sh.style.background=i===2?t.primary:t.primaryDark;
+      slideEl.appendChild(sh);
+    });
+    var content=document.createElement('div');content.className='teach-title-content';
+    if(slide.subject)content.innerHTML+='<div class="teach-subject">'+slide.subject.toUpperCase()+'</div>';
+    if(slide.board)content.innerHTML+='<div class="teach-board-tag">'+slide.board+' Aligned</div>';
+    var topicEl=document.createElement('h1');topicEl.className='teach-topic teach-editable';
+    topicEl.contentEditable='true';topicEl.textContent=slide.topic;topicEl.spellcheck=false;
+    topicEl.addEventListener('input',function(){S.topic=topicEl.textContent.trim();saveState();});
+    topicEl.addEventListener('keydown',function(e){e.stopPropagation();}); // prevent slide nav
+    content.appendChild(topicEl);
+    if(slide.inquiry)content.innerHTML+='<div class="teach-inquiry">'+slide.inquiry+'</div>';
+    if(slide.meta)content.innerHTML+='<div class="teach-meta">'+slide.meta+'</div>';
+    if(slide.objectives)content.innerHTML+='<div class="teach-obj">🎯 '+slide.objectives+'</div>';
+    content.innerHTML+='<div class="teach-date">'+new Date().toLocaleDateString('en-GB',{weekday:'long',year:'numeric',month:'long',day:'numeric'})+'</div>';
+    slideEl.appendChild(content);
+  } else if(slide.type==='phase'){
+    var ph=slide.phase;
+    // Colour bar top
+    var bar=document.createElement('div');bar.className='teach-phase-bar';bar.style.background=ph.col;slideEl.appendChild(bar);
+    // Phase label
+    var lbl=document.createElement('div');lbl.className='teach-phase-label';
+    lbl.innerHTML='<span class="teach-phase-icon">'+ph.icon+'</span>'
+      +'<span class="teach-phase-name">'+ph.label+'</span>'
+      +(slide.totalChunks>1?'<span class="teach-chunk-badge">'+(slide.chunkIdx+1)+'/'+slide.totalChunks+'</span>':'')
+      +(slide.timing?'<span class="teach-timing">⏱ '+slide.timing+' min</span>':'');
+    slideEl.appendChild(lbl);
+
+    // Content area
+    var contentArea=document.createElement('div');contentArea.className='teach-content'+(slide.hasDiagram?' teach-content-split':'');
+
+    // Questions/text column
+    var textCol=document.createElement('div');textCol.className='teach-text-col';
+    slide.chunk.forEach(function(line,li){
+      var isQ=line.match(/^Q?\d+[.:)]/)||line.match(/^\d+\./);
+      var isAns=/^(answer|solution|model answer):/i.test(line.trim());
+      var lineEl=document.createElement('div');
+      lineEl.className='teach-line'+(isQ?' teach-line-q':'')+(isAns?' teach-line-ans':'');
+
+      if(isAns&&!revealed){
+        lineEl.className+=' teach-line-hidden teach-line-ans';
+        var hint=document.createElement('span');hint.className='teach-reveal-hint';hint.textContent='👁 Click to reveal';
+        lineEl.appendChild(hint);
+        lineEl.addEventListener('click',function(e){
+          e.stopPropagation();
+          S.teachReveal[S.teachSlide]=true;
+          renderTeachMode(slides);
+        });
+      } else if(isAns&&revealed){
+        lineEl.className+=' teach-line-ans teach-line-revealed';
+        lineEl.innerHTML=line.replace(/\[(\d+)\s*marks?\]/gi,function(m,n){return '<span class="teach-mark-badge">'+n+'m</span>';});
+      } else {
+        // Editable line — click to edit
+        lineEl.className+=' teach-editable';
+        lineEl.contentEditable='true';lineEl.spellcheck=false;
+        lineEl.innerHTML=line.replace(/\[(\d+)\s*marks?\]/gi,function(m,n){return '<span class="teach-mark-badge">'+n+'m</span>';});
+        // Save edits back to phase content
+        lineEl.addEventListener('keydown',function(e){e.stopPropagation();}); // prevent slide nav on typing
+        lineEl.addEventListener('blur',function(){
+          // Reconstruct content from all editable lines
+          var allLines=Array.from(textCol.querySelectorAll('.teach-line'));
+          var newContent=allLines.map(function(el){return el.textContent.trim();}).filter(Boolean).join('\n');
+          if(S.phases[slide.phase.id])S.phases[slide.phase.id].content=newContent;
+          saveState();
+        });
+      }
+      textCol.appendChild(lineEl);
+    });
+    contentArea.appendChild(textCol);
+
+    // Diagram column
+    if(slide.hasDiagram&&slide.diagram){
+      var diagCol=document.createElement('div');diagCol.className='teach-diagram-col';
+      diagCol.innerHTML=slide.diagram;
+      var diagSvg=diagCol.querySelector('svg');
+      if(diagSvg){diagSvg.style.maxWidth='100%';diagSvg.style.height='auto';}
+      contentArea.appendChild(diagCol);
+    }
+    // ── MWB cameo in bottom-right corner ──
+    var mwbCameo=document.createElement('div');mwbCameo.className='teach-mwb-cameo';
+    // Camera / Visualiser button
+    var camBtn=document.createElement('button');camBtn.className='teach-mwb-toggle teach-cam-btn';camBtn.innerHTML='📷 Camera';camBtn.title='Live camera/visualiser';
+    camBtn.addEventListener('click',function(e){
+      e.stopPropagation();
+      var camPanel=document.getElementById('teach-cam-panel');
+      if(camPanel){camPanel.remove();if(window._teachCamStream){window._teachCamStream.getTracks().forEach(function(t){t.stop();});window._teachCamStream=null;}return;}
+      var cp=document.createElement('div');cp.id='teach-cam-panel';cp.className='teach-cam-panel';
+      var vid=document.createElement('video');vid.autoplay=true;vid.muted=true;vid.playsInline=true;
+      vid.className='teach-cam-video';
+      cp.appendChild(vid);
+      // Controls
+      var ctrls=document.createElement('div');ctrls.className='teach-cam-ctrls';
+      var swapBtn=document.createElement('button');swapBtn.textContent='🔄';swapBtn.title='Switch camera';swapBtn.className='teach-mwb-btn';
+      var closeBtn2=document.createElement('button');closeBtn2.textContent='✕';closeBtn2.className='teach-mwb-btn';
+      closeBtn2.addEventListener('click',function(){cp.remove();if(window._teachCamStream){window._teachCamStream.getTracks().forEach(function(t){t.stop();});window._teachCamStream=null;}});
+      ctrls.appendChild(swapBtn);ctrls.appendChild(closeBtn2);cp.appendChild(ctrls);
+      document.getElementById('teach-overlay').appendChild(cp);
+      // Start camera
+      var facingMode='environment';
+      function startCam(){
+        navigator.mediaDevices.getUserMedia({video:{facingMode:facingMode},audio:false}).then(function(stream){
+          window._teachCamStream=stream;vid.srcObject=stream;
+        }).catch(function(e){cp.innerHTML='<div style="padding:16px;color:#fff;font-size:12px;">Camera not available: '+e.message+'</div>';});
+      }
+      swapBtn.addEventListener('click',function(){
+        facingMode=facingMode==='environment'?'user':'environment';
+        if(window._teachCamStream)window._teachCamStream.getTracks().forEach(function(t){t.stop();});
+        startCam();
+      });
+      startCam();
+      // Make draggable
+      makeDraggable(cp);
+    });
+    mwbCameo.appendChild(camBtn);
+
+    var mwbToggle=document.createElement('button');mwbToggle.className='teach-mwb-toggle';mwbToggle.innerHTML='✍ Board';mwbToggle.title='Open whiteboard';
+    var mwbPanel=document.createElement('div');mwbPanel.className='teach-mwb-panel';mwbPanel.style.display='none';
+    var mwbCanvas2=document.createElement('canvas');mwbCanvas2.width=360;mwbCanvas2.height=240;mwbCanvas2.className='teach-mwb-canvas';
+    var mwbTools=document.createElement('div');mwbTools.className='teach-mwb-tools';
+    var clearBtn2=document.createElement('button');clearBtn2.textContent='Clear';clearBtn2.className='teach-mwb-btn';
+    var colRed=document.createElement('button');colRed.textContent='🔴';colRed.className='teach-mwb-btn';
+    var colBlue=document.createElement('button');colBlue.textContent='🔵';colBlue.className='teach-mwb-btn';
+    var colBlack=document.createElement('button');colBlack.textContent='⚫';colBlack.className='teach-mwb-btn';
+    var expandBtn=document.createElement('button');expandBtn.textContent='⛶';expandBtn.className='teach-mwb-btn';expandBtn.title='Fullscreen';
+    mwbTools.appendChild(colBlack);mwbTools.appendChild(colRed);mwbTools.appendChild(colBlue);mwbTools.appendChild(clearBtn2);mwbTools.appendChild(expandBtn);
+    mwbPanel.appendChild(mwbTools);mwbPanel.appendChild(mwbCanvas2);
+    mwbCameo.appendChild(mwbToggle);mwbCameo.appendChild(mwbPanel);
+    slideEl.appendChild(mwbCameo);
+    // Resize handle for MWB panel
+    var resizeHandle=document.createElement('div');resizeHandle.className='mwb-resize-handle';resizeHandle.title='Drag to resize';
+    mwbPanel.appendChild(resizeHandle);
+    var resizing=false,startW=0,startH=0,startX=0,startY=0;
+    resizeHandle.addEventListener('mousedown',function(e){
+      resizing=true;startW=mwbPanel.offsetWidth;startH=mwbPanel.offsetHeight;startX=e.clientX;startY=e.clientY;e.stopPropagation();e.preventDefault();
+    });
+    document.addEventListener('mousemove',function(e){
+      if(!resizing)return;
+      var dw=startX-e.clientX,dh=e.clientY-startY; // left-edge resize = inverted X
+      mwbPanel.style.width=Math.max(240,startW+dw)+'px';
+      mwbCanvas2.style.height=Math.max(160,startH+dh)+'px';
+    });
+    document.addEventListener('mouseup',function(){resizing=false;});
+    makeDraggable(mwbCameo);
+    // Toggle panel
+    mwbToggle.addEventListener('click',function(e){
+      e.stopPropagation();
+      mwbPanel.style.display=mwbPanel.style.display==='none'?'block':'none';
+      if(mwbPanel.style.display==='block')initMWBCameo(mwbCanvas2,mwbTools,clearBtn2,colRed,colBlue,colBlack,expandBtn);
+    });
+    slideEl.appendChild(contentArea);
+  } else if(slide.type==='vocab'){
+    slideEl.className+=' teach-vocab-slide';
+    var vhdr=document.createElement('div');vhdr.className='teach-vocab-hdr';
+    vhdr.innerHTML='📖 Key Vocabulary — I Say / You Say';
+    vhdr.style.background=t.primary;
+    slideEl.appendChild(vhdr);
+    var vgrid=document.createElement('div');vgrid.className='teach-vocab-grid';
+    slide.keywords.slice(0,9).forEach(function(kw){
+      var card=document.createElement('div');card.className='teach-vocab-card';
+      card.innerHTML='<div class="teach-vocab-tier" style="background:'+t.primary+'">Tier '+(kw.tier||'2')+'</div>'
+        +'<div class="teach-vocab-word">'+kw.word+'</div>'
+        +'<div class="teach-vocab-def">'+(kw.def||'')+'</div>'
+        +(kw.etymology?'<div class="teach-vocab-etym">'+kw.etymology+'</div>':'')
+        +'<div class="teach-vocab-isay"><strong>I say:</strong> '+( kw.isay||kw.word)+'</div>';
+      vgrid.appendChild(card);
+    });
+    slideEl.appendChild(vgrid);
+  }
+
+  overlay.appendChild(slideEl);
+
+  // ── ANNOTATION CANVAS ──
+  var canvas=document.createElement('canvas');
+  canvas.id='teach-canvas';canvas.className='teach-canvas';
+  canvas.style.display=S.teachAnnotating?'block':'none';
+  overlay.appendChild(canvas);
+
+  // ── NAVIGATION BAR ──
+  var nav=document.createElement('div');nav.className='teach-nav';
+
+  // Left: slide counter + phase dots
+  var navLeft=document.createElement('div');navLeft.className='teach-nav-left';
+  var counter=document.createElement('div');counter.className='teach-counter';
+  counter.textContent=(S.teachSlide+1)+' / '+slides.length;
+  navLeft.appendChild(counter);
+  // Progress dots (max 12 shown)
+  var dots=document.createElement('div');dots.className='teach-dots';
+  var dotCount=Math.min(slides.length,12);
+  for(var di=0;di<dotCount;di++){
+    var dot=document.createElement('div');
+    var mappedIdx=Math.floor(di*slides.length/dotCount);
+    dot.className='teach-dot'+(S.teachSlide===mappedIdx||( dotCount===slides.length&&di===S.teachSlide)?' active':'');
+    dots.appendChild(dot);
+  }
+  navLeft.appendChild(dots);
+  nav.appendChild(navLeft);
+
+  // Center: slide title
+  var navCenter=document.createElement('div');navCenter.className='teach-nav-center';
+  navCenter.textContent=slide.type==='title'?slide.topic:slide.type==='vocab'?'Vocabulary':slide.phase?slide.phase.label:'';
+  nav.appendChild(navCenter);
+
+  // Right: tools
+  var navRight=document.createElement('div');navRight.className='teach-nav-right';
+
+  // Annotate toggle
+  var annotBtn=document.createElement('button');annotBtn.className='teach-tool-btn'+(S.teachAnnotating?' active':'');
+  annotBtn.innerHTML='✏️';annotBtn.title='Annotate (A)';
+  annotBtn.addEventListener('click',function(){S.teachAnnotating=!S.teachAnnotating;renderTeachMode(slides);});
+  navRight.appendChild(annotBtn);
+
+  // Reveal all
+  if(slide.type==='phase'&&slide.hasAnswers&&!revealed){
+    var revBtn=document.createElement('button');revBtn.className='teach-tool-btn';
+    revBtn.innerHTML='👁 Reveal';revBtn.title='Reveal answers (R)';
+    revBtn.addEventListener('click',function(){S.teachReveal[S.teachSlide]=true;renderTeachMode(slides);});
+    navRight.appendChild(revBtn);
+  }
+
+  // Timer button
+  var timerBtn=document.createElement('button');timerBtn.className='teach-tool-btn';
+  timerBtn.innerHTML='⏱';timerBtn.title='Timer (T)';
+  timerBtn.addEventListener('click',function(){toggleTeachTimer(overlay);});
+  navRight.appendChild(timerBtn);
+
+  // Exit
+  // Freeze screen button (covers slide while teacher edits privately)
+  var freezeBtn=document.createElement('button');freezeBtn.className='teach-tool-btn';
+  freezeBtn.innerHTML='🔒';freezeBtn.title='Freeze screen (F) — hides content';
+  freezeBtn.addEventListener('click',function(){
+    var ex=document.getElementById('teach-freeze');
+    if(ex){ex.remove();return;}
+    var fr=document.createElement('div');fr.id='teach-freeze';fr.className='teach-freeze-screen';
+    fr.innerHTML='<div class="teach-freeze-content"><div style="font-size:48px">🔒</div><div style="font-size:20px;margin-top:12px;opacity:.7;">Screen paused</div><div style="font-size:13px;margin-top:6px;opacity:.4;">Click to resume</div></div>';
+    fr.addEventListener('click',function(){fr.remove();});
+    document.getElementById('teach-overlay').appendChild(fr);
+  });
+  navRight.appendChild(freezeBtn);
+
+  // Dark classroom mode toggle
+  var darkTeachBtn=document.createElement('button');darkTeachBtn.className='teach-tool-btn'+(S.teachDark?' active':'');
+  darkTeachBtn.innerHTML='🌑';darkTeachBtn.title='Dark classroom mode (D)';
+  darkTeachBtn.addEventListener('click',function(){
+    S.teachDark=!S.teachDark;
+    document.getElementById('teach-overlay').classList.toggle('teach-dark',S.teachDark);
+    renderTeachMode(slides);
+  });
+  navRight.appendChild(darkTeachBtn);
+
+  // Spotlight tool
+  var spotBtn=document.createElement('button');spotBtn.className='teach-tool-btn';
+  spotBtn.innerHTML='🔦';spotBtn.title='Spotlight (S) — focus student attention';
+  spotBtn.addEventListener('click',function(){
+    var existing=document.getElementById('teach-spotlight');
+    if(existing){existing.remove();return;}
+    var spot=document.createElement('div');spot.id='teach-spotlight';spot.className='teach-spotlight-overlay';
+    // Follow mouse
+    var sx=window.innerWidth/2,sy=window.innerHeight/2;
+    spot.style.setProperty('--sx',sx+'px');spot.style.setProperty('--sy',sy+'px');
+    spot.addEventListener('mousemove',function(e){
+      spot.style.setProperty('--sx',e.clientX+'px');spot.style.setProperty('--sy',e.clientY+'px');
+    });
+    spot.addEventListener('click',function(){spot.remove();});
+    spot.title='Click to close spotlight';
+    document.getElementById('teach-overlay').appendChild(spot);
+  });
+  navRight.appendChild(spotBtn);
+
+  // Random name picker
+  var nameBtn=document.createElement('button');nameBtn.className='teach-tool-btn';
+  nameBtn.innerHTML='🎲';nameBtn.title='Random name picker (N)';
+  nameBtn.addEventListener('click',function(e){
+    e.stopPropagation();
+    var existing=document.getElementById('teach-name-picker');if(existing){existing.remove();return;}
+    var np=document.createElement('div');np.id='teach-name-picker';np.className='teach-tool-panel';
+    var names=S.classNames&&S.classNames.length?S.classNames:[];
+    var nameDisplay=document.createElement('div');nameDisplay.className='name-display';nameDisplay.textContent=names.length?'Click Pick!':'Add names below';
+    var pickBtn=document.createElement('button');pickBtn.className='teach-tool-btn';pickBtn.style.cssText='display:block;width:100%;margin:8px 0;font-size:14px;';pickBtn.textContent='🎲 Pick Random Name';
+    pickBtn.addEventListener('click',function(){
+      if(!names.length){nameDisplay.textContent='No names added!';return;}
+      var picked=names[Math.floor(Math.random()*names.length)];
+      nameDisplay.textContent=picked;nameDisplay.style.fontSize='20px';nameDisplay.style.color=S.theme.primary;
+    });
+    var namesInput=document.createElement('textarea');namesInput.placeholder='Paste class names here (one per line)';namesInput.className='teach-names-input';namesInput.value=names.join('\n');
+    namesInput.addEventListener('input',function(){S.classNames=namesInput.value.split('\n').map(function(n){return n.trim();}).filter(Boolean);saveState();names=S.classNames;});
+    var closeNP=document.createElement('button');closeNP.textContent='✕';closeNP.className='teach-tool-btn';closeNP.style.cssText='float:right;';closeNP.addEventListener('click',function(){np.remove();});
+    np.appendChild(closeNP);np.appendChild(nameDisplay);np.appendChild(pickBtn);np.appendChild(namesInput);
+    document.getElementById('teach-overlay').appendChild(np);
+    makeDraggable(np);
+  });
+  navRight.appendChild(nameBtn);
+
+  var exitBtn=document.createElement('button');exitBtn.className='teach-tool-btn teach-exit-btn';
+  exitBtn.innerHTML='✕ Exit';exitBtn.title='Exit teach mode (Escape)';
+  exitBtn.addEventListener('click',function(){exitTeachMode();});
+  navRight.appendChild(exitBtn);
+
+  nav.appendChild(navRight);
+  overlay.appendChild(nav);
+
+  // ── NAV ARROWS ──
+  if(S.teachSlide>0){
+    var prevBtn=document.createElement('button');prevBtn.className='teach-arrow teach-prev';
+    prevBtn.innerHTML='‹';
+    prevBtn.addEventListener('click',function(){S.teachSlide--;renderTeachMode(slides);});
+    overlay.appendChild(prevBtn);
+  }
+  if(S.teachSlide<slides.length-1){
+    var nextBtn=document.createElement('button');nextBtn.className='teach-arrow teach-next';
+    nextBtn.innerHTML='›';
+    nextBtn.addEventListener('click',function(){S.teachSlide++;renderTeachMode(slides);});
+    overlay.appendChild(nextBtn);
+  }
+
+  // ── KEYBOARD HANDLER ──
+  overlay.onkeydown=function(e){
+    if(e.key==='Escape')exitTeachMode();
+    else if(e.key==='ArrowRight'||e.key===' '||e.key==='ArrowDown'){if(S.teachSlide<slides.length-1){S.teachSlide++;renderTeachMode(slides);}}
+    else if(e.key==='ArrowLeft'||e.key==='ArrowUp'){if(S.teachSlide>0){S.teachSlide--;renderTeachMode(slides);}}
+    else if(e.key==='r'||e.key==='R'){S.teachReveal[S.teachSlide]=true;renderTeachMode(slides);}
+    else if(e.key==='a'||e.key==='A'){S.teachAnnotating=!S.teachAnnotating;renderTeachMode(slides);}
+    else if(e.key==='t'||e.key==='T'){toggleTeachTimer(overlay);}
+    else if(e.key==='d'||e.key==='D'){S.teachDark=!S.teachDark;document.getElementById('teach-overlay').classList.toggle('teach-dark',S.teachDark);renderTeachMode(slides);}
+    else if(e.key==='s'||e.key==='S'){document.querySelector('.teach-tool-btn[title*="Spotlight"]')&&document.querySelector('.teach-tool-btn[title*="Spotlight"]').click();}
+    else if(e.key==='f'||e.key==='F'){document.querySelector('.teach-tool-btn[title*="Freeze"]')&&document.querySelector('.teach-tool-btn[title*="Freeze"]').click();}
+    else if(e.key==='n'||e.key==='N'){document.querySelector('.teach-tool-btn[title*="name"]')&&document.querySelector('.teach-tool-btn[title*="name"]').click();}
+  };
+
+  document.body.appendChild(overlay);
+  overlay.focus();
+
+  // Request fullscreen
+  if(overlay.requestFullscreen)overlay.requestFullscreen().catch(function(){});
+  else if(overlay.webkitRequestFullscreen)overlay.webkitRequestFullscreen();
+
+  // Init annotation canvas
+  if(S.teachAnnotating){initAnnotationCanvas(canvas,overlay);}
+}
+
+function initMWBCameo(canvas,tools,clearBtn,colRed,colBlue,colBlack,expandBtn){
+  var ctx=canvas.getContext('2d');
+  var drawing=false,lx=0,ly=0,currentColor='#1a1a2e';
+  ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.strokeStyle=currentColor;ctx.lineWidth=2.5;ctx.lineCap='round';ctx.lineJoin='round';
+  function gp(e){var r=canvas.getBoundingClientRect(),sx=canvas.width/r.width,sy=canvas.height/r.height;var src=e.touches?e.touches[0]:e;return{x:(src.clientX-r.left)*sx,y:(src.clientY-r.top)*sy};}
+  canvas.addEventListener('mousedown',function(e){drawing=true;var p=gp(e);lx=p.x;ly=p.y;e.preventDefault();});
+  canvas.addEventListener('mousemove',function(e){if(!drawing)return;var p=gp(e);ctx.beginPath();ctx.moveTo(lx,ly);ctx.lineTo(p.x,p.y);ctx.stroke();lx=p.x;ly=p.y;});
+  canvas.addEventListener('mouseup',function(){drawing=false;});
+  canvas.addEventListener('touchstart',function(e){e.preventDefault();drawing=true;var p=gp(e);lx=p.x;ly=p.y;},{passive:false});
+  canvas.addEventListener('touchmove',function(e){e.preventDefault();if(!drawing)return;var p=gp(e);ctx.beginPath();ctx.moveTo(lx,ly);ctx.lineTo(p.x,p.y);ctx.stroke();lx=p.x;ly=p.y;},{passive:false});
+  canvas.addEventListener('touchend',function(){drawing=false;});
+  function setColor(c){currentColor=c;ctx.strokeStyle=c;}
+  clearBtn.addEventListener('click',function(){ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.strokeStyle=currentColor;});
+  colRed.addEventListener('click',function(){setColor('#dc2626');});
+  colBlue.addEventListener('click',function(){setColor('#2563eb');});
+  colBlack.addEventListener('click',function(){setColor('#1a1a2e');});
+  expandBtn.addEventListener('click',function(){
+    // Pop out to fullscreen whiteboard overlay
+    var fsWB=document.createElement('div');fsWB.className='teach-mwb-fullscreen';
+    var fsCanvas=document.createElement('canvas');fsCanvas.width=1400;fsCanvas.height=800;
+    fsCanvas.style.cssText='width:100%;height:calc(100% - 48px);cursor:crosshair;background:#fff;display:block;';
+    var fsTools=document.createElement('div');fsTools.className='teach-mwb-fs-tools';
+    var fsClose=document.createElement('button');fsClose.textContent='✕ Close';fsClose.className='teach-mwb-btn';
+    fsClose.addEventListener('click',function(){fsWB.remove();});
+    fsTools.appendChild(fsClose);fsWB.appendChild(fsTools);fsWB.appendChild(fsCanvas);
+    document.getElementById('teach-overlay').appendChild(fsWB);
+    initMWBCameo(fsCanvas,fsTools,fsClose,colRed,colBlue,colBlack,{addEventListener:function(){}});
+  });
+}
+
+// Draggable helper
+function makeDraggable(el){
+  var ox=0,oy=0,mx=0,my=0,dragging=false;
+  el.addEventListener('mousedown',function(e){
+    if(e.target.tagName==='BUTTON'||e.target.tagName==='VIDEO'||e.target.tagName==='CANVAS')return;
+    dragging=true;ox=el.offsetLeft;oy=el.offsetTop;mx=e.clientX;my=e.clientY;
+    e.preventDefault();
+  });
+  document.addEventListener('mousemove',function(e){
+    if(!dragging)return;
+    var dx=e.clientX-mx,dy=e.clientY-my;
+    el.style.left=(ox+dx)+'px';el.style.top=(oy+dy)+'px';
+    el.style.right='auto';el.style.bottom='auto';
+  });
+  document.addEventListener('mouseup',function(){dragging=false;});
+  // Touch drag
+  el.addEventListener('touchstart',function(e){
+    if(e.target.tagName==='BUTTON'||e.target.tagName==='VIDEO')return;
+    dragging=true;ox=el.offsetLeft;oy=el.offsetTop;mx=e.touches[0].clientX;my=e.touches[0].clientY;
+  },{passive:true});
+  document.addEventListener('touchmove',function(e){
+    if(!dragging)return;
+    var dx=e.touches[0].clientX-mx,dy=e.touches[0].clientY-my;
+    el.style.left=(ox+dx)+'px';el.style.top=(oy+dy)+'px';el.style.right='auto';el.style.bottom='auto';
+  },{passive:true});
+  document.addEventListener('touchend',function(){dragging=false;});
+}
+
+function exitTeachMode(){
+  S.teachMode=false;
+  var overlay=document.getElementById('teach-overlay');if(overlay)overlay.remove();
+  if(document.fullscreenElement)document.exitFullscreen().catch(function(){});
+  var timer=document.getElementById('teach-timer-el');if(timer)timer.remove();
+  render();
+}
+
+var _teachTimerInterval=null;
+var _teachTimerSecs=0;
+function toggleTeachTimer(overlay){
+  var existing=document.getElementById('teach-timer-el');
+  if(existing){
+    clearInterval(_teachTimerInterval);existing.remove();_teachTimerSecs=0;return;
+  }
+  var timerEl=document.createElement('div');timerEl.id='teach-timer-el';timerEl.className='teach-timer';
+  timerEl.textContent='0:00';
+  // Click to reset
+  timerEl.addEventListener('click',function(){_teachTimerSecs=0;timerEl.textContent='0:00';timerEl.classList.remove('teach-timer-warn');});
+  overlay.appendChild(timerEl);
+  _teachTimerSecs=0;
+  _teachTimerInterval=setInterval(function(){
+    _teachTimerSecs++;
+    var m=Math.floor(_teachTimerSecs/60);var s=_teachTimerSecs%60;
+    timerEl.textContent=m+':'+(s<10?'0':'')+s;
+    // Warn at 5min
+    if(_teachTimerSecs>=300)timerEl.classList.add('teach-timer-warn');
+  },1000);
+}
+
+function initAnnotationCanvas(canvas,overlay){
+  canvas.width=overlay.clientWidth||window.innerWidth;
+  canvas.height=overlay.clientHeight||window.innerHeight;
+  var ctx=canvas.getContext('2d');
+  ctx.strokeStyle='#ff3b5c';ctx.lineWidth=3;ctx.lineCap='round';ctx.lineJoin='round';
+  var drawing=false;var lx=0,ly=0;
+  function getPos(e){
+    var r=canvas.getBoundingClientRect();
+    var src=e.touches?e.touches[0]:e;
+    return{x:src.clientX-r.left,y:src.clientY-r.top};
+  }
+  canvas.addEventListener('mousedown',function(e){drawing=true;var p=getPos(e);lx=p.x;ly=p.y;});
+  canvas.addEventListener('mousemove',function(e){
+    if(!drawing)return;var p=getPos(e);
+    ctx.beginPath();ctx.moveTo(lx,ly);ctx.lineTo(p.x,p.y);ctx.stroke();
+    lx=p.x;ly=p.y;
+  });
+  canvas.addEventListener('mouseup',function(){drawing=false;});
+  canvas.addEventListener('touchstart',function(e){e.preventDefault();drawing=true;var p=getPos(e);lx=p.x;ly=p.y;},{passive:false});
+  canvas.addEventListener('touchmove',function(e){
+    e.preventDefault();if(!drawing)return;var p=getPos(e);
+    ctx.beginPath();ctx.moveTo(lx,ly);ctx.lineTo(p.x,p.y);ctx.stroke();
+    lx=p.x;ly=p.y;
+  },{passive:false});
+  canvas.addEventListener('touchend',function(){drawing=false;});
+  // Clear on double-click
+  canvas.addEventListener('dblclick',function(){ctx.clearRect(0,0,canvas.width,canvas.height);});
+}
+
+// ════════════════════════════════════════════
+// RAPID EDIT — all questions in one vertical list
+// ════════════════════════════════════════════
+function buildRapidEditView(){
+  var isExam=S.mode==='exam';
+  var activeP=isExam?EXAM_PHASES:getActivePhases();
+  var d=el('div',{'class':'rapid-edit-wrap'});
+  var hdr=el('div',{'class':'rapid-edit-hdr'});
+  hdr.innerHTML='<div class="rapid-edit-title">⚡ Rapid Edit — all phases</div>';
+  var closeBtn=el('button',{'class':'btn btn-ghost btn-sm'});closeBtn.textContent='✕ Close';
+  closeBtn.addEventListener('click',function(){S.rapidEdit=false;render();});
+  hdr.appendChild(closeBtn);
+  d.appendChild(hdr);
+  activeP.forEach(function(phase){
+    var ph=S.phases[phase.id];if(!ph)return;
+    var sec=el('div',{'class':'rapid-section'});
+    var secHdr=el('div',{'class':'rapid-sec-hdr','style':'border-left:4px solid '+phase.col+';'});
+    secHdr.innerHTML='<span class="rapid-icon">'+phase.icon+'</span><span class="rapid-label" style="color:'+phase.col+';">'+phase.label+'</span>';
+    // Revert button if edited
+    if(S.aiOriginals&&S.aiOriginals[phase.id]){
+      var revertBtn=el('button',{'class':'rapid-revert-btn'});
+      revertBtn.innerHTML='↩ Revert to AI';
+      revertBtn.title='Restore original AI-generated content';
+      revertBtn.addEventListener('click',function(){
+        if(confirm('Revert "'+phase.label+'" to the original AI version? Your edits will be lost.')){
+          S.phases[phase.id].content=S.aiOriginals[phase.id];
+          delete S.aiOriginals[phase.id];
+          saveState();render();
+        }
+      });
+      secHdr.appendChild(revertBtn);
+    }
+    sec.appendChild(secHdr);
+    var ta=el('textarea',{'class':'rapid-textarea','rows':'6','placeholder':ph.generated?'':'Not generated yet — type manually or use Generate'});
+    ta.value=ph.content||'';
+    ta.addEventListener('input',function(e){
+      if(!S.aiOriginals[phase.id]&&ph.content)S.aiOriginals[phase.id]=ph.content;
+      S.phases[phase.id].content=e.target.value;
+      S.phases[phase.id].generated=!!e.target.value;
+      saveState();
+    });
+    // Auto-resize
+    ta.addEventListener('input',function(){ta.style.height='auto';ta.style.height=(ta.scrollHeight+4)+'px';});
+    sec.appendChild(ta);
+    d.appendChild(sec);
+  });
+  return d;
+}
+
 function showToast(msg,type){
   var t=document.createElement('div');
   t.style.cssText='position:fixed;bottom:80px;right:20px;z-index:9999;padding:10px 16px;border-radius:8px;font-size:13px;font-weight:600;font-family:Inter,sans-serif;box-shadow:0 4px 16px rgba(0,0,0,.15);animation:fadeIn .2s ease;'+(type==='success'?'background:#dcfce7;color:#15803d;border:1.5px solid #86efac':'background:#fef2f2;color:#dc2626;border:1.5px solid #fca5a5');
@@ -2352,6 +3379,13 @@ function buildHeader(){
 
   // Dark mode toggle — always in header
   // History button
+  // 🚀 TEACH MODE button — most prominent action
+  var teachBtn=el('button',{'class':'hdr-teach-btn'});
+  teachBtn.innerHTML='🚀 Teach Now';
+  teachBtn.title='Launch fullscreen teach mode';
+  teachBtn.addEventListener('click',function(){launchTeachMode();});
+  h.appendChild(teachBtn);
+
   var histBtn=el('button',{'class':'hdr-hist-btn','title':'Recent lessons'});
   histBtn.innerHTML='📚';
   histBtn.addEventListener('click',function(e){
@@ -2434,7 +3468,7 @@ function buildSidebar(){
 
   // Exam board -- always visible, aligns all AI output
   var bWrap=el('div',{'class':'sb-board-section'});
-  var bLbl=el('div',{'class':'sb-board-label'});bLbl.innerHTML='Exam Board <span class="sb-board-note">aligns all AI output</span>';bWrap.appendChild(bLbl);
+  var bLbl=el('div',{'class':'sb-board-label'});bLbl.innerHTML='Exam Board';bWrap.appendChild(bLbl);
   var bRowB=el('div',{'class':'sb-board-row','style':'margin-bottom:0;'});
   ['AQA','Edexcel','OCR','WJEC','CCEA'].forEach(function(board){
     var b=el('button',{'class':'board-btn'+(S.examBoard===board?' active':'')});b.textContent=board;
@@ -2460,7 +3494,9 @@ function buildSidebar(){
       {name:'Revision',icon:'🔁',ids:['recall','retrieval','prior','independent']},
     ];
     presetDefs.forEach(function(pr){
-      var pb=el('button',{'class':'preset-btn'});pb.innerHTML=pr.icon+' '+pr.name;
+      var isActivePreset=S.activePreset===pr.name;
+      var pb=el('button',{'class':'preset-btn'+(isActivePreset?' preset-btn-active':'')});
+      pb.innerHTML=pr.icon+' '+pr.name+(isActivePreset?' ✓':'');
       pb.addEventListener('click',function(){
         S.selectedComponents=pr.ids.slice();
         pr.ids.forEach(function(id){
@@ -2475,8 +3511,8 @@ function buildSidebar(){
   }
 
   var genBtn=el('button',{'class':'gen-hero'+(S.mode==='exam'?' gen-hero-exam':'')});
-  var genLabel=anyDoneMode?'Regenerate All':(S.mode==='exam'?'Generate Exam Pack':'Quick Start Lesson');
-  var genSub=anyDoneMode?'Rebuild all phases with AI':(S.mode==='exam'?'6 exam activities, ~30 sec':'Full lesson in ~30 seconds');
+  var genLabel=anyDoneMode?'Regenerate All':(S.mode==='exam'?'Plan Exam Pack (60s)':'Plan Lesson (60s)');
+  var genSub=anyDoneMode?'Rebuild all phases with AI':(S.mode==='exam'?'6 exam activities, ~30 sec':'Full lesson, all sections ready');
   genBtn.innerHTML='<span class="gen-hero-icon">'+(S.mode==='exam'?'🎯':'✨')+'</span><div class="gen-hero-text"><div class="gen-hero-title">'+genLabel+'</div><div class="gen-hero-sub">'+genSub+'</div></div>';
   genBtn.addEventListener('click',function(){if(window.innerWidth<=768)S.sidebarOpen=false;S.mode==='exam'?generateAllExam():generateAll();});
   scroll.appendChild(genBtn);
@@ -2889,7 +3925,7 @@ function buildBuildTab(){
     } else {
       empty.innerHTML='<div class="empty-icon">✨</div>'
         +'<h2 class="empty-title">'+(S.topic||'Ready to build')+'</h2>'
-        +'<p class="empty-sub">'+(S.topic?'Click <strong>Quick Start Lesson</strong> in the sidebar.':'Enter a topic in the sidebar, then click <strong>Quick Start Lesson</strong>.')+'</p>'
+        +'<p class="empty-sub">'+(S.topic?'Click <strong>Plan Lesson (60s)</strong> in the sidebar.':'Enter a topic in the sidebar, then click <strong>Plan Lesson (60s)</strong>.')+'</p>'
         +'<div class="empty-phases">'+PHASES.map(function(p){return'<div class="empty-phase-chip" style="border-color:'+p.col+'20;background:'+p.bg+'"><span>'+p.icon+'</span><span style="font-size:11px;color:'+p.col+';font-weight:600;">'+p.label+'</span></div>';}).join('')+'</div>';
     }
     d.appendChild(empty);
@@ -2915,16 +3951,32 @@ function buildBuildTab(){
       }
     });
     var metaStr=metaParts.join(' · ')+(totalMarks>0?' · '+totalMarks+' marks total':'');
-    htxt.appendChild(el('div',{'class':'build-meta'},metaStr));
+    // Time-to-teach total across phases
+    var totalMinutes=0;
+    activePhases.forEach(function(p){if(S.timings&&S.timings[p.id])totalMinutes+=parseInt(S.timings[p.id])||0;});
+    var metaWithTime=metaStr+(totalMinutes>0?' · Est. '+totalMinutes+' min lesson':'');
+    htxt.appendChild(el('div',{'class':'build-meta'},metaWithTime));
     hdr.appendChild(htxt);
     // Action buttons
     var hdrBtns=el('div',{'style':'display:flex;gap:8px;align-items:center;flex-wrap:wrap;flex-shrink:0;'});
     // Split view toggle
+    // Rapid Edit toggle
+    var rapidBtn=el('button',{'class':'btn btn-ghost btn-sm'+(S.rapidEdit?' active':'')});
+    rapidBtn.innerHTML='⚡ Rapid Edit';
+    rapidBtn.title='Edit all questions in one list';
+    rapidBtn.addEventListener('click',function(){S.rapidEdit=!S.rapidEdit;render();});
+    hdrBtns.appendChild(rapidBtn);
+
     var splitBtn=el('button',{'class':'btn btn-ghost btn-sm'});
     splitBtn.innerHTML=S.splitView?'⊟ Single':'⊞ Split';
     splitBtn.title=S.splitView?'Close preview pane':'Show live preview alongside';
     splitBtn.addEventListener('click',function(){S.splitView=!S.splitView;render();});
     hdrBtns.appendChild(splitBtn);
+    var teachHdrBtn=el('button',{'class':'btn btn-ghost btn-sm'});
+    teachHdrBtn.innerHTML='🚀 Teach';
+    teachHdrBtn.addEventListener('click',function(){launchTeachMode();});
+    hdrBtns.appendChild(teachHdrBtn);
+
     var expBtn=el('button',{'class':'export-hero-btn'+(isExam?' export-hero-btn-exam':'')});
     expBtn.innerHTML='<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1v9M5 7l3 3 3-3M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg> '+( isExam?'Export Pack':'Download PPTX');
     expBtn.addEventListener('click',async function(){expBtn.disabled=true;expBtn.textContent='Building...';try{await buildAndDownloadPPTX();showToast('Downloaded!','success');}catch(e){showToast('Error: '+e.message,'error');}expBtn.disabled=false;expBtn.innerHTML='<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1v9M5 7l3 3 3-3M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg> '+(isExam?'Export Pack':'Download PPTX');});
@@ -2990,9 +4042,14 @@ function buildBuildTab(){
   }
 
   // ── Phase cards ──
-  var phases=el('div',{'class':'phases'});
-  activePhases.forEach(function(p){phases.appendChild(buildPhaseCard(p,isExam));});
-  d.appendChild(phases);
+  // Rapid Edit view OR normal cards
+  if(S.rapidEdit){
+    d.appendChild(buildRapidEditView());
+  } else {
+    var phases=el('div',{'class':'phases'});
+    activePhases.forEach(function(p){phases.appendChild(buildPhaseCard(p,isExam));});
+    d.appendChild(phases);
+  }
   return d;
 }
 
@@ -3065,13 +4122,32 @@ function buildPhaseCard(phase, isExam=false){
       // Content textarea (always shown for editing)
       var ta=el('textarea',{'class':'phase-textarea'+(hasQFmt?' phase-textarea-compact':''),'rows':hasQFmt?3:6});
       ta.value=ph.content||'';
-      ta.addEventListener('input',function(e){S.phases[phase.id].content=e.target.value;saveState();});
+      ta.addEventListener('input',function(e){
+        // Save AI original before first edit
+        if(!S.aiOriginals[phase.id]&&S.phases[phase.id].content){
+          S.aiOriginals[phase.id]=S.phases[phase.id].content;
+        }
+        S.phases[phase.id].content=e.target.value;saveState();
+      });
       inner.appendChild(ta);
 
       // ── Rich micro-action toolbar ──
       var toolbar=el('div',{'class':'phase-toolbar'});
       var genFn=isExam?generateExamPhase:generatePhase;
 
+      // Revert to AI original button (if edited)
+      if(S.aiOriginals&&S.aiOriginals[phase.id]){
+        var revertTbBtn=el('button',{'class':'phase-action-btn phase-revert-btn'});
+        revertTbBtn.innerHTML='↩ Revert to AI';revertTbBtn.title='Restore original AI-generated version';
+        revertTbBtn.addEventListener('click',function(e){
+          e.stopPropagation();
+          if(confirm('Revert to original AI version? Your edits will be lost.')){
+            S.phases[phase.id].content=S.aiOriginals[phase.id];
+            delete S.aiOriginals[phase.id];saveState();render();
+          }
+        });
+        toolbar.appendChild(revertTbBtn);
+      }
       var actions=[
         {icon:'🔄',label:'Regenerate',fn:function(){genFn(phase.id,false);}},
         {icon:'✨',label:'Improve',fn:function(){genFn(phase.id,true);}},
@@ -3819,6 +4895,10 @@ if(!hasKey){
   S.tab='build';
 }
 
+// Global keyboard shortcuts
+document.addEventListener('keydown',function(e){
+  if((e.ctrlKey||e.metaKey)&&e.key==='s'){e.preventDefault();saveState();showToast('Saved','success');}
+});
 // On mobile, start with sidebar closed so content is visible
 if(window.innerWidth<=768)S.sidebarOpen=false;
 loadSharedLesson();
