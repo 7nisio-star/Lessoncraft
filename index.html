@@ -1921,6 +1921,24 @@ html.dark .rapid-textarea{background:var(--gray-100);color:var(--gray-700)}
 .rapid-section{margin-bottom:12px;border-radius:var(--radius);overflow:hidden;border:1.5px solid var(--gray-200)}
 html.dark .rapid-section{border-color:var(--gray-300)}
 
+
+/* ═══ Phase textarea visibility ═══ */
+.phase-textarea-hidden{display:none!important}
+.phase-textarea-visible{display:block!important}
+
+/* ═══ Edit toggle button ═══ */
+.phase-edit-toggle{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600;
+  border:1.5px solid var(--gray-200);background:var(--white);
+  color:var(--gray-500);cursor:pointer;transition:all .15s;
+  margin:6px 0 4px;
+}
+.phase-edit-toggle:hover{border-color:var(--p);color:var(--p)}
+
+/* ═══ MWB toggle active ═══ */
+.teach-mwb-toggle.active{background:rgba(146,39,143,.8)!important}
+
 </style>
 </head>
 <body>
@@ -2763,10 +2781,13 @@ function renderTeachMode(slides){
     document.addEventListener('mouseup',function(){resizing=false;});
     makeDraggable(mwbCameo);
     // Toggle panel
+    var mwbInitialized=false;
     mwbToggle.addEventListener('click',function(e){
       e.stopPropagation();
-      mwbPanel.style.display=mwbPanel.style.display==='none'?'block':'none';
-      if(mwbPanel.style.display==='block')initMWBCameo(mwbCanvas2,mwbTools,clearBtn2,colRed,colBlue,colBlack,expandBtn);
+      var shown=mwbPanel.style.display==='block';
+      mwbPanel.style.display=shown?'none':'block';
+      mwbToggle.style.background=shown?'rgba(0,0,0,.7)':'rgba(146,39,143,.8)';
+      if(!shown&&!mwbInitialized){initMWBCameo(mwbCanvas2,mwbTools,clearBtn2,colRed,colBlue,colBlack,expandBtn);mwbInitialized=true;}
     });
     slideEl.appendChild(contentArea);
   } else if(slide.type==='vocab'){
@@ -3489,7 +3510,7 @@ function buildSidebar(){
     var prsLabel=el('div',{'class':'presets-label'});prsLabel.textContent='Quick structure:';
     presetsWrap.appendChild(prsLabel);
     var presetDefs=[
-      {name:'Rosenshine',icon:'🏆',ids:['recall','prior','ido','guided','independent','reflect']},
+      {name:'Rosenshine',icon:'🏆',ids:['recall','prior','ido','wedo','independent','reflect']},
       {name:'Full',icon:'📖',ids:['prior','newknow','ido','wedo','independent','reflect']},
       {name:'Revision',icon:'🔁',ids:['recall','retrieval','prior','independent']},
     ];
@@ -4120,8 +4141,20 @@ function buildPhaseCard(phase, isExam=false){
         inner.appendChild(qDisp);
       }
       // Content textarea (always shown for editing)
-      var ta=el('textarea',{'class':'phase-textarea'+(hasQFmt?' phase-textarea-compact':''),'rows':hasQFmt?3:6});
+      var ta=el('textarea',{'class':'phase-textarea'+(hasQFmt?' phase-textarea-hidden':''),'rows':hasQFmt?3:6});
       ta.value=ph.content||'';
+      // Toggle edit mode - show textarea when editing
+      if(hasQFmt){
+        var editToggle=el('button',{'class':'phase-edit-toggle'});
+        editToggle.textContent='✏ Edit text';
+        editToggle.addEventListener('click',function(){
+          ta.classList.toggle('phase-textarea-hidden');
+          ta.classList.toggle('phase-textarea-visible');
+          editToggle.textContent=ta.classList.contains('phase-textarea-hidden')?'✏ Edit text':'✓ Done editing';
+          if(!ta.classList.contains('phase-textarea-hidden'))ta.focus();
+        });
+        inner.appendChild(editToggle);
+      }
       ta.addEventListener('input',function(e){
         // Save AI original before first edit
         if(!S.aiOriginals[phase.id]&&S.phases[phase.id].content){
