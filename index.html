@@ -1950,6 +1950,18 @@ html.dark .rapid-section{border-color:var(--gray-300)}
 .net-status-banner strong{font-weight:700}
 .net-status-banner code{background:#fef08a;padding:1px 5px;border-radius:4px;font-size:12px}
 
+
+/* ═══ Clear lesson button ═══ */
+.sb-clear-btn{
+  width:100%;padding:8px;border-radius:var(--radius-xs);
+  border:1.5px dashed #fca5a5;background:transparent;
+  color:#dc2626;font-size:12px;font-weight:600;cursor:pointer;
+  transition:all .15s;margin-top:4px;
+}
+.sb-clear-btn:hover{background:#fef2f2;border-color:#f87171;}
+html.dark .sb-clear-btn{border-color:#7f1d1d;color:#fca5a5;}
+html.dark .sb-clear-btn:hover{background:rgba(220,38,38,.1);}
+
 </style>
 </head>
 <body>
@@ -2833,7 +2845,10 @@ function getTeachSlides(){
 
 function launchTeachMode(){
   var slides=getTeachSlides();
-  if(slides.length<=1){showToast('Generate a lesson first','error');return;}
+  if(slides.length<=1){
+    showToast('Generate your lesson first — then click Teach Now!','error');
+    S.tab='build';render();return;
+  }
   S.teachMode=true;S.teachSlide=0;S.teachReveal={};S.teachAnnotating=false;
   renderTeachMode(slides);
 }
@@ -3180,6 +3195,11 @@ function renderTeachMode(slides){
 
   // ── KEYBOARD HANDLER ──
   overlay.onkeydown=function(e){
+    // Don't fire shortcuts if editing text
+    if(e.target.contentEditable==='true'||e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'){
+      if(e.key==='Escape'){e.target.blur();return;}
+      return; // Let normal typing happen
+    }
     if(e.key==='Escape')exitTeachMode();
     else if(e.key==='ArrowRight'||e.key===' '||e.key==='ArrowDown'){if(S.teachSlide<slides.length-1){S.teachSlide++;renderTeachMode(slides);}}
     else if(e.key==='ArrowLeft'||e.key==='ArrowUp'){if(S.teachSlide>0){S.teachSlide--;renderTeachMode(slides);}}
@@ -3264,12 +3284,12 @@ function makeDraggable(el){
 
 function exitTeachMode(){
   S.teachMode=false;
+  if(window._teachCamStream){window._teachCamStream.getTracks().forEach(function(t){t.stop();});window._teachCamStream=null;}
+  if(window._teachTimerInterval){clearInterval(window._teachTimerInterval);window._teachTimerInterval=null;}
   var overlay=document.getElementById('teach-overlay');if(overlay)overlay.remove();
   if(document.fullscreenElement)document.exitFullscreen().catch(function(){});
-  var timer=document.getElementById('teach-timer-el');if(timer)timer.remove();
   render();
 }
-
 var _teachTimerInterval=null;
 var _teachTimerSecs=0;
 function toggleTeachTimer(overlay){
@@ -3889,7 +3909,17 @@ function buildSidebar(){
   scroll.appendChild(l3);
 
   var clearBtn=el('button',{'class':'sb-clear-btn'});clearBtn.textContent='Start new lesson';
-  clearBtn.addEventListener('click',function(){if(confirm('Clear everything and start fresh?')){localStorage.removeItem('lessoncraft_v4');location.reload();}});
+  clearBtn.addEventListener('click',function(){
+    if(confirm('Start a new lesson? This will clear all generated content.')){
+      // Clear phases but keep API key and settings
+      Object.keys(S.phases).forEach(function(k){S.phases[k]={content:'',parsed:null,generated:false,generating:false};S.open[k]=false;});
+      S.topic='';S.objectives='';S.inquiry='';S.keywords=[];S.discussionQuestions=[];
+      S.diagrams={};S.aiOriginals={};S.genSteps=[];S.generatingAll=false;
+      S.worksheets=[];S.markSchemes=[];S.webLink='';S.activePreset=null;
+      saveState();render();
+      showToast('Ready for a new lesson!','success');
+    }
+  });
   scroll.appendChild(clearBtn);
 
   sb.appendChild(scroll);return sb;
@@ -4264,6 +4294,21 @@ function buildBuildTab(){
     var expBtn=el('button',{'class':'export-hero-btn'+(isExam?' export-hero-btn-exam':'')});
     expBtn.innerHTML='<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1v9M5 7l3 3 3-3M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg> '+( isExam?'Export Pack':'Download PPTX');
     expBtn.addEventListener('click',async function(){expBtn.disabled=true;expBtn.textContent='Building...';try{await buildAndDownloadPPTX();showToast('Downloaded!','success');}catch(e){showToast('Error: '+e.message,'error');}expBtn.disabled=false;expBtn.innerHTML='<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1v9M5 7l3 3 3-3M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg> '+(isExam?'Export Pack':'Download PPTX');});
+    // Clear lesson button in build header
+    var clearHdrBtn=el('button',{'class':'btn btn-ghost btn-sm','style':'color:#dc2626;border-color:#fca5a5;'});
+    clearHdrBtn.innerHTML='🗑 Clear';clearHdrBtn.title='Clear lesson and start fresh';
+    clearHdrBtn.addEventListener('click',function(){
+      if(confirm('Clear all generated content and start a new lesson?')){
+        Object.keys(S.phases).forEach(function(k){S.phases[k]={content:'',parsed:null,generated:false,generating:false};S.open[k]=false;});
+        S.topic='';S.objectives='';S.inquiry='';S.keywords=[];S.discussionQuestions=[];
+        S.diagrams={};S.aiOriginals={};S.genSteps=[];S.generatingAll=false;
+        S.worksheets=[];S.markSchemes=[];S.webLink='';S.activePreset=null;
+        saveState();S.tab='aisetup';render();
+        showToast('Lesson cleared — enter a new topic!','success');
+      }
+    });
+    hdrBtns.appendChild(clearHdrBtn);
+
     // Adapt lesson button
     var adaptBtn=el('button',{'class':'btn btn-ghost btn-sm'});
     adaptBtn.innerHTML='🔀 Adapt';
