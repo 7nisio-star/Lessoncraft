@@ -1939,6 +1939,17 @@ html.dark .rapid-section{border-color:var(--gray-300)}
 /* ═══ MWB toggle active ═══ */
 .teach-mwb-toggle.active{background:rgba(146,39,143,.8)!important}
 
+
+/* ═══ Network status banner ═══ */
+.net-status-banner{
+  display:flex;align-items:flex-start;gap:12px;
+  background:#fefce8;border:1.5px solid #fde047;border-radius:var(--radius);
+  padding:12px 14px;margin-bottom:16px;font-size:13px;line-height:1.6;
+  color:#713f12;
+}
+.net-status-banner strong{font-weight:700}
+.net-status-banner code{background:#fef08a;padding:1px 5px;border-radius:4px;font-size:12px}
+
 </style>
 </head>
 <body>
@@ -2150,12 +2161,46 @@ async function callAI(sys,usr){
 async function callClaude(sys,usr){
   const key=S.claudeKey||LESSONCRAFT_API_KEY||'';
   if(!key)throw new Error('No Claude API key set. Go to the AI Setup tab and paste your key.');
-  const headers={'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'};
-  const body={model:'claude-sonnet-4-20250514',max_tokens:1000,system:sys,messages:[{role:'user',content:usr}]};
-  const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers,body:JSON.stringify(body)});
-  const d=await r.json();
-  if(d.error)throw new Error(d.error.message||JSON.stringify(d.error));
-  return d.content[0].text;
+  const headers={
+    'Content-Type':'application/json',
+    'x-api-key':key,
+    'anthropic-version':'2023-06-01',
+    'anthropic-dangerous-direct-browser-access':'true'
+  };
+  const body={
+    model:'claude-sonnet-4-20250514',
+    max_tokens:1200,
+    system:sys,
+    messages:[{role:'user',content:usr}]
+  };
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',headers,body:JSON.stringify(body)
+    });
+    if(!r.ok){
+      var errBody=await r.json().catch(function(){return{};});
+      throw new Error(errBody.error&&errBody.error.message?errBody.error.message:'HTTP '+r.status+': '+r.statusText);
+    }
+    const d=await r.json();
+    if(d.error)throw new Error(d.error.message||JSON.stringify(d.error));
+    return d.content[0].text;
+  }catch(e){
+    // Detect network/CORS block (common on school networks)
+    var isNetworkError=e.message==='Failed to fetch'||e.message.includes('NetworkError')||e.message.includes('CORS')||e.message.includes('network')||e.name==='TypeError';
+    if(isNetworkError){
+      // Show a specific helpful message for school network blocks
+      var msg='🏫 Network blocked by school firewall\n\n'
+        +'Your school\'s IT filter is blocking the AI connection.\n\n'
+        +'Quick fixes:\n'
+        +'• Use your phone as a hotspot\n'
+        +'• Ask IT to whitelist api.anthropic.com\n'
+        +'• Switch to Microsoft Copilot in AI Setup\n'
+        +'  (uses your school\'s existing Microsoft licence)\n\n'
+        +'Technical detail: '+e.message;
+      throw new Error(msg);
+    }
+    throw e;
+  }
 }
 
 async function callCopilot(sys,usr){
@@ -2311,10 +2356,189 @@ async function generateAll(){
   showToast('Lesson ready!','success');
 }
 
+// ════════════════════════════════════════════════════════════════
+// generateExamPhase — Maths Genie / Edexcel / White Rose style
+// Board-aligned, multi-part, AO-coded, worked solutions, mark schemes
+// ════════════════════════════════════════════════════════════════
+async function generateExamPhase(id, isImprovement){
+  // Ensure phase state exists
+  if(!S.phases[id])S.phases[id]={content:'',parsed:null,generated:false,generating:false};
+  var ph=S.phases[id];
+  var prevContent=ph.content;
+  ph.generating=true;ph.generated=false;render();
+
+  var topic=S.topic||'this topic';
+  var subject=S.subject||'Maths';
+  var year=S.year||'11';
+  var board=S.examBoard||'Edexcel';
+  var ability=S.ability||'higher';
+  var ws=getWorksheetContext();
+  var prev=isImprovement&&prevContent?'\n\nPrevious version to improve:\n'+prevContent.slice(0,300):'';
+
+  // Board-specific command words and conventions
+  var boardCtx={
+    'AQA':'AQA-style: use "State", "Show that", "Prove", "Hence", "Deduce". Mark schemes use dots for awarded marks. Quality of written communication marks apply.',
+    'Edexcel':'Edexcel (Pearson) style: use "Find", "Calculate", "Show", "Explain", "Describe". Mark scheme uses M1 (method mark), A1 (accuracy mark), B1 (independent mark), ft (follow through).',
+    'OCR':'OCR style: use "Work out", "Write down", "Give", "Justify". Mark schemes use SC for special cases. Levels of response marking for extended answers.',
+    'WJEC':'WJEC/Eduqas style. Band-mark extended answers. Use Welsh context where appropriate.',
+    'CCEA':'CCEA Northern Ireland style. Use appropriate local context.'
+  }[board]||'';
+
+  // Ability context
+  var abilityCtx=ability==='lower'?'Foundation tier: grades 1-5, accessible entry, concrete examples, step-by-step scaffolding.'
+    :ability==='higher'?'Higher tier: grades 4-9, include algebraic manipulation, multi-step reasoning, proof.'
+    :'Mixed ability: accessible entry questions building to grade 7-9 challenge.';
+
+  // Subject-specific context
+  var subjCtx='';
+  if(subject.toLowerCase().includes('math')||subject.toLowerCase().includes('numer')){
+    subjCtx='White Rose Maths / Maths Genie style. Include: exact values, surds, algebraic fractions where appropriate. Questions should mirror actual '+board+' GCSE paper style exactly. Show clear diagrams described in text (e.g. "A circle with centre O, radius r cm..."). Include units in answers.';
+  } else if(subject.toLowerCase().includes('science')||subject.toLowerCase().includes('biology')||subject.toLowerCase().includes('chemistry')||subject.toLowerCase().includes('physics')){
+    subjCtx='Mirror '+board+' GCSE Science paper style. Include required practical references where relevant. Use SI units throughout. Include command word marks (AO1/AO2/AO3).';
+  }
+
+  var sys='You are an expert '+board+' '+subject+' examiner and teacher creating exam resources in the exact style of '+board+' GCSE papers.\n'
+    +boardCtx+'\n'+abilityCtx+'\n'+subjCtx+'\nTopic: '+topic+'\nYear: '+year+'\n'+ws+prev
+    +'\nRespond ONLY with valid JSON. No markdown, no preamble, no code blocks.';
+
+  var prompt='', parse=null;
+
+  if(id==='warmup'){
+    prompt='Create a 5-question "Do Now" warm-up for "'+topic+'" in '+board+' style. Quick retrieval, 1-2 marks each, low stakes, timed starter. JSON: {"title":"Do Now — '+topic+'","timeMinutes":5,"questions":[{"q":"question text","marks":1,"answer":"brief answer"},{"q":"...","marks":1,"answer":"..."},{"q":"...","marks":2,"answer":"..."},{"q":"...","marks":1,"answer":"..."},{"q":"...","marks":2,"answer":"..."}]}';
+    parse=function(d){
+      ph.content='DO NOW — '+d.title+' ('+d.timeMinutes+' minutes)\n\n'
+        +(d.questions||[]).map(function(q,i){return'('+(i+1)+') '+q.q+' ['+q.marks+' mark'+(q.marks>1?'s':'')+']';}).join('\n')
+        +'\n\n─── ANSWERS ───\n'
+        +(d.questions||[]).map(function(q,i){return'('+(i+1)+') '+q.answer;}).join('\n');
+    };
+  }
+  else if(id==='examretrieval'){
+    prompt='Create spaced retrieval practice for "'+topic+'" mixing this topic with 2-3 past topics students will have covered. '+board+' GCSE style. JSON: {"questions":[{"topic":"which topic this tests","q":"question [marks]","marks":2,"answer":"mark-scheme style answer"},{"topic":"...","q":"...","marks":3,"answer":"..."},{"topic":"...","q":"...","marks":2,"answer":"..."},{"topic":"...","q":"...","marks":4,"answer":"..."}]}';
+    parse=function(d){
+      ph.content='RETRIEVAL PRACTICE — '+board+' style\n\n'
+        +(d.questions||[]).map(function(q,i){
+          return'Q'+(i+1)+'. ['+q.topic+']\n'+q.q+' ['+q.marks+' mark'+(q.marks>1?'s':'')+']';
+        }).join('\n\n')
+        +'\n\n─── MARK SCHEME ───\n'
+        +(d.questions||[]).map(function(q,i){return'Q'+(i+1)+'. '+q.answer;}).join('\n');
+    };
+  }
+  else if(id==='examqs'){
+    prompt='Create 3 '+board+'-style GCSE exam questions on "'+topic+'" exactly as they would appear on a real '+board+' paper. Multi-part (a)(b)(c). Vary difficulty. Total 14 marks. Include a diagram description where appropriate. JSON: {"questions":[{"parts":[{"part":"(a)","q":"question text","marks":2,"ao":"AO1","hint":"","diagramDesc":"describe any diagram needed, or empty"},{"part":"(b)","q":"...","marks":4,"ao":"AO2","hint":"","diagramDesc":""},{"part":"(c)","q":"...","marks":3,"ao":"AO3","hint":"","diagramDesc":""}]},{"parts":[{"part":"(a)","q":"...","marks":3,"ao":"AO1","hint":"","diagramDesc":""},{"part":"(b)","q":"...","marks":2,"ao":"AO2","hint":"","diagramDesc":""}]}]}';
+    parse=function(d){
+      ph.content=(d.questions||[]).map(function(q,qi){
+        return 'Q'+(qi+1)+'.\n'+(q.parts||[]).map(function(p){
+          var line=p.part+' '+p.q+' ['+p.marks+' mark'+(p.marks>1?'s':'')+']';
+          if(p.ao)line+=' ('+p.ao+')';
+          if(p.diagramDesc&&p.diagramDesc.length>5)line+='\n     [Figure: '+p.diagramDesc+']';
+          if(p.hint)line+='\n     Hint: '+p.hint;
+          return line;
+        }).join('\n\n');
+      }).join('\n\n');
+    };
+  }
+  else if(id==='workedex'){
+    prompt='Write a fully worked '+board+'-style model answer for a GCSE exam question on "'+topic+'". Show every step clearly. Include method marks (M1, A1 etc for '+board+'). JSON: {"question":"full exam question with mark allocation [X marks]","totalMarks":6,"workingSteps":[{"step":1,"working":"what is written/calculated","mark":"M1 — reason mark is awarded","annotation":"teacher note"},{"step":2,"working":"...","mark":"A1","annotation":"..."},{"step":3,"working":"...","mark":"M1","annotation":"..."}],"finalAnswer":"clearly stated final answer with units","commonErrors":["error 1","error 2"],"examinerNote":"what examiners look for"}';
+    parse=function(d){
+      ph.content='WORKED SOLUTION — '+board+' Style\n\nQuestion: '+d.question+'\n\n'
+        +'Step-by-step working:\n'
+        +(d.workingSteps||[]).map(function(s){
+          return'Step '+s.step+': '+s.working+'\n           '+s.mark+(s.annotation?'  ← '+s.annotation:'');
+        }).join('\n')
+        +'\n\nFinal Answer: '+d.finalAnswer
+        +'\n\n⚠ Common errors:\n'+(d.commonErrors||[]).map(function(e){return'• '+e;}).join('\n')
+        +'\n\n📋 Examiner note: '+d.examinerNote;
+    };
+  }
+  else if(id==='marksch'){
+    prompt='Write a full '+board+'-style mark scheme for a 6-mark GCSE question on "'+topic+'". Use '+board+' mark scheme conventions exactly. JSON: {"question":"the exam question","marks":{"total":6,"breakdown":[{"mark":"M1","description":"method mark description — what earns it"},{"mark":"A1","description":"accuracy mark — exact value or correct form"},{"mark":"M1","description":"..."},{"mark":"A1","description":"..."},{"mark":"B1","description":"independent mark"},{"mark":"A1ft","description":"follow-through mark"}]},"acceptableAnswers":["alternative correct form 1","alternative correct form 2"],"commonMistakes":["mistake that loses marks 1","mistake 2"],"gradeBoundaryNote":"typical grade boundary context"}';
+    parse=function(d){
+      ph.content='MARK SCHEME — '+board+'\n\nQuestion: '+d.question+'\n\n'
+        +(d.marks&&d.marks.breakdown?d.marks.breakdown.map(function(m){return m.mark+'  '+m.description;}).join('\n'):'')
+        +'\n\nTotal: '+( d.marks&&d.marks.total?d.marks.total:6)+' marks'
+        +'\n\nAccept also:\n'+(d.acceptableAnswers||[]).map(function(a){return'• '+a;}).join('\n')
+        +'\n\nDo not award marks for:\n'+(d.commonMistakes||[]).map(function(m){return'✗ '+m;}).join('\n')
+        +(d.gradeBoundaryNote?'\n\n'+d.gradeBoundaryNote:'');
+    };
+  }
+  else if(id==='examguided'){
+    prompt='Create a guided exam practice activity for "'+topic+'" where teacher works through with class. '+board+' style. Include exam technique coaching. JSON: {"scenario":"context or stimulus material description","questions":[{"q":"exam question [marks]","marks":4,"scaffold":"sentence starter or structure hint — e.g. \'First, identify... then calculate...\'","modelAnswer":"step-by-step model answer","technique":"what exam skill this teaches","ao":"AO1/AO2/AO3"},{"q":"...","marks":6,"scaffold":"...","modelAnswer":"...","technique":"...","ao":"..."}]}';
+    parse=function(d){
+      ph.content='GUIDED EXAM PRACTICE — '+board+'\n\nContext: '+(d.scenario||'')+'\n\n'
+        +(d.questions||[]).map(function(q,i){
+          return'Q'+(i+1)+': '+q.q+' ['+q.marks+' marks] ('+q.ao+')'
+            +'\n\nScaffold: '+q.scaffold
+            +'\n\nModel Answer:\n'+q.modelAnswer
+            +'\n\nExam technique: '+q.technique;
+        }).join('\n\n────────────────\n\n');
+    };
+  }
+  else if(id==='examindep'){
+    prompt='Create independent exam practice for "'+topic+'" — students attempt unsupported in exam conditions. Exactly as '+board+' paper. JSON: {"timeAllowed":"e.g. 15 minutes","totalMarks":12,"questions":[{"n":1,"parts":[{"part":"(a)","q":"exact '+board+' style question","marks":3,"ao":"AO2"},{"part":"(b)","q":"...","marks":4,"ao":"AO3"}]},{"n":2,"parts":[{"part":"(a)","q":"...","marks":2,"ao":"AO1"},{"part":"(b)","q":"...","marks":3,"ao":"AO2"}]}]}';
+    parse=function(d){
+      ph.content='INDEPENDENT PRACTICE — '+board+' exam conditions\nTime allowed: '+d.timeAllowed+' | Total: '+d.totalMarks+' marks\n\n'
+        +(d.questions||[]).map(function(q){
+          return'Q'+q.n+'.\n'+(q.parts||[]).map(function(p){
+            return p.part+' '+p.q+' ['+p.marks+' mark'+(p.marks>1?'s':'')+'] ('+p.ao+')'
+              +'\n\n'+Array(Math.max(3,p.marks+1)).fill('').join('___________\n');
+          }).join('\n');
+        }).join('\n\n');
+    };
+  }
+  else if(id==='drillqs'){
+    prompt='Write 6 drill practice questions on "'+topic+'" for '+board+' GCSE. Same skill, varied numbers/context, increasing difficulty. Maths Genie / Corbettmaths style. JSON: {"skill":"name of the skill being drilled","questions":[{"q":"question","answer":"answer with working","difficulty":"grade 4"},{"q":"...","answer":"...","difficulty":"grade 5"},{"q":"...","answer":"...","difficulty":"grade 5"},{"q":"...","answer":"...","difficulty":"grade 6"},{"q":"...","answer":"...","difficulty":"grade 7"},{"q":"...","answer":"...","difficulty":"grade 8"}]}';
+    parse=function(d){
+      ph.content='DRILL PRACTICE: '+d.skill+'\n\n'
+        +(d.questions||[]).map(function(q,i){
+          return'('+(i+1)+') ['+q.difficulty+'] '+q.q;
+        }).join('\n')
+        +'\n\n─── ANSWERS ───\n'
+        +(d.questions||[]).map(function(q,i){
+          return'('+(i+1)+') '+q.answer;
+        }).join('\n');
+    };
+  }
+  else if(id==='examtips'){
+    prompt='Write examiner tips for "'+topic+'" '+board+' GCSE — real advice from the examiner\'s report. JSON: {"topTips":[{"tip":"specific actionable tip","example":"show example of correct vs wrong","marks":"how many marks this is worth knowing"}],"commonErrors":[{"error":"what students write","correction":"what they should write","markLost":"e.g. loses A1 mark"}],"gradeTips":{"grade5":"to secure grade 5...","grade7":"to reach grade 7...","grade9":"for grade 9..."},"keyFormulae":["formula 1","formula 2"]}';
+    parse=function(d){
+      ph.content='EXAMINER TIPS — '+board+' '+subject+'\nTopic: '+topic+'\n\n'
+        +'💡 TOP TIPS:\n'+(d.topTips||[]).map(function(t,i){return(i+1)+'. '+t.tip+(t.example?'\n   ✓ Example: '+t.example:'')+(t.marks?'\n   → '+t.marks:'');}).join('\n\n')
+        +'\n\n❌ COMMON ERRORS:\n'+(d.commonErrors||[]).map(function(e){return'✗ Students write: '+e.error+'\n✓ Should be: '+e.correction+'\n  ('+e.markLost+')';}).join('\n\n')
+        +(d.gradeTips?'\n\n🎯 GRADE TARGETS:\n'+'Grade 5: '+(d.gradeTips.grade5||'')+'\nGrade 7: '+(d.gradeTips.grade7||'')+'\nGrade 9: '+(d.gradeTips.grade9||''):'')
+        +(d.keyFormulae&&d.keyFormulae.length?'\n\n📐 KEY FORMULAE:\n'+d.keyFormulae.map(function(f){return'• '+f;}).join('\n'):'');
+    };
+  }
+
+  // Retry logic with 2 attempts
+  for(var attempt=0;attempt<2;attempt++){
+    try{
+      var raw=await callAI(sys,prompt);
+      var cleaned=raw.replace(/```json[\s\S]*?```/g,function(m){return m.replace(/```json|```/g,'');}).replace(/```/g,'').trim();
+      var parsed=JSON.parse(cleaned);
+      if(parse)parse(parsed);
+      ph.parsed=parsed;ph.generated=true;ph.generating=false;
+      saveState();render();return;
+    }catch(e){
+      if(attempt===1){
+        console.error('generateExamPhase failed:',e);
+        ph.content=prevContent||'Generation failed. Try again or check your API key.';
+        ph.generated=!!prevContent;
+        showToast('Phase failed: '+e.message.slice(0,60),'error');
+      }
+    }
+  }
+  ph.generating=false;saveState();render();
+}
+
 async function generateAllExam(){
   if(!S.topic){showToast('Add a topic first','error');return;}
   var hasK=(LESSONCRAFT_API_KEY&&LESSONCRAFT_API_KEY.length>5)||(S.claudeKey&&S.claudeKey.length>5)||(S.aiProvider==='copilot'&&S.copilotKey);
   if(!hasK){showToast('Go to AI Setup tab first','error');S.tab='aisetup';render();return;}
+  // Initialise all exam phase states
+  EXAM_PHASES.forEach(function(p){
+    S.phases[p.id]={content:'',parsed:null,generated:false,generating:false};
+    S.open[p.id]=false;
+  });
   S.generatingAll=true;
   S.genSteps=EXAM_PHASES.map(function(p){return{id:p.id,label:p.label,status:'pending'};});
   S.tab='build';
@@ -3445,7 +3669,7 @@ function buildSidebar(){
   const sb=el('div',{'class':'sidebar'+(S.sidebarOpen?'':' sidebar-closed')});
   const scroll=el('div',{'class':'sb-scroll'});
   const isConfigured=(S.aiProvider==='claude'&&(S.claudeKey||LESSONCRAFT_API_KEY))||(S.aiProvider==='copilot'&&S.copilotKey&&S.copilotEndpoint);
-  var activePhasesMode=S.mode==='exam'?EXAM_PHASES:PHASES;
+  var activePhasesMode=S.mode==='exam'?EXAM_PHASES:getActivePhases();
   var anyDoneMode=activePhasesMode.some(function(p){return S.phases[p.id]&&S.phases[p.id].generated;});
 
   // == LEVEL 1: Always visible ==
@@ -3481,7 +3705,7 @@ function buildSidebar(){
     var card=el('div',{'class':'mode-btn'+(S.mode===m.id?' active':'')});
     card.innerHTML='<span class="mode-btn-icon">'+m.icon+'</span><div class="mode-btn-text"><div class="mode-btn-label">'+m.label+'</div><div class="mode-btn-sub">'+m.sub+'</div></div>';
     if(S.mode===m.id)card.appendChild(el('span',{'class':'mode-active-dot'}));
-    card.addEventListener('click',function(){if(S.mode===m.id)return;S.mode=m.id;var phases=m.id==='exam'?EXAM_PHASES:PHASES;phases.forEach(function(p){if(!S.phases[p.id])S.phases[p.id]={content:'',parsed:null,generated:false,generating:false};S.open[p.id]=false;});S.activePhaseIdx=0;render();});
+    card.addEventListener('click',function(){if(S.mode===m.id)return;S.mode=m.id;var phases=m.id==='exam'?EXAM_PHASES:getActivePhases();phases.forEach(function(p){if(!S.phases[p.id])S.phases[p.id]={content:'',parsed:null,generated:false,generating:false};S.open[p.id]=false;});S.activePhaseIdx=0;render();});
     mSw.appendChild(card);
   });
   scroll.appendChild(mSw);
@@ -3564,7 +3788,7 @@ function buildSidebar(){
     var dF=el('div',{'class':'sb-field'});dF.appendChild(el('label',{},'Duration (mins)'));
     var dI=el('input',{'type':'number','placeholder':'60','value':S.duration});dI.addEventListener('input',function(e){S.duration=e.target.value;saveState();});dF.appendChild(dI);l2.appendChild(dF);
     // Phase timings
-    var activeP=S.mode==='exam'?EXAM_PHASES:PHASES;
+  var activeP=S.mode==='exam'?EXAM_PHASES:getActivePhases();
     var tDiv=el('div',{'class':'phase-timing-grid'});
     tDiv.appendChild(el('div',{'class':'timing-header'},'Phase timings'));
     activeP.forEach(function(p){
@@ -3677,6 +3901,31 @@ function buildAISetupTab(){
   const hero=el('div',{'class':'page-hero'});
   hero.appendChild(el('h1',{},'AI Setup'));
   hero.appendChild(el('p',{},'Choose which AI powers your lesson generation. Both produce the same lesson structure.'));
+  // ── Network status banner (shows if school firewall blocking) ──
+  var netBanner=el('div',{'class':'net-status-banner','id':'net-banner-'+Date.now()});
+  netBanner.style.display='none';
+  netBanner.innerHTML='<span style="font-size:18px;">🏫</span><div><strong>School network may be blocking the AI.</strong> If you see "Failed to fetch" errors: '
+    +'<br>1. Use your <strong>phone hotspot</strong> while at school '
+    +'<br>2. Switch to <strong>Microsoft Copilot</strong> below (uses your school Microsoft 365 licence) '
+    +'<br>3. Ask IT to whitelist <code>api.anthropic.com</code></div>'
+    +'<button class="btn btn-ghost btn-sm" style="flex-shrink:0;" onclick="this.closest(\'div.net-status-banner\').style.display=\'none\'">✕</button>';
+  d.appendChild(netBanner);
+  // Test connectivity silently in background
+  setTimeout(function(){
+    fetch('https://api.anthropic.com/v1/messages',{method:'POST',signal:AbortSignal.timeout(5000),
+      headers:{'Content-Type':'application/json','x-api-key':'test','anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:'{"model":"claude-sonnet-4-20250514","max_tokens":1,"messages":[{"role":"user","content":"hi"}]}'
+    }).then(function(r){
+      // Any response (even 401) means we can reach the server — not blocked
+      // If we got 401 (invalid key) that's fine — server is reachable
+    }).catch(function(e){
+      // Can't reach server — likely blocked
+      if(e.message==='Failed to fetch'||e.name==='TypeError'){
+        netBanner.style.display='flex';
+      }
+    });
+  },1000);
+
   d.appendChild(hero);
 
   // Provider picker
@@ -3708,11 +3957,25 @@ function buildAISetupTab(){
     keyInp.addEventListener('input',function(e){S.claudeKey=e.target.value.trim();S.aiProvider='claude';saveState();});
     var testBtn=el('button',{'class':'btn btn-primary btn-sm'});testBtn.textContent='Test';
     testBtn.addEventListener('click',async function(){
-      testBtn.disabled=true;testBtn.textContent='Testing...';
-      try{await callClaude('You are a helpful assistant.','Reply with just the word: connected');showToast('Claude connected!','success');}
-      catch(e){showToast('Failed: '+e.message,'error');}
-      testBtn.disabled=false;testBtn.textContent='Test';
-    });
+    testBtn.disabled=true;testBtn.textContent='Testing...';
+    try{
+      var result=await callAI('You are a test. Reply with exactly: OK','Reply with: OK');
+      if(result&&result.includes('OK')){
+        testBtn.textContent='✓ Connected!';testBtn.style.background='#22c55e';
+        showToast('AI connection working!','success');
+        setTimeout(function(){testBtn.disabled=false;testBtn.textContent='Test';testBtn.style.background='';},3000);
+      }
+    }catch(e){
+      testBtn.disabled=false;testBtn.textContent='✗ Failed';testBtn.style.background='#dc2626';
+      setTimeout(function(){testBtn.textContent='Test';testBtn.style.background='';},4000);
+      // Show helpful error
+      if(e.message.includes('school firewall')||e.message.includes('Failed to fetch')){
+        showToast('School network is blocking the AI — see AI Setup for help','error');
+      } else {
+        showToast('Error: '+e.message.slice(0,80),'error');
+      }
+    }
+  });
     keyRow.appendChild(keyInp);keyRow.appendChild(testBtn);sec.appendChild(keyRow);
     var inst=el('div',{'class':'ai-instructions'});
     inst.innerHTML='<div class="ai-inst-title">How to get a Claude API key (free)</div><ol class="ai-inst-steps">'
@@ -3923,7 +4186,7 @@ function buildThemeTab(){
 function buildBuildTab(){
   const d=el('div',{});
   const isExam=S.mode==='exam';
-  const activePhases=isExam?EXAM_PHASES:PHASES;
+  const activePhases=isExam?EXAM_PHASES:getActivePhases();
   const anyDone=activePhases.some(function(p){return S.phases[p.id]&&S.phases[p.id].generated;});
   const hasKey=(LESSONCRAFT_API_KEY&&LESSONCRAFT_API_KEY.length>5)||(S.claudeKey&&S.claudeKey.length>5)||(S.aiProvider==='copilot'&&S.copilotKey&&S.copilotEndpoint);
 
@@ -4077,7 +4340,7 @@ function buildBuildTab(){
 function buildPhaseCard(phase, isExam=false){
   const ph=S.phases[phase.id];
   const isOpen=S.open[phase.id];
-  var phaseIdx=(isExam?EXAM_PHASES:PHASES).findIndex(function(p){return p.id===phase.id;});
+  var phaseIdx=(isExam?EXAM_PHASES:getActivePhases()).findIndex(function(p){return p.id===phase.id;});
   var isActive=phaseIdx===S.activePhaseIdx&&S.generatingAll;
   const card=el('div',{'class':'pcard'+(isOpen?' open':'')+(isActive?' phase-active':'')+(ph.generating?' phase-generating':'')});
 
@@ -4370,7 +4633,7 @@ function buildPreviewTab(){
   const d=el('div',{});
   const t=S.theme;
   const isExam=S.mode==='exam';
-  const activePhases=isExam?EXAM_PHASES:PHASES;
+  const activePhases=isExam?EXAM_PHASES:getActivePhases();
 
   // Toolbar row
   const toolbar=el('div',{'class':'preview-toolbar'});
@@ -4507,7 +4770,7 @@ function buildPreviewTab(){
 function buildMiniPreview(){
   const t=S.theme;
   const isExam=S.mode==='exam';
-  const activePhases=isExam?EXAM_PHASES:PHASES;
+  const activePhases=isExam?EXAM_PHASES:getActivePhases();
   const wrap=el('div',{'class':'mini-preview'});
 
   // Mini title slide
@@ -4624,7 +4887,7 @@ function loadSharedLesson(){
       }
       if(snap.keywords)S.keywords=snap.keywords;
       if(snap.theme){S.theme=Object.assign({},S.theme,snap.theme,{loaded:true,filename:'Shared'});}
-      const activeP=S.mode==='exam'?EXAM_PHASES:PHASES;
+  const activeP=S.mode==='exam'?EXAM_PHASES:getActivePhases();
       activeP.forEach(p=>{S.open[p.id]=S.phases[p.id]&&S.phases[p.id].generated;});
       S.tab='build';
       showToast('Shared lesson loaded!','success');
@@ -4744,7 +5007,7 @@ function downloadWorksheet(format){
   format = format || 'docx';
   const t=S.theme;
   const isExam=S.mode==='exam';
-  const activePhases=isExam?EXAM_PHASES:PHASES;
+  const activePhases=isExam?EXAM_PHASES:getActivePhases();
   const questionPhases=isExam?['warmup','examqs','drillqs']:['prior','newknow','independent'];
   const topicTitle=S.topic||'Worksheet';
   const meta=[S.subject,S.year?'Year '+S.year:'',new Date().toLocaleDateString('en-GB'),S.examBoard].filter(Boolean).join(' | ');
